@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        浅谈iOS工程师的成长和进阶｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2015/05/26/浅谈iOS工程师的成长和进阶/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/light.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/light.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>浅谈iOS工程师的成长和进阶</h1>
+                    
+                    <h2 class="subheading">扯扯iOS工程师的历程</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2015-05-26
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            浅谈iOS工程师的成长和进阶
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h1 id="iOS高级工程师是如何进阶的"><a href="#iOS高级工程师是如何进阶的" class="headerlink" title="iOS高级工程师是如何进阶的"></a>iOS高级工程师是如何进阶的</h1><p>说实话这个话题说的有点大了，其实我有时候也是非常的迷茫的，工作忙的时候还能跟着工作的节奏走，闲下来时间一长就有点迷茫，不知做什么。这当然是非常恐怖的了，所以现在在迷茫过、在不知所措过之后，想想还是应该写写文章屡屡思路再上路，希望自己能养成好的习惯坚持下去。</p>
+<p><strong>首先工作过两年的工程师，只会搭建View、使用第三方类库，真的不能称作一个合格的iOS开发工程师，下面我从几个方面来说一下需要有什么样的提高</strong></p>
+<a id="more"></a>
+<ul>
+<li><strong> iOS高级工程师是如何进阶的</strong><ul>
+<li><strong>OC部分</strong></li>
+<li><strong>UI部分</strong></li>
+<li><strong>还有一些大的功能点</strong></li>
+<li><strong>其他专业化的方向</strong></li>
+<li><strong>项目安全优化等</strong></li>
+<li><strong>知识体系要持续更新</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="OC部分"><a href="#OC部分" class="headerlink" title="OC部分"></a>OC部分</h2><ul>
+<li>既然做了两年的开发了，对objc有足够的了解吗？objc和c的区别是什么，它是如何基于c来进行封装的？下面代码是什么意思？</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">typedef</span> __attribute__((<span class="built_in">NSObject</span>))<span class="built_in">CGGradientRef</span> GradientObject;</div><div class="line"></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">strong</span>)GradientObject storedGradient;</div></pre></td></tr></table></figure>
+<ul>
+<li>objc的内存管理真的掌握清楚了吗？为什么对象用指针来操作？对象需要内存管理而基本数据类型不用呢？它们在内存中又是如何存储呢的？objc里面的自动释放池又是如何创建和管理的呢？</li>
+<li>protocol、category、extension和delegate这类的东西应该是手到擒来才是，你是不是已经彻底掌握了？notification，Userdefault和简单的文件存储是不是都很熟悉呢？</li>
+<li>多线程网络的知识点掌握的是否扎实？https等各种网络加密的知识是否够了解？能自己搭建服务器吗？有没有使用Charles抓过其他app的网络包进行分析过呢？</li>
+<li>runtime黑魔法有过了解吗？它的消息机制又是如何做的呢，能在开发中做一些什么高级的事情呢？</li>
+<li>程序启动过程，为什么能一直运行？runloop又是怎样的？</li>
+<li>代码的封装性是不是足够好呢？有没有足够优雅、后续维护容易吗？各种设计模式使用的如何？</li>
+</ul>
+<h2 id="UI部分"><a href="#UI部分" class="headerlink" title="UI部分"></a>UI部分</h2><ul>
+<li>既然写了两年的UI，那么能快速仿造市面上这些主流app的UI吗？使用过Reveal去分析过微信、豆瓣、网易云音乐、QQ、淘宝、支付宝等应用的UI吗？复制一个类似的你需要多长时间呢？有么有自己的一套UI框架能快速完成一个app的呢？</li>
+<li>UI研究稍微深一点，比如侧滑菜单这种要如何实现，类似饿了么的两级联动菜单呢？如何你要实现应该要了解UIView和UIViewController，UIViewController和UINavigationController的关系了吧？我勒个草，UIView一堆方法，UIViewController一堆方法，到底都是干嘛的啊？你难道不好奇吗？这块知识点一直是你的盲区，你能忍？我忍不了！</li>
+<li>UIView往深了看、下面还有CALayer，你研究过没？为什么修改CAlayer的某些property默认会有个动画产生呢？</li>
+<li>那么Animation、UIKit Dynamics、Drawing、Graphics这些随便拎出来一个，够你研究一阵子了吧 ？你看看比如网易新闻，在新闻详情页面上拉，回到新闻列表页面这个动画做的出来吗？你看看QQ在电话通信页面，点击右下角缩放图标，缩放成一个头像的这种动画你会做不？</li>
+</ul>
+<h2 id="还有一些大的功能点"><a href="#还有一些大的功能点" class="headerlink" title="还有一些大的功能点"></a>还有一些大的功能点</h2><ul>
+<li>既然用了两年三方类库，那么比如图片缓存之类，你看过源代码吗？如果你自己来实现的话，有哪些Caching Algorithms？该怎么取舍？各种常用的第三方类库你研究过原理没？</li>
+<li>你的app在和服务器交流数据的过程后中安全性怎么样？你是不是要研究一下加解密？http理解的够清楚吗？有没有想过自己来写接口？或者更甚一些，自己来写一个简易的http服务器？接口部分甚至用CGI来实现也可以啊 ！</li>
+<li>要写服务器，那应该要了解一下网络部分吧？TCP/IP 协议得熟悉吧，然后Wireshark各种抓包得会吧？</li>
+<li>网络这块顺带过来之后，即时通信类的app采用的什么技术？选xmpp还是mqtt还是自己写？正好可以顺势了解一下吧？</li>
+<li>iOS SDK里面的各种API你掌握到了什么程度？这些功能模块排除地图、通讯录这种，说些高级的比如CloudKit、Extensions、AirDrop、PassKit？觉得这些模块在自家公司的项目中压根没有用过？可是看看你手边的app！</li>
+</ul>
+<h2 id="其他专业化的方向"><a href="#其他专业化的方向" class="headerlink" title="其他专业化的方向"></a>其他专业化的方向</h2><ul>
+<li>音视频处理做过吗？此类诸如豆瓣FM、喜马拉雅、虾米音乐、QPlayer、秒拍视频这类的app你去研究过他们吗？还有VoIP这类的，你掌握到什么程度了？</li>
+<li>游戏开发方向有没有兴趣？自己有没有去研究过呢？（反正这个我是真的没有╮(╯_╰)╭）</li>
+</ul>
+<h2 id="项目安全优化等"><a href="#项目安全优化等" class="headerlink" title="项目安全优化等"></a>项目安全优化等</h2><ul>
+<li>项目中写单元测试吗？UI Automation自动化测试做的怎么样？持续集成平台诸如Jenkins等会用吗？</li>
+<li>App的各种性能优化、crash的统计分析等等你做了没？</li>
+<li>App本地数据存储够安全吗？你对逆向了解多少，敏感代码是不是做了代码混淆呢？</li>
+</ul>
+<h2 id="知识体系要持续更新"><a href="#知识体系要持续更新" class="headerlink" title="知识体系要持续更新"></a>知识体系要持续更新</h2><ul>
+<li>官方的文档、国外的相关书籍采用的语言都是Swift，难道你不准备学学？除了native的，现在的HTML5也很火啊 ，难道你不准备学学？</li>
+<li>英文练习的怎么样了，官方所有的开发者文档以及历年的WWDC视频都看完了？这么多书，这么多大牛的技术博客，难道你从中一无所获？</li>
+</ul>
+<p><strong>最后附上一张iOS知识框架图</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-5c7afb782d0c8d14.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="47d19c496c9965288fd66c0a4f4172e4_r.jpg"></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2015/05/29/XIB和代码创建程序的对比/" data-toggle="tooltip" data-placement="top"
+                           title="XIB和代码创建程序的对比">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS高级工程师是如何进阶的"><span class="toc-text">iOS高级工程师是如何进阶的</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#OC部分"><span class="toc-text">OC部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UI部分"><span class="toc-text">UI部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#还有一些大的功能点"><span class="toc-text">还有一些大的功能点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他专业化的方向"><span class="toc-text">其他专业化的方向</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#项目安全优化等"><span class="toc-text">项目安全优化等</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#知识体系要持续更新"><span class="toc-text">知识体系要持续更新</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>

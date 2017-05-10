@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        九宫格布局引发的一系列”惨案“｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2015/06/04/九宫格布局引发的一系列”惨案“/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/lizi.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/lizi.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>九宫格布局引发的一系列”惨案“</h1>
+                    
+                    <h2 class="subheading">iOS回顾系列</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2015-06-04
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            九宫格布局引发的一系列”惨案“
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="前言（扯几句淡先）"><a href="#前言（扯几句淡先）" class="headerlink" title="前言（扯几句淡先）"></a>前言（扯几句淡先）</h2><p>回顾到学习UI过程中的九宫格布局时，发现当时学的东西真是不少。</p>
+<p>这个阶段<strong>最大的特点</strong>就是：<strong>知识点繁多且琐碎</strong>。</p>
+<p><strong>我们的目标就是要将这琐碎的知识点灵活运用、融汇贯通，通过不同的实现方式来实现相同的功能，最后进行比较得到最好的那种方式。这个求知的过程就是我们最需要学习的，在过程中我们学会了自我思考，并且在自己的思考和比较中，我们的脑海里逐渐形成了自己的编程思想。</strong></p>
+<a id="more"></a>
+<p>本文主要以<strong>九宫格购物车的实现</strong>为引子，从最基础的实现方法层层递进直到最完美的实现方式。代码从起初的低效、耦合度高到后期的层层分离、MVC各模块封装，高内聚、低耦合，更具扩展性等方面逐步深化和扩展；经过编程思想的层层深入和代码的步步完善最后完整的展现在用户面前。</p>
+<p><strong>本文大体目录</strong></p>
+<ul>
+<li>九宫格购物车demo</li>
+<li>对应物品封装（View的简单封装）</li>
+<li>数据的加载方式对比 与 演变</li>
+<li>属性列表文件（plist）的创建和使用</li>
+<li>MVC 思想的引入和介绍</li>
+</ul>
+<h2 id="九宫格购物车Demo"><a href="#九宫格购物车Demo" class="headerlink" title="九宫格购物车Demo"></a>九宫格购物车Demo</h2><p>九宫格是我们在开发过程中对于一些有规律的UI布局常用的一种布局算法。<br>九宫格特点：简单，封装性好，可复用性高，很适合一些页面同类型item数量动态变化UI页面布局</p>
+<p><strong>下面就实现一个买书购物车</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-2169821aabb6a679.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170301_3.png"><br>基本要求和思路如下</p>
+<blockquote>
+<p>思路：</p>
+<pre><code>1. 最初没有书（删除按钮不可用）
+2. 点击添加就添加一本书（删除按钮可用）
+3. 添加基本之后（提示购物车已满，添加按钮不可用）
+4. 删除按钮点击（购物车不满的时候添加按钮又可以使用）
+5. 添加书籍按九宫格的样式在页面中显示
+</code></pre></blockquote>
+<p>  <br><br><strong>先说说最直接的方法</strong></p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 添加书</span></div><div class="line">- (<span class="keyword">IBAction</span>)addBook:(<span class="keyword">id</span>)sender &#123;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 1. 创建书图标</span></div><div class="line">    <span class="built_in">UIImageView</span> *bookIcon = [<span class="built_in">UIImageView</span> new];</div><div class="line">    bookIcon.image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"0"</span>];</div><div class="line">    bookIcon.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">50</span>, <span class="number">50</span>);</div><div class="line">    [<span class="keyword">self</span>.shopView addSubview:bookIcon];</div><div class="line">    </div><div class="line">    <span class="comment">// 2.书名</span></div><div class="line">    <span class="built_in">UILabel</span> *bookName = [<span class="built_in">UILabel</span> new];</div><div class="line">    bookName.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">20</span>);</div><div class="line">    bookName.text = <span class="string">@"book1"</span>;</div><div class="line">    bookName.textAlignment = <span class="built_in">NSTextAlignmentCenter</span>;</div><div class="line">    [<span class="keyword">self</span>.shopView addSubview:bookName];</div><div class="line">    </div><div class="line">    <span class="comment">// 3.添加到数组(分开写好像很难明确如何添加这本书)</span></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这是最直接的方法来添加的一本书，这样确实能添加一本书，但是这种直观、死板的思想是不对的。</p>
+<ul>
+<li>面对这样的动态变化的UI页面，每次添加和删除书籍的操作都是用户随机的，所以代码每次也是根据对应的点击来计算对应书籍要添加的位置。</li>
+<li>每本书的位置主要是和它对应的index来确定，这就涉及到“书”这个对象要每次计数，书是一个整体，所以书内部的东西应当封装起来。</li>
+<li>“书”在UI上表现是 图标 + 书名，也就是iamgeview + label，从用户看到的整体性上来说，每次添加和删除同一本书也需要对 图标 和 书名 分别计算两次来计算和排列。这也是非常不合理的，并且很容易计算出现问题。应该根据UIView 父子控件相关特性对“书”进行封装，添加/删除的时候统一处理父控件，至于内部属性都会根据父控件来自动布局，方便管理。</li>
+</ul>
+<h2 id="书的封装"><a href="#书的封装" class="headerlink" title="书的封装"></a>书的封装</h2><p>了解以上说的直接把代码分开写的局限性之后，现在来封装一下“书”这个对象。</p>
+<ul>
+<li>UI层的封装，我们先分析UI布局：内部属性只有 图标（UIImagevView） 和 书名（UILabel）</li>
+<li>父控件选取原则：父控件只是承载子控件的容器，应当简洁为主，所以选择 UIView</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 0. 创建书</span></div><div class="line"><span class="built_in">UIView</span> *book = [<span class="built_in">UIView</span> new];</div><div class="line">book.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">60</span>, <span class="number">70</span>);</div><div class="line">book.backgroundColor = [<span class="built_in">UIColor</span> redColor];</div><div class="line">[<span class="keyword">self</span>.shopView addSubview:book];</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 1. 创建书图标</span></div><div class="line"><span class="built_in">UIImageView</span> *bookIcon = [<span class="built_in">UIImageView</span> new];</div><div class="line">bookIcon.image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"0"</span>];</div><div class="line">bookIcon.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">60</span>, <span class="number">50</span>);</div><div class="line">[book addSubview:bookIcon];</div><div class="line"></div><div class="line"><span class="comment">// 2.书名</span></div><div class="line"><span class="built_in">UILabel</span> *bookName = [<span class="built_in">UILabel</span> new];</div><div class="line">bookName.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">50</span>, <span class="number">60</span>, <span class="number">20</span>);</div><div class="line">bookName.text = <span class="string">@"book1"</span>;</div><div class="line">bookName.textAlignment = <span class="built_in">NSTextAlignmentCenter</span>;</div><div class="line">[book addSubview:bookName];</div><div class="line"></div><div class="line"><span class="comment">// 3.添加到数组(直接添加书这个对象)</span></div><div class="line">[<span class="keyword">self</span>.books addObject:book];</div></pre></td></tr></table></figure>
+<p><strong>这样在创建和管理书的时候就方便多了，并且有一个数组来记录添加书的数量，在添加和删除的时候有计算的依据：可计算对应位置和两个按钮的可用情况</strong></p>
+<h2 id="九宫格布局的思路和实现"><a href="#九宫格布局的思路和实现" class="headerlink" title="九宫格布局的思路和实现"></a>九宫格布局的思路和实现</h2><p>书的对象已经封装好了，我们可以以整体思维来操作它，下面就是计算位置的思路。</p>
+<ul>
+<li>书的数量不定，但列数是固定的，可以设置成变量  int clos = 3；</li>
+<li>每本书之间可能有一定间距，横向间距 margin = （ width - clos * book.width）/ ( clos / 2) ;</li>
+<li>每本书的位置（x,y）可根据下图发现规律 x = 列号 <em> （W + margin）； y = 行号 </em> （H+margin）</li>
+<li>行号规律 ： 行号 = index / clos ;   </li>
+<li>列号规律 ： 列号 = index % clos ; </li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-efc76c14e78eee95.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170301_4.png"></p>
+<p>有了上面的铺垫，就可以写动态代码了，只需要用户 设置一个列数，知道最终有多少本书，遍历每本书，根据书的索引来计算对应的书的位置即可。</p>
+<p><strong>废话不多说了，上代码</strong></p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 添加书</span></div><div class="line">- (<span class="keyword">IBAction</span>)addBook:(<span class="keyword">id</span>)sender &#123;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 设置列数为 3</span></div><div class="line">    <span class="keyword">int</span> clos = <span class="number">3</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 设置书的宽高分别为 W H</span></div><div class="line">    <span class="built_in">CGFloat</span> W = <span class="number">60</span>;</div><div class="line">    <span class="built_in">CGFloat</span> H = <span class="number">70</span>;</div><div class="line">    <span class="built_in">CGFloat</span> iconH = <span class="number">50</span>;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 0. 创建书</span></div><div class="line">    <span class="built_in">UIView</span> *book = [<span class="built_in">UIView</span> new];</div><div class="line">    book.backgroundColor = [<span class="built_in">UIColor</span> redColor];</div><div class="line">    [<span class="keyword">self</span>.shopView addSubview:book];</div><div class="line">    </div><div class="line">    <span class="comment">// 计算书的位置</span></div><div class="line">    <span class="comment">// 获得索引</span></div><div class="line">    <span class="built_in">NSUInteger</span> index = [<span class="keyword">self</span>.books count];</div><div class="line">    <span class="comment">// 计算横间距 margin</span></div><div class="line">    <span class="built_in">CGFloat</span> margin = (<span class="keyword">self</span>.shopView.frame.size.width - clos * W) / (clos - <span class="number">1</span>);</div><div class="line">    <span class="comment">// 书 frame 的 X</span></div><div class="line">    <span class="built_in">CGFloat</span> x = (index % clos) * (W + margin);</div><div class="line">    <span class="comment">// 书 frame 的 Y</span></div><div class="line">    <span class="built_in">CGFloat</span> y = (index / clos) * (H + margin);</div><div class="line">    </div><div class="line">    book.frame = <span class="built_in">CGRectMake</span>(x, y, W, H);</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 1. 创建书图标</span></div><div class="line">    <span class="built_in">UIImageView</span> *bookIcon = [<span class="built_in">UIImageView</span> new];</div><div class="line">    bookIcon.image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"0"</span>];</div><div class="line">    bookIcon.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, W, iconH);</div><div class="line">    [book addSubview:bookIcon];</div><div class="line">    </div><div class="line">    <span class="comment">// 2.书名</span></div><div class="line">    <span class="built_in">UILabel</span> *bookName = [<span class="built_in">UILabel</span> new];</div><div class="line">    bookName.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, iconH, W, H-iconH);</div><div class="line">    bookName.text = <span class="string">@"book1"</span>;</div><div class="line">    bookName.textAlignment = <span class="built_in">NSTextAlignmentCenter</span>;</div><div class="line">    [book addSubview:bookName];</div><div class="line">    </div><div class="line">    <span class="comment">// 3.添加到数组(分开写好像很难明确如何添加这本书)</span></div><div class="line">    [<span class="keyword">self</span>.books addObject:book];</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>效果图如下</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-a6bc46fecc736058.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170301_5.png"></p>
+<h2 id="书数据加载方式和对比"><a href="#书数据加载方式和对比" class="headerlink" title="书数据加载方式和对比"></a>书数据加载方式和对比</h2><p>到这里购物车里的书已经可以随意添加了，并且可以根据用户的点击，无限制的添加。<br>如果项目需求修改了，比如变成5列了，宽高什么的也是根据项目自行修改就行。<br>九宫格布局的代码已经完成了。</p>
+<p>现在需要注意的问题是，“书”的属性数据的添加问题，现在简单的来说，书属性有 ：书名 + icon。</p>
+<p>“书”的各属性值，应该如何赋值呢？</p>
+<p><br><br><strong>几种简单数据加载方法与对比</strong></p>
+<ul>
+<li>直接根据 index 来进行if判断，逐个添加数据</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> (index == <span class="number">0</span>) &#123;</div><div class="line">    </div><div class="line">    bookIcon.image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"0"</span>];</div><div class="line">    bookName.text = <span class="string">@"Book1"</span>;</div><div class="line">    </div><div class="line">&#125;<span class="keyword">else</span> <span class="keyword">if</span>(index == <span class="number">1</span>)</div><div class="line">&#123;</div><div class="line">    bookIcon.image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"1"</span>];</div><div class="line">    bookName.text = <span class="string">@"Book2"</span>;</div><div class="line">&#125;</div><div class="line"><span class="keyword">else</span> <span class="keyword">if</span>(index == <span class="number">2</span>)</div><div class="line">&#123;</div><div class="line">    bookIcon.image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@"2"</span>];</div><div class="line">    bookName.text = <span class="string">@"Book3"</span>;</div><div class="line">&#125;</div><div class="line">...</div></pre></td></tr></table></figure>
+<ul>
+<li>创建一个书的数组，数组存放对应的字典，作为书的属性方法的数据源，从中取值</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 0.创建书的数据源</span></div><div class="line">    <span class="keyword">self</span>.books = @[</div><div class="line">                       @&#123;</div><div class="line">                           <span class="string">@"icon"</span>:<span class="string">@"0"</span>,</div><div class="line">                           <span class="string">@"name"</span>:<span class="string">@"book1"</span></div><div class="line">                        &#125;,</div><div class="line">                       @&#123;</div><div class="line">                           <span class="string">@"icon"</span>:<span class="string">@"1"</span>,</div><div class="line">                           <span class="string">@"name"</span>:<span class="string">@"book2"</span></div><div class="line">                           &#125;,</div><div class="line">                       @&#123;</div><div class="line">                           <span class="string">@"icon"</span>:<span class="string">@"2"</span>,</div><div class="line">                           <span class="string">@"name"</span>:<span class="string">@"book3"</span></div><div class="line">                           &#125;,</div><div class="line">                       @&#123;</div><div class="line">                           <span class="string">@"icon"</span>:<span class="string">@"3"</span>,</div><div class="line">                           <span class="string">@"name"</span>:<span class="string">@"book4"</span></div><div class="line">                           &#125;,</div><div class="line">                       ];</div><div class="line">                       </div><div class="line"><span class="comment">// 1.书图标</span></div><div class="line">bookIcon.image = [<span class="built_in">UIImage</span> imageNamed:<span class="keyword">self</span>.books[index][<span class="string">@"icon"</span>]];  </div><div class="line"><span class="comment">// 2.书名</span></div><div class="line">bookName.text = <span class="keyword">self</span>.books[index][<span class="string">@"name"</span>];</div></pre></td></tr></table></figure>
+<ul>
+<li>进一步分离数据，将数据信息放到其他文件中，用的时候从文件中读取</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 获取文件路径</span></div><div class="line"><span class="built_in">NSString</span> *books = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"bookData"</span> ofType:<span class="string">@"plist"</span>];</div><div class="line"><span class="comment">// 加载路径中内容放到数组中</span></div><div class="line">_books = [<span class="built_in">NSMutableArray</span> arrayWithContentsOfFile:books];</div><div class="line"></div><div class="line"><span class="comment">// 1.书图标</span></div><div class="line">bookIcon.image = [<span class="built_in">UIImage</span> imageNamed:<span class="keyword">self</span>.books[index][<span class="string">@"icon"</span>]];  </div><div class="line"><span class="comment">// 2.书名</span></div><div class="line">bookName.text = <span class="keyword">self</span>.books[index][<span class="string">@"name"</span>];</div></pre></td></tr></table></figure>
+<p><strong>对于三种方法简单的比较和点评</strong></p>
+<ul>
+<li>第一种直接if判断index的位置<ul>
+<li>直接把动态判断代码写到代码中，过于死板</li>
+<li>代码耦合性太高，及其不利于后期扩展，如果加数据简直是恶魔</li>
+<li>一些死布局并且元素个数极少（几个）的时候可以使用</li>
+<li>代码重复性高，技术含量低</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>第二种把数据代码独立出来放到一个数组中<ul>
+<li>避免了第一种直接写到代码中的低效且恶心的做法</li>
+<li>代码还是和数据耦合到一起了，如果后期修改需要修改代码</li>
+<li>如果数据量大，及其不利于后期管理和数据的修改</li>
+<li>相比第一种有明显的分离，是一种进步</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>第三种代码和数据分离，放到外部文件中<ul>
+<li>彻底代码和数据分离，耦合性低，易于扩展</li>
+<li>数据放到文件中、后期添加或者修改数据无需改动代码、更加独立</li>
+<li>代码更简洁直观，只需关注功能和布局</li>
+<li>适合企业开发、这是一种通用方式（网络应用更是如此）</li>
+</ul>
+</li>
+</ul>
+<h2 id="plist文件介绍和使用"><a href="#plist文件介绍和使用" class="headerlink" title="plist文件介绍和使用"></a>plist文件介绍和使用</h2><p><strong>简介</strong></p>
+<ul>
+<li>plist文件全称：Property List文件，中文又叫属性列表文件。</li>
+<li>是苹果平台上常用的一种资源描述类文件。</li>
+<li>它存储的属性一般都是Xcode里面的基本数据类型或者OC里面的对应类型（NSDictionary，NSArray，NSString等）</li>
+<li>Xcode会自动进行解析成可以打开和合上的层叠格式</li>
+<li>用文本文件打开直接就是XML格式的键值对</li>
+</ul>
+<p><strong>plist文件的创建</strong></p>
+<p>plist的创建一般直接用Xcode创建，然后在里面添加对应的key和value，（几乎没有人会手写plist文件）</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-bf0d45dad2a366d9.gif?imageMogr2/auto-orient/strip" alt="3月-02-2017 15-05-43.gif"></p>
+<p><strong>plist文件的使用</strong></p>
+<p>plist使用就和其他的文件用法一样，先读取目标文件的路径在根据路径加载到数组中。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 获取文件路径</span></div><div class="line"><span class="built_in">NSString</span> *books = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"bookData"</span> ofType:<span class="string">@"plist"</span>];</div><div class="line"><span class="comment">// 加载路径中内容放到数组中</span></div><div class="line">_books = [<span class="built_in">NSMutableArray</span> arrayWithContentsOfFile:books];</div></pre></td></tr></table></figure>
+<p><strong>plist使用注意</strong></p>
+<p><strong>我们自己创建plist文件的时候不能使用info/Info.plist命名</strong></p>
+<p>由于每次创建工程的时候，系统会自动生成一个对该项目信息进行描述的info.plist，它会记录项目的一些包名、项目名、开发工具、版本和其他项目的基础信息。</p>
+<p>所以我们自己创建plist文件的时候不能使用info/Info.plist</p>
+<p>这是为了不和系统的info.plist混淆，实际上自己创建一个info.plist文件和系统重名之后项目是运行不了的。</p>
+<h2 id="懒加载（lazyLoad）-–-提升性能"><a href="#懒加载（lazyLoad）-–-提升性能" class="headerlink" title="懒加载（lazyLoad） – 提升性能"></a>懒加载（lazyLoad） – 提升性能</h2><p>懒加载又叫延迟加载，由于项目运行时候很多数据用不到，可以暂时不创建，等到用的时候在创建，这样节省系统性能。</p>
+<p>如以上项目中，就是在添加书的方法中每次创建书籍数组</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 添加书</span></div><div class="line">- (<span class="keyword">IBAction</span>)addBook:(<span class="keyword">id</span>)sender &#123;</div><div class="line"></div><div class="line">    <span class="keyword">self</span>.books = @[</div><div class="line">                       @&#123;</div><div class="line">                           <span class="string">@"icon"</span>:<span class="string">@"0"</span>,</div><div class="line">                           <span class="string">@"name"</span>:<span class="string">@"book1"</span></div><div class="line">                        &#125;,</div><div class="line">                       </div><div class="line">                       @&#123;</div><div class="line">                           <span class="string">@"icon"</span>:<span class="string">@"1"</span>,</div><div class="line">                           <span class="string">@"name"</span>:<span class="string">@"book2"</span></div><div class="line">                           &#125;,</div><div class="line">                       @&#123;</div><div class="line">                           <span class="string">@"icon"</span>:<span class="string">@"2"</span>,</div><div class="line">                           <span class="string">@"name"</span>:<span class="string">@"book3"</span></div><div class="line">                           &#125;,</div><div class="line">                       @&#123;</div><div class="line">                           <span class="string">@"icon"</span>:<span class="string">@"3"</span>,</div><div class="line">                           <span class="string">@"name"</span>:<span class="string">@"book4"</span></div><div class="line">                           &#125;,</div><div class="line">                       ];</div><div class="line"></div><div class="line">    <span class="comment">// 设置列数为 3</span></div><div class="line">    <span class="keyword">int</span> clos = <span class="number">3</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 设置书的宽高分别为 W H</span></div><div class="line">    <span class="built_in">CGFloat</span> W = <span class="number">60</span>;</div><div class="line">    <span class="built_in">CGFloat</span> H = <span class="number">70</span>;</div><div class="line">    <span class="built_in">CGFloat</span> iconH = <span class="number">50</span>;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 0. 创建书</span></div><div class="line">    <span class="built_in">UIView</span> *book = [<span class="built_in">UIView</span> new];</div><div class="line">    book.backgroundColor = [<span class="built_in">UIColor</span> redColor];</div></pre></td></tr></table></figure>
+<p>这样其实非常耗性能，每次都要创建一个数组，然后用过一次就没有用了，对此可以进行一个优化，对于该书籍数据其实就是一个固定数据，每次用一下，用的时候再创建，不用的时候就不管了，这里正好用懒加载最好了。</p>
+<p>懒加载实际上就是一个get方法</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 懒加载书籍数据</span></div><div class="line">- (<span class="built_in">NSMutableArray</span> *)books</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (_books == <span class="literal">nil</span>) &#123;</div><div class="line">        </div><div class="line">        <span class="comment">// 获取文件路径</span></div><div class="line">        <span class="built_in">NSString</span> *books = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"bookData"</span> ofType:<span class="string">@"plist"</span>];</div><div class="line">    </div><div class="line">        <span class="comment">// 加载路径中内容放到数组中</span></div><div class="line">        _books = [<span class="built_in">NSMutableArray</span> arrayWithContentsOfFile:books];</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> _books;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 使用的时候，直接用数组就行</span></div><div class="line">bookIcon.image = [<span class="built_in">UIImage</span> imageNamed:<span class="keyword">self</span>.books[index][<span class="string">@"icon"</span>]];</div><div class="line">bookName.text = <span class="keyword">self</span>.books[index][<span class="string">@"name"</span>];</div></pre></td></tr></table></figure>
+<h2 id="MVC-思想的介绍和引入"><a href="#MVC-思想的介绍和引入" class="headerlink" title="MVC 思想的介绍和引入"></a>MVC 思想的介绍和引入</h2><p>以上的小Demo，已经告一段落了，可以实现把文件中书籍数据，按九宫格的布局添加到购物车中，也可以一一删除。</p>
+<p><strong>思考</strong></p>
+<blockquote>
+<p> 还有什么可以改进的吗？<br> 数据就这样存放到数组中就完美了吗？<br> 每次用书的数据的时候，直接从数组总取出来确实方便，但是这样真的足够完美吗？<br> 现在的所有代码几乎都在一个文件中，如果项目大了也这样写吗？<br>上面把对应的数据加载方式分离到文件中了，其他的业务逻辑能不能也分离一下，能不能让项目的结构更加清晰？</p>
+</blockquote>
+<p>待着这些思考，答案是肯定的，项目的代码还是非常耦合的，并且有个致命的缺点。</p>
+<ul>
+<li><strong>每次从数组中取书的信息时候都自己写key值，self.books[index][@”icon”]  如果这个“icon“手误写错，编辑器一点提示也没有</strong></li>
+<li><strong>如果书有很多属性，每次手写key值很头痛，并且代码看起来很糟</strong></li>
+</ul>
+<p>所以我们需要一种新的方式：<strong>因为书是一个对象，可以把它封装成对象，它用有自己的各种属性和方法。</strong>这样做有几点好处：</p>
+<ul>
+<li>便于管理，在使用的时候直接调用属性的get方法就行。</li>
+<li>系统会自动提示get方法，安全性高不会出错，如果写错系统会报错。</li>
+<li>代码封装性好，书就是书，而不是每次到数组中去取字典根据对应的key来取值</li>
+<li>扩展性好，如果日后需要添加新的属性和方法，直接在”书“类中加就行</li>
+</ul>
+<p><strong>MVC介绍</strong></p>
+<p>经过上面的分析，可以确定的是书应该独立封装起来保存数据，页面逻辑也应该单独管理，至于ViewController恰好就是两者的桥梁。这样的设计模式就是MVC</p>
+<ul>
+<li>M : (Model)数据模型，用来存储和保存数据</li>
+<li>V : (View)UI视图，用来展示给用户看的页面，一些复杂的页面要封装起来放到里面单独管理。</li>
+<li>C: (Controller)控制器，是两者的桥梁，主要用来处理业务逻辑。</li>
+</ul>
+<p>使用MVC模式可以很好的简化项目代码，对不同的模块进行封装，降低耦合性，扩展性也会得到提高，MVC是企业开发常用的设计模式。</p>
+<p><strong>MVC的分层封装和使用</strong></p>
+<p>经过分析可知，在此小项目中，书和展示的书的UI和ViewController对应MVC的关系：</p>
+<ul>
+<li>书 – Model：用来封装书的各种属性信息和方法</li>
+<li>书UI – View：封装书这个小表象，用于展示给用户看</li>
+<li>ViewController – Controller：用来处理整体的业务逻辑，优化代码</li>
+</ul>
+<p><br><br><strong>废话不多说了，上各层的代码</strong></p>
+<ul>
+<li>下面是书的代码封装：存储书的数据和方法</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line">头文件 XYBook.h</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYBook</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="comment">// 书图标</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *icon;</div><div class="line"><span class="comment">// 书名字</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *name;</div><div class="line"></div><div class="line"><span class="comment">// 对象方法，返回自己对象</span></div><div class="line">- (<span class="keyword">instancetype</span>)initWithDict:(<span class="built_in">NSDictionary</span> *)dict;</div><div class="line"><span class="comment">// 类方法，返回自己对象</span></div><div class="line">+ (<span class="keyword">instancetype</span>)bookWithDict:(<span class="built_in">NSDictionary</span> *)dict;</div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"XYBook.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">XYBook</span></span></div><div class="line"></div><div class="line"></div><div class="line">- (<span class="keyword">instancetype</span>)initWithDict:(<span class="built_in">NSDictionary</span> *)dict</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) &#123;</div><div class="line">        [<span class="keyword">self</span> setValuesForKeysWithDictionary:dict];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (<span class="keyword">instancetype</span>)bookWithDict:(<span class="built_in">NSDictionary</span> *)dict</div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> [[<span class="keyword">self</span> alloc] initWithDict:dict];</div><div class="line">&#125;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<ul>
+<li>书的UI的封装：集中布局，减少控制器代码，优化控制器逻辑</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line">XYBookView.h 头文件</div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;UIKit/UIKit.h&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">@class</span> <span class="title">XYBook</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYBookView</span> : <span class="title">UIView</span></span></div><div class="line"></div><div class="line"><span class="comment">// 只放一个数据属性用来赋值，内部布局，放到.m 中自己管，不暴露给外界</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) XYBook *book;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"></div><div class="line">实现文件 .m文件</div><div class="line"><span class="meta">#import <span class="meta-string">"XYBookView.h"</span></span></div><div class="line"><span class="meta">#include <span class="meta-string">"XYBook.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYBookView</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="built_in">UIImageView</span> *icon;</div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="built_in">UILabel</span> *label;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">XYBookView</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">instancetype</span>)initWithFrame:(<span class="built_in">CGRect</span>)frame</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame]) &#123;</div><div class="line">        </div><div class="line">        <span class="comment">// 1. 创建书图标</span></div><div class="line">        <span class="built_in">UIImageView</span> *icon = [<span class="built_in">UIImageView</span> new];</div><div class="line">        <span class="keyword">self</span>.icon = icon;</div><div class="line">        [<span class="keyword">self</span> addSubview:<span class="keyword">self</span>.icon];</div><div class="line">        </div><div class="line">        <span class="comment">// 2.书名</span></div><div class="line">        <span class="built_in">UILabel</span> *bookName = [<span class="built_in">UILabel</span> new];</div><div class="line">        bookName.textAlignment = <span class="built_in">NSTextAlignmentCenter</span>;</div><div class="line">        <span class="keyword">self</span>.label = bookName;</div><div class="line">        [<span class="keyword">self</span> addSubview:<span class="keyword">self</span>.label];</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 重写布局</span></div><div class="line">- (<span class="keyword">void</span>)layoutSubviews</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> layoutSubviews];</div><div class="line">    <span class="built_in">CGSize</span> size = <span class="keyword">self</span>.frame.size;</div><div class="line">    <span class="keyword">self</span>.icon.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, size.width , size.height * <span class="number">0.7</span>);</div><div class="line">    <span class="keyword">self</span>.label.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, size.height * <span class="number">0.7</span>, size.width, size.height *(<span class="number">1</span> - <span class="number">0.7</span>));</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 设置书的属性</span></div><div class="line">- (<span class="keyword">void</span>)setBook:(XYBook *)book</div><div class="line">&#123;</div><div class="line">    _book = book;</div><div class="line">    <span class="keyword">self</span>.icon.image = [<span class="built_in">UIImage</span> imageNamed:book.icon];</div><div class="line">    <span class="keyword">self</span>.label.text = book.name;</div><div class="line">&#125;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<ul>
+<li>控制器：不管细节，专注处理逻辑</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 懒加载数据源</span></div><div class="line">- (<span class="built_in">NSMutableArray</span> *)books</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (_books == <span class="literal">nil</span>) &#123;</div><div class="line">        </div><div class="line">        _books = [<span class="built_in">NSMutableArray</span> array];</div><div class="line">        </div><div class="line">        <span class="comment">// 获取文件路径</span></div><div class="line">        <span class="built_in">NSString</span> *books = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"bookdata"</span> ofType:<span class="string">@"plist"</span>];</div><div class="line">    </div><div class="line">        <span class="comment">// 加载路径中内容放到数组中</span></div><div class="line">        <span class="built_in">NSMutableArray</span> *arrayM = [<span class="built_in">NSMutableArray</span> arrayWithContentsOfFile:books];</div><div class="line">        </div><div class="line">        <span class="keyword">for</span> (<span class="built_in">NSDictionary</span> *dict <span class="keyword">in</span> arrayM) &#123;</div><div class="line">            </div><div class="line">            XYBook *book = [XYBook bookWithDict:dict];</div><div class="line">            </div><div class="line">            [_books addObject:book];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> _books;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 添加书</span></div><div class="line">- (<span class="keyword">IBAction</span>)addBook:(<span class="keyword">id</span>)sender &#123;</div><div class="line"></div><div class="line">    <span class="comment">// 设置列数为 3</span></div><div class="line">    <span class="keyword">int</span> clos = <span class="number">3</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 设置书的宽高分别为 W H</span></div><div class="line">    <span class="built_in">CGFloat</span> W = <span class="number">60</span>;</div><div class="line">    <span class="built_in">CGFloat</span> H = <span class="number">70</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 0. 创建书</span></div><div class="line">    XYBookView *bookView = [XYBookView new];</div><div class="line">    bookView.backgroundColor = [<span class="built_in">UIColor</span> redColor];</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 计算书的位置</span></div><div class="line">    <span class="comment">// 获得索引</span></div><div class="line">    <span class="built_in">NSUInteger</span> index = [<span class="keyword">self</span>.shopView.subviews count];</div><div class="line">    <span class="comment">// 计算横间距 margin</span></div><div class="line">    <span class="built_in">CGFloat</span> margin = (<span class="keyword">self</span>.shopView.frame.size.width - clos * W) / (clos - <span class="number">1</span>);</div><div class="line">    <span class="comment">// 书 frame 的 X</span></div><div class="line">    <span class="built_in">CGFloat</span> x = (index % clos) * (W + margin);</div><div class="line">    <span class="comment">// 书 frame 的 Y</span></div><div class="line">    <span class="built_in">CGFloat</span> y = (index / clos) * (H + margin);</div><div class="line">    </div><div class="line">    bookView.frame = <span class="built_in">CGRectMake</span>(x, y, W, H);</div><div class="line">    [<span class="keyword">self</span>.shopView addSubview:bookView];</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="comment">// 给书的UI设置数据</span></div><div class="line">    bookView.book = <span class="keyword">self</span>.books[index];</div><div class="line"></div><div class="line">    </div><div class="line">    [<span class="keyword">self</span> checkState];</div><div class="line">    <span class="keyword">self</span>.removeBtn.enabled = <span class="literal">YES</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 移除书</span></div><div class="line">- (<span class="keyword">IBAction</span>)removeBook:(<span class="keyword">id</span>)sender &#123;</div><div class="line">    </div><div class="line">    </div><div class="line">    [[<span class="keyword">self</span>.shopView.subviews lastObject] removeFromSuperview];</div><div class="line">    </div><div class="line">    [<span class="keyword">self</span> checkState];</div><div class="line">    <span class="keyword">self</span>.addBtn.enabled = <span class="literal">YES</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>以上就是对于本Demo的最终MVC封装版</strong><br><strong>不同部分各司其职，负责自己的模块</strong><br><strong>项目的健壮性和封装性也也到了对应的提高</strong></p>
+<p><br><br><strong>小记</strong></p>
+<p>一个简单的九宫格购物车的小Demo，真是麻雀虽小五脏俱全。</p>
+<p>关于这个项目的完整代码，欢迎私聊或评论找我要，如果文章有任何问题或有其他技术问题，欢迎随时和我交流。</p>
+<p><strong>最后放一张项目效果图</strong><br><img src="http://upload-images.jianshu.io/upload_images/1256297-7f38029e448a9fe3.gif?imageMogr2/auto-orient/strip" alt="2017-03-02 17.47.23.gif"></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2015/05/29/XIB和代码创建程序的对比/" data-toggle="tooltip" data-placement="top"
+                           title="XIB和代码创建程序的对比">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2015/06/11/自定义View的封装和xib文件的使用详解/" data-toggle="tooltip" data-placement="top"
+                           title="自定义View的封装和xib文件的使用详解">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言（扯几句淡先）"><span class="toc-text">前言（扯几句淡先）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#九宫格购物车Demo"><span class="toc-text">九宫格购物车Demo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#书的封装"><span class="toc-text">书的封装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#九宫格布局的思路和实现"><span class="toc-text">九宫格布局的思路和实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#书数据加载方式和对比"><span class="toc-text">书数据加载方式和对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#plist文件介绍和使用"><span class="toc-text">plist文件介绍和使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#懒加载（lazyLoad）-–-提升性能"><span class="toc-text">懒加载（lazyLoad） – 提升性能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MVC-思想的介绍和引入"><span class="toc-text">MVC 思想的介绍和引入</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        UIScrollView的基本使用详解｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2015/06/19/UIScrollView的基本使用详解/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/lizi.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/lizi.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>UIScrollView的基本使用详解</h1>
+                    
+                    <h2 class="subheading">iOS回顾系列</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2015-06-19
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            UIScrollView的基本使用详解
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文主要讲述了 UIScrollView 的一些常用的属性和方法、引申了delegate的思想和UIScrollView的缩放。这篇文章着重介绍UIScrollView的基本知识，关于UIScrollView的实例使用我会在下一篇<a href="http://www.jianshu.com/p/e01bda01e99b" target="_blank" rel="external">iOS回顾笔记（05）</a>中着重讲解。</p>
+<a id="more"></a>
+<h2 id="UIScrollView"><a href="#UIScrollView" class="headerlink" title="UIScrollView"></a>UIScrollView</h2><ul>
+<li>UIScrollView :顾名思义就是 可以滚动的 UIView。</li>
+<li>由于手机的屏幕比较小，所以直接可以展示在用户眼前的内容极其有限</li>
+<li>当展示的内容较多且超出一个屏幕时，用户可以通过手势滑动来查看屏幕以外的东西</li>
+<li>普通的UIView不具备滚动的功能，所以不适合展示较多的内容</li>
+<li>UIScrollView就是一个可以滚动的UIView，用来展示大量的内容，并且可以通过滚动来展示所有内容</li>
+<li>UIScrollView实例：手机上可上下滑动的页面都是，如QQ聊天页面</li>
+</ul>
+<h2 id="UIScrollView的基本使用"><a href="#UIScrollView的基本使用" class="headerlink" title="UIScrollView的基本使用"></a>UIScrollView的基本使用</h2><p>UIScrollView的使用很简单，基本使用方式如下：</p>
+<ul>
+<li>将需要展示的内容添加到UIScrollView中</li>
+<li>设置UIScrollView的 contentSize属性，告诉它它内容的尺寸，也就是设置它的可滚动范围</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 1.创建滚动视图</span></div><div class="line"><span class="built_in">UIScrollView</span> *scrollView = [[<span class="built_in">UIScrollView</span> alloc] init];</div><div class="line">scrollView.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">375</span>,<span class="number">150</span>);</div><div class="line">[<span class="keyword">self</span> addSubview:scrollView];</div><div class="line">        </div><div class="line"><span class="comment">// 2. 设置内容</span></div><div class="line">[scrollView addSubview:[<span class="built_in">UIImageView</span> new]];</div><div class="line">        </div><div class="line"><span class="comment">// 3. 设置滚动范围</span></div><div class="line">scrollView.contentSize = <span class="built_in">CGSizeMake</span>(ImageViewCount * <span class="keyword">self</span>.bounds.size.width, <span class="number">0</span>);</div></pre></td></tr></table></figure>
+<p><strong>UIScrollView的显示内容的小细节</strong></p>
+<ul>
+<li>超过UIScrollView边界的内容会被自动隐藏</li>
+<li>用户可以用过拖拽手势来查看超出UIScrollView边界被隐藏的内容</li>
+</ul>
+<p><strong>UIScrollView无法滚动可能的原因</strong></p>
+<ul>
+<li>未设置 contentSize，不知滚动的范围</li>
+<li>scrollEnable = NO;   可滚动属性设置为NO</li>
+<li>userInteractionEnable = NO；  未接受用户事件</li>
+</ul>
+<h2 id="UIScrollView的常用属性"><a href="#UIScrollView的常用属性" class="headerlink" title="UIScrollView的常用属性"></a>UIScrollView的常用属性</h2><ul>
+<li>内容偏移量：contentOffset</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>) <span class="built_in">CGPoint</span> contentOffset;  <span class="comment">// default CGPointZero</span></div></pre></td></tr></table></figure>
+<p>contentOffset用来表示UIScrollView的滚动位置。</p>
+<p><strong>具体为内容原点与UIScrollView左上角原点的间距值。</strong></p>
+<ul>
+<li>内容大小：contentSize</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>) <span class="built_in">CGPoint</span> contentSize;  <span class="comment">// default CGSizeZero</span></div></pre></td></tr></table></figure>
+<p>contentSize：表示UIScrollView的内容的尺寸，用来设置UIScrollView的滚动范围。</p>
+<ul>
+<li>额外滚动区域：contentInset</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>) <span class="built_in">UIEdgeInsets</span> contentInset; <span class="comment">// default UIEdgeInsetsZero. add additional scroll area around content</span></div></pre></td></tr></table></figure>
+<p>contentInset：可以在UIScrollView的四周增加额外的滚动区域。可以用来避免UIScrollView的内容被其他控件挡住。</p>
+<p><strong>以上属性效果如图：</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-923a48ad7ad5239d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170305_3.png"></p>
+<h2 id="UIScrollView的其他属性"><a href="#UIScrollView的其他属性" class="headerlink" title="UIScrollView的其他属性"></a>UIScrollView的其他属性</h2><ul>
+<li>弹簧效果</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>) <span class="built_in">BOOL</span> bounces; <span class="comment">// default YES. if YES, bounces past edge of content and back again</span></div></pre></td></tr></table></figure>
+<ul>
+<li>是否能滚动</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">getter</span>=isScrollEnabled) <span class="built_in">BOOL</span> scrollEnabled; <span class="comment">// default YES. turn off any dragging temporarily</span></div></pre></td></tr></table></figure>
+<ul>
+<li>是否显示水平滚动条</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>) <span class="built_in">BOOL</span> showsHorizontalScrollIndicator; <span class="comment">// default YES. show indicator while we are tracking. fades out after tracking</span></div></pre></td></tr></table></figure>
+<ul>
+<li>是否显示垂直滚动条</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>) <span class="built_in">BOOL</span> showsVerticalScrollIndicator; <span class="comment">// default YES. show indicator while we are tracking. fades out after tracking</span></div></pre></td></tr></table></figure>
+<ul>
+<li>UIScrollView的Delegate（代理）</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nullable</span>,<span class="keyword">nonatomic</span>,<span class="keyword">weak</span>) <span class="keyword">id</span>&lt;<span class="built_in">UIScrollViewDelegate</span>&gt; delegate; <span class="comment">// default nil. weak reference</span></div></pre></td></tr></table></figure>
+<h2 id="UIScrollView的Delegate"><a href="#UIScrollView的Delegate" class="headerlink" title="UIScrollView的Delegate"></a>UIScrollView的Delegate</h2><p>Deleagate 是一个很重要的属性，同时也是一个重要的知识点，所以拿出来着重说一下。</p>
+<p><strong>代理思想的引入</strong></p>
+<ul>
+<li>通常，我们会在UIScrollView 正在滚动、滚到到某个位置、停止滚动等情况下做一些特定的操作</li>
+<li>若想完成以上操作，需要对UIScrollView的各个状态进行“监听”，这个监听者就是我们说的代理</li>
+<li>当UIScrollView发生一系列滚动操作时，会自动发送消息给它的代理对象，通知它当下的实时滚动状态。</li>
+<li>总结一下就是，如果想要监听UIScrollView的实时滚动状况，我们就要给它设置代理，然后通过代理来得知它的实时滚动情况</li>
+</ul>
+<p>实际上UIScrollView通知delegate自己的相关状态就是通过给代理发消息实现的如图：<br><img src="http://upload-images.jianshu.io/upload_images/1256297-9f9563b969256c35.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170305_4.png"></p>
+<p>所以想成为UIScrollView的代理是需要遵循如下条件的</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">@property</span>(<span class="keyword">nullable</span>,<span class="keyword">nonatomic</span>,<span class="keyword">weak</span>) <span class="keyword">id</span>&lt;<span class="built_in">UIScrollViewDelegate</span>&gt; delegate;</div></pre></td></tr></table></figure>
+<ul>
+<li>UIScrollView把代理需要实现的方法都定义在了UIScrollViewDelegate当中</li>
+<li>成为代理必须遵守UIScrollViewDelegate这个协议，其本身可以是 id 类型的对象（任意类型对象）</li>
+<li>代理对象必须实现UIScrollViewDelegate中相对应的方法，才能监听UIScrollView相应的状态</li>
+</ul>
+<p><strong>设置UIScrollView的步骤</strong></p>
+<ul>
+<li>通常情况下UIScrollView的代理都是控制器，设置方法有两种<ul>
+<li>代码： scrollView.delegate = self;</li>
+<li>storyBoard/Xib拖线：<br><img src="http://upload-images.jianshu.io/upload_images/1256297-74eb1c94bf577867.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170305_5.png"></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>控制器UIScrollViewDelegate</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()&lt;<span class="title">UIScrollViewDelegate</span>&gt;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>实现相对应的代理方法，进行监听</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">- (void)scrollViewDidScroll:(UIScrollView *)scrollView&#123;</div><div class="line">    // 监听代码</div><div class="line">&#125;</div><div class="line">- (void)scrollViewDidZoom:(UIScrollView *)scrollView NS_AVAILABLE_IOS(3_2)&#123;</div><div class="line">    // 监听代码</div><div class="line">&#125;</div><div class="line">- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView&#123;</div><div class="line">    // 监听代码</div><div class="line">&#125;</div><div class="line"></div><div class="line">···</div></pre></td></tr></table></figure>
+<h2 id="UIScrollView内容的缩放"><a href="#UIScrollView内容的缩放" class="headerlink" title="UIScrollView内容的缩放"></a>UIScrollView内容的缩放</h2><p>UIScrollView不仅能够展示大量的内容还能进行内容的缩放。</p>
+<p><strong>常见场景</strong></p>
+<p>图库里面的图片我们可以通过手势来进行缩放</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-0d87645be5ce1f4c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170305_6.png"></p>
+<p>要实现这样的功能，我们只需要将图片放到UIScrollView中去，然后设置缩放比例和要缩放的内容</p>
+<h3 id="缩放原理"><a href="#缩放原理" class="headerlink" title="缩放原理"></a>缩放原理</h3><ul>
+<li>当用户在UIScrollView身上使用捏合手势的时候，UIScrollView会调用delegate的viewForZoomingInScollView方法,方法的返回值就是要进行缩放的控件。</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-676ed17e8ae6f303.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170305_7.png"></p>
+<p><strong>缩放实现步骤</strong></p>
+<ul>
+<li>设置UIScrollView的代理对象</li>
+<li>设置minimumZoomScale;// default is 1.0 最小缩放比例</li>
+<li>设置maximumZoomScale;// default is 1.0. 最大缩放比例</li>
+<li>代理实现viewForZoomingInScrollView方法返回要进行缩放的控件</li>
+</ul>
+<p><strong>缩放相关的两个方法</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">// 将要开始缩放</div><div class="line">- (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view NS_AVAILABLE_IOS(3_2); // called before the scroll view begins zooming its content</div><div class="line"></div><div class="line">// 结束缩放</div><div class="line">- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view atScale:(CGFloat)scale; // scale between minimum and maximum. called after any &apos;bounce&apos; animations</div></pre></td></tr></table></figure>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>UIScrollView是iOS开发中常常用到的一个控件，通常用来展示比较多的内容，我们可以通过给他设置代理实现它的代理方法进行监听，通过监听不同的状态来做对应的一些操作。<br>它可以监听用户手势来缩放自己内部子控件。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2015/06/11/自定义View的封装和xib文件的使用详解/" data-toggle="tooltip" data-placement="top"
+                           title="自定义View的封装和xib文件的使用详解">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/05/26/修改blog主题总结/" data-toggle="tooltip" data-placement="top"
+                           title="修改blog主题总结">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UIScrollView"><span class="toc-text">UIScrollView</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UIScrollView的基本使用"><span class="toc-text">UIScrollView的基本使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UIScrollView的常用属性"><span class="toc-text">UIScrollView的常用属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UIScrollView的其他属性"><span class="toc-text">UIScrollView的其他属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UIScrollView的Delegate"><span class="toc-text">UIScrollView的Delegate</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UIScrollView内容的缩放"><span class="toc-text">UIScrollView内容的缩放</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#缩放原理"><span class="toc-text">缩放原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>

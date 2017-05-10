@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        自定义View的封装和xib文件的使用详解｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2015/06/11/自定义View的封装和xib文件的使用详解/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/lizi.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/lizi.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>自定义View的封装和xib文件的使用详解</h1>
+                    
+                    <h2 class="subheading">iOS回顾系列</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2015-06-11
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            自定义View的封装和xib文件的使用详解
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p>iOS开发中，我们常常将一块View封装起来，以便于统一管理内部的子控件。如<a href="http://www.jianshu.com/p/1bcc29653085" target="_blank" rel="external">iOS回顾笔记（02）</a>中的”书”这一自定义View。</p>
+<p>下面就来说说自定义View的封装以及它的多种实现方式</p>
+<h2 id="自定义UIView（控件）的封装"><a href="#自定义UIView（控件）的封装" class="headerlink" title="自定义UIView（控件）的封装"></a>自定义UIView（控件）的封装</h2><p><strong>什么是View的封装</strong></p>
+<a id="more"></a>
+<ul>
+<li>如果一个View的内部子控件比较多，一般会考虑自定义一个View，把它内部子控件的创建屏蔽起来，不让外部关心。</li>
+<li>外界传入对应的数据模型给view。view拿到数据模型之后给内部的子控件设置对应的数据。</li>
+</ul>
+<p><strong>封装自定义控件的基本步骤</strong></p>
+<ul>
+<li>重写 <code>- (instancetype)initWithFrame</code>方法，在此方法中创建并添加子控件。</li>
+<li>提供一个便利的构造方法，通常为 类方法，快速创建一个实例对象</li>
+<li>重写 <code>- (void)layoutSubviews</code>方法，在此方法中设置子控件的frame，一定要调用<code>[super layoutSubviews]</code></li>
+<li>设置模型属性，在set方法中，给对应的子控件赋值。</li>
+</ul>
+<p><strong>看代码</strong></p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">XYBookView.h 头文件</div><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;UIKit/UIKit.h&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">@class</span> <span class="title">XYBook</span>;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYBookView</span> : <span class="title">UIView</span></span></div><div class="line"></div><div class="line"><span class="comment">// 只放一个数据属性用来赋值，内部布局，放到.m 中自己管，不暴露给外界</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) XYBook *book;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"></div><div class="line">实现文件 .m文件</div><div class="line"><span class="meta">#import <span class="meta-string">"XYBookView.h"</span></span></div><div class="line"><span class="meta">#include <span class="meta-string">"XYBook.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYBookView</span> ()</span></div><div class="line"></div><div class="line"><span class="comment">// 两个内部子控件在内部包装起来，不给外界看到</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="built_in">UIImageView</span> *icon;</div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="built_in">UILabel</span> *label;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">XYBookView</span></span></div><div class="line"></div><div class="line"><span class="comment">// 1.重写initWithFrame:方法，创建子控件并添加到自己上面</span></div><div class="line">- (<span class="keyword">instancetype</span>)initWithFrame:(<span class="built_in">CGRect</span>)frame</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame]) &#123;</div><div class="line"></div><div class="line">        <span class="comment">// 1. 创建书图标</span></div><div class="line">        <span class="built_in">UIImageView</span> *icon = [<span class="built_in">UIImageView</span> new];</div><div class="line">        <span class="keyword">self</span>.icon = icon;</div><div class="line">        [<span class="keyword">self</span> addSubview:<span class="keyword">self</span>.icon];</div><div class="line"></div><div class="line">        <span class="comment">// 2.书名</span></div><div class="line">        <span class="built_in">UILabel</span> *bookName = [<span class="built_in">UILabel</span> new];</div><div class="line">        bookName.textAlignment = <span class="built_in">NSTextAlignmentCenter</span>;</div><div class="line">        <span class="keyword">self</span>.label = bookName;</div><div class="line">        [<span class="keyword">self</span> addSubview:<span class="keyword">self</span>.label];</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 2.重写layoutSubviews，给自己内部子控件设置frame</span></div><div class="line">- (<span class="keyword">void</span>)layoutSubviews</div><div class="line">&#123;</div><div class="line">    [<span class="keyword">super</span> layoutSubviews];</div><div class="line">    <span class="built_in">CGSize</span> size = <span class="keyword">self</span>.frame.size;</div><div class="line">    <span class="keyword">self</span>.icon.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, size.width , size.height * <span class="number">0.7</span>);</div><div class="line">    <span class="keyword">self</span>.label.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, size.height * <span class="number">0.7</span>, size.width, size.height *(<span class="number">1</span> - <span class="number">0.7</span>));</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 3.调用模型的set方法，给书的子控件赋值，</span></div><div class="line">- (<span class="keyword">void</span>)setBook:(XYBook *)book</div><div class="line">&#123;</div><div class="line">    _book = book;</div><div class="line">    <span class="keyword">self</span>.icon.image = [<span class="built_in">UIImage</span> imageNamed:book.icon];</div><div class="line">    <span class="keyword">self</span>.label.text = book.name;</div><div class="line">&#125;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>以上是纯代码实现的View的封装，写起来有些麻烦。</p>
+<p>开发中另一种常用的封装方式是Xib，下面介绍Xib的相关知识。</p>
+<h2 id="XIB和Storyboard的比较"><a href="#XIB和Storyboard的比较" class="headerlink" title="XIB和Storyboard的比较"></a>XIB和Storyboard的比较</h2><p><strong>共同点</strong></p>
+<ul>
+<li>都是用来描述软件界面</li>
+<li>最后都是 Interface Builder工具来编译</li>
+<li>本质上都是转化成代码去创建控件</li>
+</ul>
+<p><strong>不同点</strong></p>
+<ul>
+<li>Xib是轻量级的，用来描述局部的UI界面</li>
+<li>Storyboard是重量级的，不仅可以用来描述整个应用的多个页面，而且可以展示页面间的跳转关系。</li>
+</ul>
+<h2 id="Xib的创建"><a href="#Xib的创建" class="headerlink" title="Xib的创建"></a>Xib的创建</h2><p><img src="http://upload-images.jianshu.io/upload_images/1256297-43e6202f7d9af38d.gif?imageMogr2/auto-orient/strip" alt="2017-03-03 23.43.06.gif"></p>
+<h2 id="Xib的使用"><a href="#Xib的使用" class="headerlink" title="Xib的使用"></a>Xib的使用</h2><p><strong>Xib的加载方式</strong></p>
+<p>Xib作为局部UI的描述文件，它也是一种项目内的资源文件，在项目中查找路劲也是在[UIBundle mainBundle]中，它的加载方式有两种</p>
+<p><strong>方式1</strong></p>
+<p>在对应的mainBundle中加载XYBookView类型的nib文件，返回是数组，取数组中对应的view即可</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="built_in">NSArray</span> *views = [[<span class="built_in">NSBundle</span> mainBundle] loadNibNamed:<span class="string">@"XYBookView"</span> owner:<span class="literal">nil</span> options:<span class="literal">nil</span>];</div><div class="line">XYBookView *bookView = views.firstObject;</div></pre></td></tr></table></figure>
+<p><strong>方式2</strong></p>
+<p>Xib/Storyboard文件编译之后生成的都是 Nib文件，加载XYBookView.xib对应的.nib文件，通过.nib文件实例化的数组中取到对应的XYBookView实例对象。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="built_in">UINib</span> *nib = [<span class="built_in">UINib</span> nibWithNibName:<span class="string">@"XYBookView"</span> bundle:<span class="literal">nil</span>];</div><div class="line">XYBookView *bookView = [[nib instantiateWithOwner:<span class="literal">nil</span> options:<span class="literal">nil</span>] firstObject];</div></pre></td></tr></table></figure>
+<p><strong>使用注意</strong></p>
+<ul>
+<li>进行类绑定，告诉Xib它是什么类型，用来描述那个文件</li>
+<li>通常Xib文件名和要描述的文件同名，易于辨认和管理</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-da227b25afd7fe0e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170304_1.png"></p>
+<h2 id="Xib的使用细节完善"><a href="#Xib的使用细节完善" class="headerlink" title="Xib的使用细节完善"></a>Xib的使用细节完善</h2><ul>
+<li>Xib用来描述控件，是把原来代码创建的内容直接用图形化来展示了</li>
+<li>Xib里面的子控件需要拖线到对应文件中，以便文件内赋值和其他使用</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-141efbdad4246112.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170304_2.png"></p>
+<p><strong>封装Xib的加载过程</strong></p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"XYBookView.h"</span></span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYBookView</span> ()</span></div><div class="line"><span class="comment">// 封装一个快速返回实例对象的类方法</span></div><div class="line">+ (<span class="keyword">instancetype</span>)bookView;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">XYBookView</span></span></div><div class="line"></div><div class="line">+ (<span class="keyword">instancetype</span>)bookView</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 封装Xib的加载过程</span></div><div class="line">    <span class="keyword">return</span> [[<span class="built_in">NSBundle</span> mainBundle] loadNibNamed:<span class="string">@"XYBookView"</span> owner:<span class="literal">nil</span> options:<span class="literal">nil</span>].firstObject;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p><strong>一个控件有两种创建方式</strong></p>
+<ul>
+<li>通过代码创建<ul>
+<li>初始化一定会调用 <code>-(instancetype)initWithFrame:</code>方法</li>
+</ul>
+</li>
+<li>通过Xib\StoryBoard创建<ul>
+<li>初始化不会调用 <code>-(instancetype)initWithFrame:</code>方法，只会调用<code>-(instancetype)initWithCoder:</code>方法</li>
+<li>初始化完成之后，回调用<code>awakeFromNib</code>方法</li>
+</ul>
+</li>
+</ul>
+<p>通过两种加载方式，可以发现：有时候我们希望在控件初始化时做一些初始化的操作，如添加子控件，设置属性等，这时候需要根据控件的加载方式来选择<code>-(instancetype)initWithFrame:</code>，<code>-(instancetype)initWithCoder:</code>，<code>awakeFromNib</code>三个方法中的哪个方法进行初始化。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2015/06/04/九宫格布局引发的一系列”惨案“/" data-toggle="tooltip" data-placement="top"
+                           title="九宫格布局引发的一系列”惨案“">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2015/06/19/UIScrollView的基本使用详解/" data-toggle="tooltip" data-placement="top"
+                           title="UIScrollView的基本使用详解">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义UIView（控件）的封装"><span class="toc-text">自定义UIView（控件）的封装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XIB和Storyboard的比较"><span class="toc-text">XIB和Storyboard的比较</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Xib的创建"><span class="toc-text">Xib的创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Xib的使用"><span class="toc-text">Xib的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Xib的使用细节完善"><span class="toc-text">Xib的使用细节完善</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>

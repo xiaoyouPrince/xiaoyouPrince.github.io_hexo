@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        直接自己写一个试试｜xiaoyou&#39;s blog
+        XIB和代码创建程序的对比｜xiaoyou&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://xiaoyouprince.com/2016/04/24/第四个/">
+    <link rel="canonical" href="http://xiaoyouprince.com/2015/05/29/XIB和代码创建程序的对比/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -153,15 +153,20 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>直接自己写一个试试</h1>
+                    <h1>XIB和代码创建程序的对比</h1>
+                    
+                    <h2 class="subheading">iOS回顾系列</h2>
                     
                     <span class="meta">
                          作者 xiaoyouPrince
                         <span>
-                          日期 2016-04-24
+                          日期 2015-05-29
                          </span>
                     </span>
                     <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
                         
                     </div>
                 </div>
@@ -170,7 +175,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            直接自己写一个试试
+            XIB和代码创建程序的对比
         </span>
     </div>
 </header>
@@ -181,10 +186,56 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>这是是直接自己写的不知道会不会能正常使用，希望不会有任何问题！</p>
-<p><img src="https://help.github.com/assets/images/site/set-up-git.gif" alt="gitHub的章鱼猫"></p>
+                <p>很多时候我们工作很久突然闲下来的时候，是不是也感到无聊过？这就是我现在的生活，不过闲一段时间也挺好，可以好好回顾一下自己以前学习iOS路上的点点滴滴，做到温故而知新。</p>
+<p><strong>且回顾、且整理记录、且分享。</strong></p>
 <a id="more"></a>
-<p><br><br><br><img src="https://help.github.com/assets/images/site/set-up-git.gif" alt="GitHub set up"><br><br><br><br><img src="https://help.github.com/assets/images/site/set-up-git.gif" alt="GitHub set up-w140"></p>
+<h2 id="一个简单的iOS小程序"><a href="#一个简单的iOS小程序" class="headerlink" title="一个简单的iOS小程序"></a>一个简单的iOS小程序</h2><p>简单实现一个小程序 — “改变文字颜色”</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-32c03b5dccf6db9e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170228_2.png"></p>
+<p>这个小程序很简单，实现步骤：</p>
+<ul>
+<li>所需元素：三个button，一个Label</li>
+<li>监听button的点击事件，做对应修改颜色功能</li>
+</ul>
+<p>这个小Demo通常有两种实现方式，纯代码和XIB，下面介绍一下两者实现和区别：<br><br><br><strong>纯XIB实现</strong></p>
+<p>这个直接上图吧</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-f2c7a85f693a39c7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170228_5.png "></p>
+<ul>
+<li>左边是Xib拖的Label和三个button</li>
+<li>右边是Xib拖线与代码进行关联和对应</li>
+</ul>
+<p><br><br><strong>纯代码实现</strong></p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="built_in">UILabel</span> *label;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    <span class="comment">// 1.创建Label</span></div><div class="line">    <span class="built_in">UILabel</span> *label = [<span class="built_in">UILabel</span> new];</div><div class="line">    label.text = <span class="string">@"我是测试文字"</span>;</div><div class="line">    label.textAlignment = <span class="built_in">NSTextAlignmentCenter</span>;</div><div class="line">    label.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">50</span>, <span class="keyword">self</span>.view.frame.size.width, <span class="number">50</span>);</div><div class="line">    <span class="keyword">self</span>.label = label;</div><div class="line">    [<span class="keyword">self</span>.view addSubview:label];</div><div class="line">    </div><div class="line">    <span class="comment">// 2.创建三个button</span></div><div class="line">    <span class="built_in">UIButton</span> *redBtn = [<span class="keyword">self</span> creatBtnWithTitle:<span class="string">@"红"</span> selector:<span class="keyword">@selector</span>(redColor:)];</div><div class="line">    redBtn.frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="built_in">CGRectGetMaxY</span>(label.frame), <span class="number">375</span>/<span class="number">3</span>, <span class="number">50</span>);</div><div class="line">    </div><div class="line">    <span class="built_in">UIButton</span> *greenBtn = [<span class="keyword">self</span> creatBtnWithTitle:<span class="string">@"绿"</span> selector:<span class="keyword">@selector</span>(greenColor:)];</div><div class="line">    greenBtn.frame = <span class="built_in">CGRectMake</span>(<span class="number">375</span>/<span class="number">3</span>, <span class="built_in">CGRectGetMaxY</span>(label.frame), <span class="number">375</span>/<span class="number">3</span>, <span class="number">50</span>);</div><div class="line">    </div><div class="line">    <span class="built_in">UIButton</span> *blueBtn = [<span class="keyword">self</span> creatBtnWithTitle:<span class="string">@"蓝"</span> selector:<span class="keyword">@selector</span>(blueColor:)];</div><div class="line">    blueBtn.frame = <span class="built_in">CGRectMake</span>(<span class="number">375</span>/<span class="number">3</span>*<span class="number">2</span>, <span class="built_in">CGRectGetMaxY</span>(label.frame), <span class="number">375</span>/<span class="number">3</span>, <span class="number">50</span>);</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 封装创建按钮的公共代码</span></div><div class="line">- (<span class="built_in">UIButton</span> *)creatBtnWithTitle:(<span class="built_in">NSString</span> *)title selector:(SEL)selector</div><div class="line">&#123;</div><div class="line">    <span class="built_in">UIButton</span> *btn = [<span class="built_in">UIButton</span> new];</div><div class="line">    [btn setTitleColor:[<span class="built_in">UIColor</span> greenColor] forState:<span class="built_in">UIControlStateNormal</span>];</div><div class="line">    [btn setTitle:title forState:<span class="built_in">UIControlStateNormal</span>];</div><div class="line">    [btn addTarget:<span class="keyword">self</span> action:selector forControlEvents:<span class="built_in">UIControlEventTouchUpInside</span>];</div><div class="line">    [<span class="keyword">self</span>.view addSubview:btn];</div><div class="line">    <span class="keyword">return</span> btn;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 红色按钮的点击事件</span></div><div class="line">- (<span class="keyword">void</span>)redColor:(<span class="keyword">id</span>)sender &#123;</div><div class="line"></div><div class="line">    <span class="keyword">self</span>.label.textColor = [<span class="built_in">UIColor</span> redColor];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 绿色按钮的点击事件</span></div><div class="line">- (<span class="keyword">void</span>)greenColor:(<span class="keyword">id</span>)sender &#123;</div><div class="line"></div><div class="line">    <span class="keyword">self</span>.label.textColor = [<span class="built_in">UIColor</span> greenColor];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 蓝色按钮的点击事件</span></div><div class="line">- (<span class="keyword">void</span>)blueColor:(<span class="keyword">id</span>)sender &#123;</div><div class="line"></div><div class="line">    <span class="keyword">self</span>.label.textColor = [<span class="built_in">UIColor</span> blueColor];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这两种方式虽然都很简单，但是有点不同，下面总结一下各自的特点</p>
+<ul>
+<li><strong>XIB</strong><ul>
+<li>方便快捷，特别适用于局部UI的快速搭建</li>
+<li>XIB拖线直观，但是多人开发容易暗含多种陷阱（例如：拖线的方法找不到；或者代码里面注释了，但是xib还是正常显示的，一点击就崩溃；或者一个控件连线多个方法，出现异常等）</li>
+<li>适用范围：<ul>
+<li>适用于一些静态页面，如果每次UI都动态改变的还是代码为主。</li>
+</ul>
+</li>
+<li>XIB经典错误（运行过程中找不到对应方法）</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-d14cc98ceb61b522.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170228_6.png"></p>
+<ul>
+<li><strong>纯代码</strong><ul>
+<li>相对麻烦，本来动动手拖个线的事，还要敲一些基础代码，效率低（不是指编译或运行效率）</li>
+<li>整洁易懂，如果代码清晰的话，看起来也是很整洁的。</li>
+<li>思路清晰，多人合作不易出现类似XIB或Storyboard那样的杂乱的连线的问题。</li>
+<li>动态UI的首选方式。</li>
+</ul>
+</li>
+</ul>
+<p><strong>最后计算机在编译的过程中无论哪种方式实现都是转化成代码的方式，代码是万能的</strong></p>
+<ul>
+<li><strong>关于XIB里面的IBOutlet和IBAction</strong><ul>
+<li>IBOutlet：声明插座变量，和XIB进行连线的标识，只有声明为IBOutlet属性才能跟XIB/StoryBoard中的控件连线</li>
+<li>IBAction：从返回值角度看，等同于void，它也是和XIB进行连线的标识，只有声明为IBAction属性才能跟XIB/StoryBoard中的控件连线</li>
+</ul>
+</li>
+</ul>
 
                 <hr>
                 
@@ -192,14 +243,14 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/04/24/text/" data-toggle="tooltip" data-placement="top"
-                           title="text">&larr; Previous Post</a>
+                        <a href="/2015/05/26/浅谈iOS工程师的成长和进阶/" data-toggle="tooltip" data-placement="top"
+                           title="浅谈iOS工程师的成长和进阶">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2016/05/26/Third/" data-toggle="tooltip" data-placement="top"
-                           title="xiaoyouPrince 2016">Next Post &rarr;</a>
+                        <a href="/2015/06/04/九宫格布局引发的一系列”惨案“/" data-toggle="tooltip" data-placement="top"
+                           title="九宫格布局引发的一系列”惨案“">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -212,7 +263,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一个简单的iOS小程序"><span class="toc-text">一个简单的iOS小程序</span></a></li></ol>
                 </div>
             </div>
         </div>
@@ -233,6 +284,9 @@
                         <a href="/tags/">FEATURED TAGS</a>
                     </h5>
                     <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
                         
                     </div>
                 </section>
