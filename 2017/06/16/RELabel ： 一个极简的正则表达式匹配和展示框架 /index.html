@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Xcode旧项目引入CocoaPod遇到的问题与解决｜xiaoyou&#39;s blog
+        RELabel ： 一个极简的正则表达式匹配和展示框架｜xiaoyou&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://xiaoyouprince.com/2017/04/19/Xcode旧项目引入CocoaPod遇到的问题与解决/">
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/06/16/RELabel ： 一个极简的正则表达式匹配和展示框架 /">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -136,13 +136,13 @@
 
 
 <img class="wechat-title-img"
-     src="http://oozx6yayl.bkt.clouddn.com/wall.jpg">
+     src="http://oozx6yayl.bkt.clouddn.com/lizi.jpg">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('http://oozx6yayl.bkt.clouddn.com/wall.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/lizi.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
     }
 
     
@@ -153,14 +153,14 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Xcode旧项目引入CocoaPod遇到的问题与解决</h1>
+                    <h1>RELabel ： 一个极简的正则表达式匹配和展示框架</h1>
                     
                     <h2 class="subheading">iOS回顾系列</h2>
                     
                     <span class="meta">
                          作者 xiaoyouPrince
                         <span>
-                          日期 2017-04-19
+                          日期 2017-06-16
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -175,7 +175,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Xcode旧项目引入CocoaPod遇到的问题与解决
+            RELabel ： 一个极简的正则表达式匹配和展示框架
         </span>
     </div>
 </header>
@@ -186,21 +186,39 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <h1 id="Xcode旧项目引入CocoaPod遇到的问题与解决"><a href="#Xcode旧项目引入CocoaPod遇到的问题与解决" class="headerlink" title="Xcode旧项目引入CocoaPod遇到的问题与解决"></a>Xcode旧项目引入CocoaPod遇到的问题与解决</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><blockquote>
-<p>最近接手一个旧项目，要导入RN做一些混合开发。原来项目未使用CocoaPod，但是加入RN混合开发的时候需要使用CocoaPod来导入RN的一些组件。这就会导致原生Xcode项目连接三方库的配置和使用CocoaPod之后的配置有冲突</p>
-</blockquote>
-<a id="more"></a>
-<h2 id="具体问题和原因分析"><a href="#具体问题和原因分析" class="headerlink" title="具体问题和原因分析"></a>具体问题和原因分析</h2><p><strong>问题如图：</strong></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1256297-1094c9cc2b5c1229.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170510_2.png"></p>
-<p><strong>问题分析与解决：</strong><br>产生此警告的原因是项目 Target 中的一些设置，CocoaPods 也做了默认的设置，如果两个设置结果不一致，就会造成问题。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1256297-13eb1a80c82436c1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170510_3.png"></p>
-<p>我想要使用 CocoaPods 中的设置，分别在我的项目中定义<code>PODS_ROOT</code> 和 <code>Other Linker Flags</code>的地方，把他们的值用<code>$(inherited)</code>替换掉，</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1256297-a2c1c94fdcc9dc77.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170510_4.png"></p>
-<p>此时再运行程序就可以 Build Success 了</p>
-<p>进入终端，执行</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><div class="line">pod update</div></pre></td></tr></table></figure>
-<p>警告没了</p>
-<p>（完）</p>
+                <p>#</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>如今 App 中图文混排、关键字匹配已经成为常态了。</p>
+<p><strong>最常见的如：</strong></p>
+<ul>
+<li>微信聊天中的表情图片👌和文字的混排。</li>
+<li>微博首页的 <a href="ss">@XX</a> 、<a href="ss">#话题#</a> 、<a href="http://xiaoyouPrince.com">http://xiaoyouPrince.com</a>关键字的匹配等等</li>
+</ul>
+<p>这些功能看着很复杂，实际上他们都属于一类相同的功能，都是在原来的字符串内容中进行对应关键字的匹配，然后将匹配结果替换成需要的样式，对此我们可以将他们封装起来，在项目中统一使用。</p>
+<h2 id="RELabel框架原理介绍"><a href="#RELabel框架原理介绍" class="headerlink" title="RELabel框架原理介绍"></a>RELabel框架原理介绍</h2><h3 id="1-RELabel框架简介"><a href="#1-RELabel框架简介" class="headerlink" title="1.RELabel框架简介"></a>1.RELabel框架简介</h3><p><strong>RELabel ：</strong> 是一款极简正则表达式匹配框架。</p>
+<ul>
+<li>默认匹配<a href="ss">@XX</a> 、<a href="ss">#话题#</a> 、<a href="http://xiaoyouPrince.com">http://xiaoyouPrince.com</a>等关键字</li>
+<li>可由用户指定要匹配的关键字，如“用户使用协议”</li>
+<li>自带匹配结果点击监听，可对匹配结果添加对应事件</li>
+</ul>
+<p>效果如图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-09efd4f2748dc5bf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="RELabel.png"></p>
+<p>框架地址 ： <a href="https://github.com/xiaoyouPrince/RELabel" target="_blank" rel="external">RELabel : https://github.com/xiaoyouPrince/RELabel</a></p>
+<p><strong>使用方法：</strong>请参考 github 上介绍。</p>
+<h3 id="2-匹配原理介绍"><a href="#2-匹配原理介绍" class="headerlink" title="2.匹配原理介绍"></a>2.匹配原理介绍</h3><p>RELabel 中字符串的匹配采用的是正则表达式。</p>
+<p><strong>正则表达式简单入门和使用</strong></p>
+<p><strong>正则表达式(regular expression)</strong>描述了一种字符串匹配的模式（pattern），可以用来检查一个串是否含有某种子串、将匹配的子串替换或者从某个串中取出符合某个条件的子串等.</p>
+<ul>
+<li>正则表达式的使用</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">使用正则表达式的步骤:</div><div class="line">1.创建一个正则表达式对象:定义规则</div><div class="line">2.利用正则表达式对象 来测试 相应的字符串</div><div class="line">*/</div><div class="line"></div><div class="line">    <span class="built_in">NSString</span> *username = <span class="string">@"6gjkhdjkhgkjh7"</span>;</div><div class="line">    <span class="comment">//        NSString *pattern = @"^\\d&#123;3&#125;";</span></div><div class="line">    <span class="comment">//        NSString *pattern = @"\\d&#123;3&#125;$";</span></div><div class="line">    <span class="comment">// 1.创建正则表达式</span></div><div class="line">    <span class="built_in">NSString</span> *pattern = <span class="string">@"^\\d.*\\d$"</span>;</div><div class="line">    <span class="built_in">NSRegularExpression</span> *regex = [[<span class="built_in">NSRegularExpression</span> alloc] initWithPattern:pattern options:<span class="number">0</span> error:<span class="literal">nil</span>];</div><div class="line">    </div><div class="line">    <span class="comment">// 2.测试字符串</span></div><div class="line">    <span class="built_in">NSArray</span> *results = [regex matchesInString:username options:<span class="number">0</span> range:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, username.length)];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%zd"</span>, results.count);</div></pre></td></tr></table></figure>
+<ul>
+<li>一些符号的简单规则</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Pattern : 样式\规则</span></div><div class="line"><span class="comment">//        NSString *pattern = @"ab7";</span></div><div class="line"><span class="comment">// [] : 找到内部的某一个字符即可</span></div><div class="line"><span class="comment">//        NSString *pattern = @"[0123456789]";</span></div><div class="line"><span class="comment">//        NSString *pattern = @"[0-9]";</span></div><div class="line"><span class="comment">//        NSString *pattern = @"[a-zA-Z0-9]";</span></div><div class="line"><span class="comment">//        NSString *pattern = @"[0-9][0-9]";</span></div><div class="line"><span class="comment">//        NSString *pattern = @"\\d\\d\\d";</span></div><div class="line"><span class="comment">//        NSString *pattern = @"\\d&#123;2,4&#125;";</span></div><div class="line"> </div><div class="line"><span class="comment">// ? + *</span></div><div class="line"><span class="comment">// ? : 0个或者1个</span></div><div class="line"><span class="comment">// + : 至少1个</span></div><div class="line"><span class="comment">// * : 0个或者多个</span></div><div class="line"></div><div class="line"><span class="comment">// ^ $ &#123;&#125;</span></div><div class="line"><span class="comment">// ^ : 表示开头</span></div><div class="line"><span class="comment">// $ : 结尾</span></div><div class="line"><span class="comment">// &#123;&#125; : 数量范围</span></div><div class="line"><span class="comment">// \d : 表示数字</span></div></pre></td></tr></table></figure>
+<ul>
+<li>常见匹配</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)match:(<span class="built_in">NSString</span> *)pattern</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 1.创建正则表达式</span></div><div class="line">    <span class="built_in">NSRegularExpression</span> *regex = [[<span class="built_in">NSRegularExpression</span> alloc] initWithPattern:pattern options:<span class="number">0</span> error:<span class="literal">nil</span>];</div><div class="line">    <span class="comment">// 2.测试字符串</span></div><div class="line">    <span class="built_in">NSArray</span> *results = [regex matchesInString:<span class="keyword">self</span> options:<span class="number">0</span> range:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, <span class="keyword">self</span>.length)];</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> results.count &gt; <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">BOOL</span>)isQQ</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 1.不能以0开头</span></div><div class="line">    <span class="comment">// 2.全部是数字</span></div><div class="line">    <span class="comment">// 3.5-11位</span></div><div class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> match:<span class="string">@"^[1-9]\\d&#123;4,10&#125;$"</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">BOOL</span>)isPhoneNumber</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 1.全部是数字</span></div><div class="line">    <span class="comment">// 2.11位</span></div><div class="line">    <span class="comment">// 3.以13\15\18\17开头</span></div><div class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> match:<span class="string">@"^1[3578]\\d&#123;9&#125;$"</span>];</div><div class="line">    <span class="comment">// JavaScript的正则表达式:\^1[3578]\\d&#123;9&#125;$\</span></div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">BOOL</span>)isIPAddress</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 1-3个数字: 0-255</span></div><div class="line">    <span class="comment">// 1-3个数字.1-3个数字.1-3个数字.1-3个数字</span></div><div class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> match:<span class="string">@"^\\d&#123;1,3&#125;\\.\\d&#123;1,3&#125;\\.\\d&#123;1,3&#125;\\.\\d&#123;1,3&#125;$"</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
                 <hr>
                 
@@ -208,15 +226,10 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/03/29/appledoc导出iOS代码文档的使用和问题详解（干货篇）/" data-toggle="tooltip" data-placement="top"
-                           title="appledoc导出iOS代码文档的使用和问题详解（干货篇）">&larr; Previous Post</a>
+                        <a href="/2017/04/19/Xcode旧项目引入CocoaPod遇到的问题与解决/" data-toggle="tooltip" data-placement="top"
+                           title="Xcode旧项目引入CocoaPod遇到的问题与解决">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2017/06/16/RELabel ： 一个极简的正则表达式匹配和展示框架 /" data-toggle="tooltip" data-placement="top"
-                           title="RELabel ： 一个极简的正则表达式匹配和展示框架">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
@@ -228,7 +241,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Xcode旧项目引入CocoaPod遇到的问题与解决"><span class="toc-text">Xcode旧项目引入CocoaPod遇到的问题与解决</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#具体问题和原因分析"><span class="toc-text">具体问题和原因分析</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RELabel框架原理介绍"><span class="toc-text">RELabel框架原理介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-RELabel框架简介"><span class="toc-text">1.RELabel框架简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-匹配原理介绍"><span class="toc-text">2.匹配原理介绍</span></a></li></ol></li></ol>
                 </div>
             </div>
         </div>
