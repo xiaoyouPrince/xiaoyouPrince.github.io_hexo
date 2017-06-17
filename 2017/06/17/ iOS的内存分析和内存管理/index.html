@@ -275,13 +275,17 @@
 </ol>
 <h3 id="3-3-小结"><a href="#3-3-小结" class="headerlink" title="3.3 小结"></a>3.3 小结</h3><ol>
 <li><p>会压缩到Assets.car文件, 没有直接暴露在沙盒的资源包(main Bundle)</p>
-<pre><code>* 条件 : &quot;Deployment Target &gt;= 7.x&quot; 并且是 &quot;放在Images.xcassets里面的所有图片&quot;
-* 影响 : 无法得到图片的全路径, 只能通过图片名(imageNamed:方法)来加载图片, 永远会有缓存
-</code></pre></li>
+<ul>
+<li>条件 : “Deployment Target &gt;= 7.x” 并且是 “放在Images.xcassets里面的所有图片”</li>
+<li>影响 : 无法得到图片的全路径, 只能通过图片名(imageNamed:方法)来加载图片, 永远会有缓存</li>
+</ul>
+</li>
 <li><p>不会压缩到Assets.car文件, 直接暴露在沙盒的资源包(main Bundle)</p>
-<pre><code>* 条件 : 除1&gt; 以外的所有情况
-* 影响 : 可以得到图片的全路径, 可以通过全路径(imageWithContentsOfFile:方法)来加载图片, 不会有缓存
-</code></pre></li>
+<ul>
+<li>条件 : 除1&gt; 以外的所有情况</li>
+<li>影响 : 可以得到图片的全路径, 可以通过全路径(imageWithContentsOfFile:方法)来加载图片, 不会有缓存</li>
+</ul>
+</li>
 </ol>
 <h2 id="4-综上：图片资源加载结论"><a href="#4-综上：图片资源加载结论" class="headerlink" title="4.综上：图片资源加载结论"></a>4.综上：图片资源加载结论</h2><ul>
 <li><p>小图片\使用频率比较高的图片</p>
