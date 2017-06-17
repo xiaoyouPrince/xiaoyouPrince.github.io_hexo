@@ -211,7 +211,7 @@
 <p><strong>使用场景：</strong></p>
 <p>通常使用在 MRC 时代，在 ARC 时代中我们使用这个通常是使用 CoreFoundation 框架中的内容，需要自己手动管理内存。示例代码如下：</p>
 <figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)drawRect:(<span class="built_in">CGRect</span>)rect &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();</div><div class="line">    </div><div class="line">    <span class="built_in">CGMutablePathRef</span> path = <span class="built_in">CGPathCreateMutable</span>();</div><div class="line">    </div><div class="line">    <span class="built_in">CGPathAddEllipseInRect</span>(path, <span class="literal">NULL</span>, rect);</div><div class="line">    </div><div class="line">    <span class="built_in">CGContextAddPath</span>(context, path);</div><div class="line">    </div><div class="line">    [[<span class="built_in">UIColor</span> redColor] set];</div><div class="line">    </div><div class="line">    <span class="comment">// CGPathRelease(path); // 此处path 用完之后需要自己释放</span></div><div class="line">    <span class="built_in">CFRelease</span>(path);</div><div class="line">    </div><div class="line">    <span class="built_in">CGContextDrawPath</span>(context, kCGPathFill);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="动态内存分析"><a href="#动态内存分析" class="headerlink" title="动态内存分析"></a>动态内存分析</h3><p><strong>特点：</strong> </p>
+<h3 id="1-2-动态内存分析"><a href="#1-2-动态内存分析" class="headerlink" title="1.2 动态内存分析"></a>1.2 动态内存分析</h3><p><strong>特点：</strong> </p>
 <ul>
 <li>真正运行起来程序,查看在程序运行过程中,是否会出现内存泄露的问题</li>
 <li>准确,如果发现某些地方提示内存泄露,可以根据提示找到对应的内存泄露位置(Xcode6不好找,需要自己来分析)</li>
@@ -260,36 +260,27 @@
 <li>imageName:如果一些图片在多个界面都会使用,并且图片较小,使用频率高.(图标/小的背景图)</li>
 <li>imageWithContentOfFile:只在一个地方使用,并且图片较大,使用频率不高.(版本新特性/相册)</li>
 </ul>
-<h2 id="3-图片在沙盒中的存在形式"><a href="#3-图片在沙盒中的存在形式" class="headerlink" title="3.图片在沙盒中的存在形式"></a>3.图片在沙盒中的存在形式</h2><ol>
-<li><p>如果项目的Deployment Target &lt;= 6.x (不支持图片压缩)</p>
-<ol>
+<h2 id="3-图片在沙盒中的存在形式"><a href="#3-图片在沙盒中的存在形式" class="headerlink" title="3.图片在沙盒中的存在形式"></a>3.图片在沙盒中的存在形式</h2><h3 id="3-1-不支持图片压缩"><a href="#3-1-不支持图片压缩" class="headerlink" title="3.1 不支持图片压缩"></a>3.1 不支持图片压缩</h3><ol>
+<li>如果项目的Deployment Target &lt;= 6.x <ol>
 <li>所有图片直接暴露在沙盒的资源包(main Bundle), 不会压缩到Assets.car文件</li>
 </ol>
 </li>
-<li><p>如果项目的Deployment Target &gt;= 7.x (支持图片压缩)</p>
-<ol>
+</ol>
+<h3 id="3-2-支持图片压缩"><a href="#3-2-支持图片压缩" class="headerlink" title="3.2 支持图片压缩"></a>3.2 支持图片压缩</h3><ol>
+<li>如果项目的Deployment Target &gt;= 7.x <ol>
 <li>放在Images.xcassets里面的所有图片会压缩到Assets.car文件, 不会直接暴露在沙盒的资源包(main Bundle)</li>
 <li>没有放在Images.xcassets里面的所有图片会直接暴露在沙盒的资源包(main Bundle), 不会压缩到Assets.car文件</li>
 </ol>
 </li>
-<li><p>总结</p>
-<ol>
-<li><p>会压缩到Assets.car文件, 没有直接暴露在沙盒的资源包(main Bundle)</p>
-<ul>
-<li>条件 : “Deployment Target &gt;= 7.x” 并且是 “放在Images.xcassets里面的所有图片”</li>
-<li>影响 : 无法得到图片的全路径, 只能通过图片名(imageNamed:方法)来加载图片, 永远会有缓存</li>
-</ul>
-</li>
-<li><p>不会压缩到Assets.car文件, 直接暴露在沙盒的资源包(main Bundle)</p>
-<ul>
-<li>条件 : 除1&gt; 以外的所有情况</li>
-<li>影响 : 可以得到图片的全路径, 可以通过全路径(imageWithContentsOfFile:方法)来加载图片, 不会有缓存</li>
-</ul>
-</li>
 </ol>
-</li>
-</ol>
-<h2 id="4-综上：图片资源加载结论"><a href="#4-综上：图片资源加载结论" class="headerlink" title="4.综上：图片资源加载结论"></a>4.综上：图片资源加载结论</h2><ul>
+<h3 id="3-3-小结"><a href="#3-3-小结" class="headerlink" title="3.3 小结"></a>3.3 小结</h3><pre><code>1. 会压缩到Assets.car文件, 没有直接暴露在沙盒的资源包(main Bundle)
+    * 条件 : &quot;Deployment Target &gt;= 7.x&quot; 并且是 &quot;放在Images.xcassets里面的所有图片&quot;
+    * 影响 : 无法得到图片的全路径, 只能通过图片名(imageNamed:方法)来加载图片, 永远会有缓存
+
+2. 不会压缩到Assets.car文件, 直接暴露在沙盒的资源包(main Bundle)
+    * 条件 : 除1&gt; 以外的所有情况
+    * 影响 : 可以得到图片的全路径, 可以通过全路径(imageWithContentsOfFile:方法)来加载图片, 不会有缓存
+</code></pre><h2 id="4-综上：图片资源加载结论"><a href="#4-综上：图片资源加载结论" class="headerlink" title="4.综上：图片资源加载结论"></a>4.综上：图片资源加载结论</h2><ul>
 <li><p>小图片\使用频率比较高的图片</p>
 <ul>
 <li>放在Images.xcassets里面</li>
@@ -323,7 +314,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-内存分析"><span class="toc-text">1.内存分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-静态内存分析"><span class="toc-text">1.1 静态内存分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态内存分析"><span class="toc-text">动态内存分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-内存分配的使用和图片加载分析"><span class="toc-text">2.内存分配的使用和图片加载分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-imageWithNamed"><span class="toc-text">2.1 imageWithNamed:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-imageWithContentFile："><span class="toc-text">2.2 imageWithContentFile：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-图片在沙盒中的存在形式"><span class="toc-text">3.图片在沙盒中的存在形式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-综上：图片资源加载结论"><span class="toc-text">4.综上：图片资源加载结论</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-内存分析"><span class="toc-text">1.内存分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-静态内存分析"><span class="toc-text">1.1 静态内存分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-动态内存分析"><span class="toc-text">1.2 动态内存分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-内存分配的使用和图片加载分析"><span class="toc-text">2.内存分配的使用和图片加载分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-imageWithNamed"><span class="toc-text">2.1 imageWithNamed:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-imageWithContentFile："><span class="toc-text">2.2 imageWithContentFile：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-图片在沙盒中的存在形式"><span class="toc-text">3.图片在沙盒中的存在形式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-不支持图片压缩"><span class="toc-text">3.1 不支持图片压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-支持图片压缩"><span class="toc-text">3.2 支持图片压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-小结"><span class="toc-text">3.3 小结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-综上：图片资源加载结论"><span class="toc-text">4.综上：图片资源加载结论</span></a></li></ol>
                 </div>
             </div>
         </div>
