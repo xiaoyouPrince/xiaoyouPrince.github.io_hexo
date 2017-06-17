@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        iOS的内存分析和内存管理｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/06/17/ iOS的内存分析和内存管理/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/lizi.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/lizi.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>iOS的内存分析和内存管理</h1>
+                    
+                    <h2 class="subheading">iOS回顾系列</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2017-06-17
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            iOS的内存分析和内存管理
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p>【内存管理】一直是iOS开发中的一个重点。</p>
+<p>本文就带你从内存分析开始一步步了解内存的占用情况，从真实的情况中领悟真正项目开发过程中的内存的使用情况。</p>
+<p><strong>注：本文默认你熟悉 MRC、ARC、熟悉内存管理原则，本文注重实际应用</strong></p>
+<h2 id="1-内存分析"><a href="#1-内存分析" class="headerlink" title="1.内存分析"></a>1.内存分析</h2><p>内存分析主要有两种方式</p>
+<ul>
+<li>静态内存分析</li>
+<li>动态内存分析</li>
+</ul>
+<h3 id="1-1-静态内存分析"><a href="#1-1-静态内存分析" class="headerlink" title="1.1 静态内存分析"></a>1.1 静态内存分析</h3><p><strong>特点：</strong> </p>
+<ul>
+<li>不运行程序,直接对代码进行分析(根据代码的语法结构分析是否有内存泄露)</li>
+</ul>
+<p><strong>缺点：</strong> </p>
+<ul>
+<li>不能够准确的分析出来内存泄露,但是操作简单.并且如果发现有地方有提示内存泄露,最好根据上下文查看是否有问题</li>
+</ul>
+<p>静态分析代码如下</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    <span class="built_in">NSObject</span> *objc = [[<span class="built_in">NSObject</span> alloc] init];</div><div class="line">    [objc release];</div><div class="line">    </div><div class="line">    <span class="built_in">NSObject</span> *objc1 = [<span class="keyword">self</span> objc];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, objc1);</div><div class="line">    </div><div class="line">    [objc1 release];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">NSObject</span> *)objc</div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> [[<span class="built_in">NSObject</span> alloc] init];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>通过肉眼分析，从代码结构上来看这段代码是没有内存泄露的。</p>
+<p>实际工作中代码量肯定大得多，所以会用系统工具 <strong>Analyze</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-e56b51f46b361071.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170617_3.png"></p>
+<p>从<strong>Analyze</strong>分析结果来看，创建对象的这一行是有内存泄漏的可能，此时只需要简单定位，在人工分析即可<br></p>
+<p><strong>使用场景：</strong></p>
+<p>通常使用在 MRC 时代，在 ARC 时代中我们使用这个通常是使用 CoreFoundation 框架中的内容，需要自己手动管理内存。示例代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)drawRect:(<span class="built_in">CGRect</span>)rect &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();</div><div class="line">    </div><div class="line">    <span class="built_in">CGMutablePathRef</span> path = <span class="built_in">CGPathCreateMutable</span>();</div><div class="line">    </div><div class="line">    <span class="built_in">CGPathAddEllipseInRect</span>(path, <span class="literal">NULL</span>, rect);</div><div class="line">    </div><div class="line">    <span class="built_in">CGContextAddPath</span>(context, path);</div><div class="line">    </div><div class="line">    [[<span class="built_in">UIColor</span> redColor] set];</div><div class="line">    </div><div class="line">    <span class="comment">// CGPathRelease(path); // 此处path 用完之后需要自己释放</span></div><div class="line">    <span class="built_in">CFRelease</span>(path);</div><div class="line">    </div><div class="line">    <span class="built_in">CGContextDrawPath</span>(context, kCGPathFill);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="动态内存分析"><a href="#动态内存分析" class="headerlink" title="动态内存分析"></a>动态内存分析</h3><p><strong>特点：</strong> </p>
+<ul>
+<li>真正运行起来程序,查看在程序运行过程中,是否会出现内存泄露的问题</li>
+<li>准确,如果发现某些地方提示内存泄露,可以根据提示找到对应的内存泄露位置(Xcode6不好找,需要自己来分析)</li>
+</ul>
+<p><strong>使用 Instruments 动态分析：</strong> </p>
+<ul>
+<li>Allocations <ul>
+<li>运行程序, 通过使用app, 查看内存的分配情况</li>
+<li>可以查看做出了某个操作后(比如点击了某个按钮\显示了某个控制器), 内存是否有暴增的情况(突然变化)</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-f2ba98989726004e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170617_4.png"></p>
+<ul>
+<li>Leaks<ul>
+<li>运行程序, 通过使用app, 查看是否有内存泄漏</li>
+<li>红色区域代表内存泄漏出现的地方，可点击对应泄露点，定位到可能出现泄漏的代码。</li>
+<li>如图绿色部分表示没有内存泄漏</li>
+</ul>
+</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-d0f8fdc1d6e6eb41.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170617_5.png"></p>
+<h2 id="2-内存分配的使用和图片加载分析"><a href="#2-内存分配的使用和图片加载分析" class="headerlink" title="2.内存分配的使用和图片加载分析"></a>2.内存分配的使用和图片加载分析</h2><p>通常项目中图片加载方式有两种:</p>
+<ol>
+<li>imageWithNamed:</li>
+<li>imageWithContentFile:</li>
+</ol>
+<p>下面分别来使用 Leaks 来测试一下两种图片加载方式有什么不同。<br>测试代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</div><div class="line">    [<span class="keyword">super</span> viewDidLoad];</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span> *imagePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"2.png"</span> ofType:<span class="literal">nil</span>];</div><div class="line">    <span class="keyword">self</span>.imageView.image = [<span class="built_in">UIImage</span> imageWithContentsOfFile:imagePath];</div><div class="line">    <span class="keyword">self</span>.imageView1.image = [<span class="built_in">UIImage</span> imageWithContentsOfFile:imagePath];</div><div class="line">    </div><div class="line">    <span class="comment">/*</span></div><div class="line">     self.imageView.image = [UIImage imageNamed:@"2"];</div><div class="line">     self.imageView1.image = [UIImage imageNamed:@"2"];</div><div class="line">     */</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-1-imageWithNamed"><a href="#2-1-imageWithNamed" class="headerlink" title="2.1 imageWithNamed:"></a>2.1 imageWithNamed:</h3><p><img src="http://upload-images.jianshu.io/upload_images/1256297-c949fe7cb2318579.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170617_7.png"></p>
+<p> imageName:加载图片特点：</p>
+<ol>
+<li>当对象销毁,图片对象不会随着一起销毁</li>
+<li>加载的图片占据的内存较大:8.54MB</li>
+<li>相同的图片只会加载一份到内存中,如果同时使用,使用同一个对象即可</li>
+</ol>
+<h3 id="2-2-imageWithContentFile："><a href="#2-2-imageWithContentFile：" class="headerlink" title="2.2 imageWithContentFile："></a>2.2 imageWithContentFile：</h3><p><img src="http://upload-images.jianshu.io/upload_images/1256297-97153c4063105375.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170617_6.png"></p>
+<p> imageWithContentOfFile:加载图片特点：</p>
+<ol>
+<li>当对象销毁的时候,图形对象会随着一起销毁</li>
+<li>加载的图片,占据的内存较小:6.25MB（图中是两张，以示例代码为准）</li>
+<li>相同的图片会多次加载到内存中,如果同时使用图片,使用的是不同的对象</li>
+</ol>
+<p><strong>两种图片加载方式小结:</strong></p>
+<ul>
+<li>imageName:如果一些图片在多个界面都会使用,并且图片较小,使用频率高.(图标/小的背景图)</li>
+<li>imageWithContentOfFile:只在一个地方使用,并且图片较大,使用频率不高.(版本新特性/相册)</li>
+</ul>
+<h2 id="3-图片在沙盒中的存在形式"><a href="#3-图片在沙盒中的存在形式" class="headerlink" title="3.图片在沙盒中的存在形式"></a>3.图片在沙盒中的存在形式</h2><ol>
+<li><p>如果项目的Deployment Target &lt;= 6.x (不支持图片压缩)</p>
+<ol>
+<li>所有图片直接暴露在沙盒的资源包(main Bundle), 不会压缩到Assets.car文件</li>
+</ol>
+</li>
+<li><p>如果项目的Deployment Target &gt;= 7.x (支持图片压缩)</p>
+<ol>
+<li>放在Images.xcassets里面的所有图片会压缩到Assets.car文件, 不会直接暴露在沙盒的资源包(main Bundle)</li>
+<li>没有放在Images.xcassets里面的所有图片会直接暴露在沙盒的资源包(main Bundle), 不会压缩到Assets.car文件</li>
+</ol>
+</li>
+<li><p>总结</p>
+<ol>
+<li><p>会压缩到Assets.car文件, 没有直接暴露在沙盒的资源包(main Bundle)</p>
+<ul>
+<li>条件 : “Deployment Target &gt;= 7.x” 并且是 “放在Images.xcassets里面的所有图片”</li>
+<li>影响 : 无法得到图片的全路径, 只能通过图片名(imageNamed:方法)来加载图片, 永远会有缓存</li>
+</ul>
+</li>
+<li><p>不会压缩到Assets.car文件, 直接暴露在沙盒的资源包(main Bundle)</p>
+<ul>
+<li>条件 : 除1&gt; 以外的所有情况</li>
+<li>影响 : 可以得到图片的全路径, 可以通过全路径(imageWithContentsOfFile:方法)来加载图片, 不会有缓存</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<p><strong>综上：图片资源加载结论</strong></p>
+<ul>
+<li><p>小图片\使用频率比较高的图片</p>
+<ul>
+<li>放在Images.xcassets里面</li>
+</ul>
+</li>
+<li><p>大图片\使用频率比较低的图片(一次性的图片, 比如版本新特性的图片)</p>
+<ul>
+<li>不要放在Images.xcassets里面</li>
+</ul>
+</li>
+</ul>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/06/16/RELabel ： 一个极简的正则表达式匹配和展示框架 /" data-toggle="tooltip" data-placement="top"
+                           title="RELabel ： 一个极简的正则表达式匹配和展示框架">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-内存分析"><span class="toc-text">1.内存分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-静态内存分析"><span class="toc-text">1.1 静态内存分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态内存分析"><span class="toc-text">动态内存分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-内存分配的使用和图片加载分析"><span class="toc-text">2.内存分配的使用和图片加载分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-imageWithNamed"><span class="toc-text">2.1 imageWithNamed:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-imageWithContentFile："><span class="toc-text">2.2 imageWithContentFile：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-图片在沙盒中的存在形式"><span class="toc-text">3.图片在沙盒中的存在形式</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>
