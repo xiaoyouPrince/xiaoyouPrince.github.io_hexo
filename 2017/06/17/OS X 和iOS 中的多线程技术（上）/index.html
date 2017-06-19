@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        OS X 和iOS 中的多线程技术（上）｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/06/17/OS X 和iOS 中的多线程技术（上）/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/light.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/light.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>OS X 和iOS 中的多线程技术（上）</h1>
+                    
+                    <h2 class="subheading">iOS回顾系列</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2017-06-17
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                        <a class="tag" href="/tags/#多线程"
+                           title="多线程">多线程</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            OS X 和iOS 中的多线程技术（上）
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <blockquote>
+<p>本文梳理了OS X 和iOS 系统中提供的多线程技术。并且对这些技术的使用给出了一些实用的建议。</p>
+</blockquote>
+<p><strong>多线程的目的：通过并发执行提高 CPU 的使用效率，进而提供程序运行效率。</strong></p>
+<h2 id="1-线程和进程"><a href="#1-线程和进程" class="headerlink" title="1.线程和进程"></a>1.线程和进程</h2><h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><ul>
+<li><p>什么是进程</p>
+<ul>
+<li>进程是指在计算机系统中<strong>正在运行</strong>的一个应用程序</li>
+<li>每个进程之间是<strong>独立</strong>的，每个进程均运行中其专用且受保护的内存空间内</li>
+</ul>
+</li>
+<li><p>比如同时打开 Xcode 、Safari ,系统就会分别启动两个进程</p>
+</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-5273e032db3c36d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170619_2.png"></p>
+<ul>
+<li>通过<strong>活动监视器</strong>可以查看Mac系统中所开启的进程</li>
+</ul>
+<h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><ul>
+<li>什么是线程<ul>
+<li>一个进程要想执行任务，<strong>必须</strong>得有线程（<strong>每个线程至少有一条线程，即主线程</strong>）</li>
+<li>一个进程的所有任务都做线程中执行</li>
+</ul>
+</li>
+<li>比如使用酷狗播放音乐、使用迅雷下载电影，都需要在线程中执行</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-beb9bb92ca936762.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170619_3.png"></p>
+<h3 id="线程的执行方式"><a href="#线程的执行方式" class="headerlink" title="线程的执行方式"></a>线程的执行方式</h3><ul>
+<li>一个线程中的任务的执行是<strong>串行</strong>的<ul>
+<li>如果要在一个线程中执行多个任务，那么只能一个一个地按顺序执行这些任务</li>
+<li>同一时间内，一个线程只能执行一个任务</li>
+</ul>
+</li>
+<li>线程是进程中的一条执行路径，它内部任务是<strong>串行</strong>执行的</li>
+</ul>
+<h3 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h3><ul>
+<li>什么是多线程<ul>
+<li>一个进程中可以开启多条线程，每条线程可以<strong>并行（同时）</strong>执行不同的任务</li>
+<li>进程好比车间，线程好比车间工人</li>
+<li>多线程技术可以提高程序的执行效率</li>
+</ul>
+</li>
+<li>如同时开启3条线程分别下载3个文件</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-277649c5f2ec8e98.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170619_4.png"></p>
+<ul>
+<li>多线程的原理<ul>
+<li>同一时间，CPU只能处理1条线程，只有1条线程在工作（执行）</li>
+<li>多线程并发（同时）执行，其实是CPU快速地在多条线程之间调度（切换）</li>
+<li>如果CPU调度线程的时间足够快，就造成了多线程并发执行的假象</li>
+</ul>
+</li>
+</ul>
+<p><strong>思考：</strong>如果线程非常非常多，会发生什么情况？</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">CPU会在N多线程之间调度，CPU会累死，消耗大量的CPU资源</div><div class="line">每条线程被调度执行的频次会降低（线程的执行效率降低）</div></pre></td></tr></table></figure>
+<h3 id="多线程的优缺点"><a href="#多线程的优缺点" class="headerlink" title="多线程的优缺点"></a>多线程的优缺点</h3><ul>
+<li><p>多线程的优点</p>
+<ul>
+<li>能适当提高程序的执行效率</li>
+<li>能适当提高资源利用率（CPU、内存利用率）</li>
+</ul>
+</li>
+<li><p>多线程的缺点</p>
+<ul>
+<li>创建线程是有开销的，iOS下主要成本包括：内核数据结构（大约1KB）、栈空间（子线程512KB、主线程1MB，也可以使用-setStackSize:设置，但必须是4K的倍数，而且最小是16K），创建线程大约需要90毫秒的创建时间</li>
+<li>如果开启大量的线程，会降低程序的性能</li>
+<li>线程越多，CPU在调度线程上的开销就越大</li>
+<li>程序设计更加复杂：比如线程之间的通信、多线程的数据共享</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-多线程在iOS开发中的应用"><a href="#2-多线程在iOS开发中的应用" class="headerlink" title="2 多线程在iOS开发中的应用"></a>2 多线程在iOS开发中的应用</h2><ul>
+<li><p>什么是主线程</p>
+<ul>
+<li>一个iOS程序运行后，默认会开启1条线程，称为<strong>“主线程”</strong>或<strong>“UI线程”</strong></li>
+</ul>
+</li>
+<li><p>主线程的主要作用</p>
+<ul>
+<li>显示\刷新UI界面</li>
+<li>处理UI事件（比如点击事件、滚动事件、拖拽事件等）</li>
+</ul>
+</li>
+<li><p>主线程的使用注意</p>
+<ul>
+<li>别将比较耗时的操作放到主线程中</li>
+<li>耗时操作会卡住主线程，严重影响UI的流畅度，给用户一种“卡”的坏体验</li>
+</ul>
+</li>
+</ul>
+<h3 id="iOS中多线程的实现方案"><a href="#iOS中多线程的实现方案" class="headerlink" title="iOS中多线程的实现方案"></a>iOS中多线程的实现方案</h3><p><img src="http://upload-images.jianshu.io/upload_images/1256297-0d1fc33754b09dfa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170619_6.png"></p>
+<h2 id="3-pthread-创建线程的简单使用"><a href="#3-pthread-创建线程的简单使用" class="headerlink" title="3. pthread 创建线程的简单使用"></a>3. pthread 创建线程的简单使用</h2><figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">&lt;pthread.h&gt;</span>  // 引入对应头文件</span></div><div class="line"></div><div class="line"><span class="comment">// 子线程调用的方法</span></div><div class="line"><span class="keyword">void</span> * run(<span class="keyword">void</span> *param)</div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSInteger</span> i = <span class="number">0</span>; i&lt;<span class="number">50000</span>; i++) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"------buttonClick---%zd--%@"</span>, i, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 使用pthread 创建子线程并执行</span></div><div class="line">- (<span class="keyword">IBAction</span>)buttonClick:(<span class="keyword">id</span>)sender &#123;</div><div class="line">    pthread_t thread;</div><div class="line">    pthread_create(&amp;thread, <span class="literal">NULL</span>, run, <span class="literal">NULL</span>);</div><div class="line">    </div><div class="line">    pthread_t thread2;</div><div class="line">    pthread_create(&amp;thread2, <span class="literal">NULL</span>, run, <span class="literal">NULL</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="4-NSThread"><a href="#4-NSThread" class="headerlink" title="4 NSThread"></a>4 NSThread</h2><h3 id="4-1-一个NSThread对象就代表一条线程"><a href="#4-1-一个NSThread对象就代表一条线程" class="headerlink" title="4.1 一个NSThread对象就代表一条线程"></a>4.1 一个NSThread对象就代表一条线程</h3><ul>
+<li>创建、启动线程</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="built_in">NSThread</span> *thread = [[<span class="built_in">NSThread</span> alloc] initWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(run) object:<span class="literal">nil</span>];</div><div class="line">[thread start];</div></pre></td></tr></table></figure>
+<ul>
+<li>主线程相关用法</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">+ (<span class="built_in">NSThread</span> *)mainThread; <span class="comment">// 获得主线程</span></div><div class="line">- (<span class="built_in">BOOL</span>)isMainThread; <span class="comment">// 是否为主线程</span></div><div class="line">+ (<span class="built_in">BOOL</span>)isMainThread; <span class="comment">// 是否为主线程</span></div></pre></td></tr></table></figure>
+<ul>
+<li>获得当前线程</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="built_in">NSThread</span> *current = [<span class="built_in">NSThread</span> currentThread];</div></pre></td></tr></table></figure>
+<ul>
+<li>线程的名字</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setName:(<span class="built_in">NSString</span> *)name;</div><div class="line">- (<span class="built_in">NSString</span> *)name;</div></pre></td></tr></table></figure>
+<h3 id="4-2-其他创建线程的方式"><a href="#4-2-其他创建线程的方式" class="headerlink" title="4.2 其他创建线程的方式"></a>4.2 其他创建线程的方式</h3><ul>
+<li>创建线程后自动启动线程</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">[<span class="built_in">NSThread</span> detachNewThreadSelector:<span class="keyword">@selector</span>(run) toTarget:<span class="keyword">self</span> withObject:<span class="literal">nil</span>];</div></pre></td></tr></table></figure>
+<ul>
+<li>隐式创建并启动线程</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">[<span class="keyword">self</span> performSelectorInBackground:<span class="keyword">@selector</span>(run) withObject:<span class="literal">nil</span>];</div></pre></td></tr></table></figure>
+<p>上述2种创建线程方式的优缺点</p>
+<ul>
+<li>优点：简单快捷</li>
+<li>缺点：无法对线程进行更详细的设置</li>
+</ul>
+<h3 id="4-3-线程的状态"><a href="#4-3-线程的状态" class="headerlink" title="4.3 线程的状态"></a>4.3 线程的状态</h3><p>当一个线程被创建之后一共有 新建、就绪、运行、阻塞、死亡等几种状态。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-ecf0f103f89225ff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170619_1.png"></p>
+<p>当系统新创建一个子线程会将该线程放入到<strong>可调度线程池</strong>中，此时处于就绪状态，当系统调度它执行任务的时候，它就处于一个运行状态，如果该线程代用了sleep或加锁之后，他就处于线程阻塞状态，此时线程会<strong>被移出可调度线程池</strong>，当sleep到时或者得到同步锁，线程又会解除阻塞状态回到就绪状态。当线程执行完任务之后被系统退出或者发生异常退出，就进入死亡状态。<strong>进入死亡状态就不能再次开启任务</strong></p>
+<ul>
+<li>启动线程</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">(<span class="keyword">void</span>)start; </div><div class="line"><span class="comment">// 进入就绪状态 -&gt; 运行状态。当线程任务执行完毕，自动进入死亡状态</span></div></pre></td></tr></table></figure>
+<ul>
+<li>阻塞（暂停）线程</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">+ (<span class="keyword">void</span>)sleepUntilDate:(<span class="built_in">NSDate</span> *)date;</div><div class="line">+ (<span class="keyword">void</span>)sleepForTimeInterval:(<span class="built_in">NSTimeInterval</span>)ti;</div><div class="line">+ <span class="comment">// 进入阻塞状态</span></div></pre></td></tr></table></figure>
+<ul>
+<li>强制停止线程</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">+ (<span class="keyword">void</span>)exit;</div><div class="line"><span class="comment">// 进入死亡状态</span></div></pre></td></tr></table></figure>
+<h2 id="5-多线程的安全隐患"><a href="#5-多线程的安全隐患" class="headerlink" title="5 多线程的安全隐患"></a>5 多线程的安全隐患</h2><ul>
+<li><p>资源共享</p>
+<ul>
+<li>1块资源可能会被多个线程共享，也就是<strong>多个线程可能会访问同一块资源</strong></li>
+<li>比如多个线程访问同一个对象、同一个变量、同一个文件</li>
+</ul>
+</li>
+<li><p>当多个线程访问同一块资源时，很容易引发<strong>数据错乱和数据安全</strong>问题</p>
+</li>
+</ul>
+<h3 id="安全隐患实例-–-存取钱-amp-amp-卖票"><a href="#安全隐患实例-–-存取钱-amp-amp-卖票" class="headerlink" title="安全隐患实例 – 存取钱 &amp;&amp; 卖票"></a>安全隐患实例 – 存取钱 &amp;&amp; 卖票</h3><p>同一个账户，多线程同时操作</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-c3597a844637140a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170619_5.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-87945269b00b0f10.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170619_7.png"></p>
+<p>如图，多个线程同时操作一个数据，导致 A 线程读到数据尚未修改完成之前，另一个线程 B 也同时读到了数据，当 B 要修改的时候，A 已经把原来的数据修改了，B 修改的数据依旧是之前的数据。这样就导致了多线程操作同一个数据的数据混乱。</p>
+<p><strong>安全隐患分析图示如下</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-6a18d923f8fac74d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170619_8.png"></p>
+<p><strong>安全隐患的解决</strong></p>
+<p>解决多线程的安全隐患，就加一个互斥锁，当一个线程访问并操作数据的时候，锁住对应数据，防止其他线程访问，当该线程访问数据并操作完，放开互斥锁，其他线程再进行访问。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-6d7c8dd22de9a2aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170619_9.png"></p>
+<ul>
+<li>互斥锁使用格式</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">@synchronized</span>(锁对象) &#123; <span class="comment">// 需要锁定的代码  &#125;</span></div></pre></td></tr></table></figure>
+<p><strong>注意：锁定1份代码只用1把锁，用多把锁是无效的</strong></p>
+<ul>
+<li><p>互斥锁的优缺点</p>
+<ul>
+<li>优点：能有效防止因多线程抢夺资源造成的数据安全问题</li>
+<li>缺点：需要消耗大量的CPU资源</li>
+</ul>
+</li>
+<li><p>互斥锁的使用前提：多条线程抢夺同一块资源</p>
+</li>
+<li><p>相关专业术语：<strong>线程同步</strong><br>线程同步的意思是：多条线程在同一条线上执行（按顺序地执行任务）<br>互斥锁，就是使用了线程同步技术</p>
+</li>
+</ul>
+<h2 id="6-原子和非原子属性"><a href="#6-原子和非原子属性" class="headerlink" title="6 原子和非原子属性"></a>6 原子和非原子属性</h2><ul>
+<li><p>OC在定义属性时有nonatomic和atomic两种选择</p>
+<ul>
+<li>atomic：原子属性，为setter方法加锁（默认就是atomic）</li>
+<li>nonatomic：非原子属性，不会为setter方法加锁</li>
+</ul>
+</li>
+<li><p>nonatomic和atomic对比</p>
+<ul>
+<li>atomic：线程安全，需要消耗大量的资源</li>
+<li>nonatomic：非线程安全，适合内存小的移动设备</li>
+</ul>
+</li>
+</ul>
+<p><strong>iOS开发的建议</strong></p>
+<ul>
+<li>所有属性都声明为nonatomic</li>
+<li>尽量避免多线程抢夺同一块资源</li>
+<li>尽量将加锁、资源抢夺的业务逻辑交给服务器端处理，减小移动客户端的压力</li>
+</ul>
+<h2 id="7-线程间通信"><a href="#7-线程间通信" class="headerlink" title="7 线程间通信"></a>7 线程间通信</h2><ul>
+<li><p>什么叫做线程间通信<br>在1个进程中，线程往往不是孤立存在的，多个线程之间需要经常进行通信</p>
+</li>
+<li><p>线程间通信的体现<br>1个线程传递数据给另1个线程<br>在1个线程中执行完特定任务后，转到另1个线程继续执行任务</p>
+</li>
+<li><p>线程间通信常用方法</p>
+</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)performSelectorOnMainThread:(SEL)aSelector withObject:(<span class="keyword">id</span>)arg waitUntilDone:(<span class="built_in">BOOL</span>)wait;</div><div class="line">- (<span class="keyword">void</span>)performSelector:(SEL)aSelector onThread:(<span class="built_in">NSThread</span> *)thr withObject:(<span class="keyword">id</span>)arg waitUntilDone:(<span class="built_in">BOOL</span>)wait;</div></pre></td></tr></table></figure>
+<ul>
+<li>线程间通信实例-图片下载</li>
+</ul>
+<p>主线程需要展示图片，图片下载比较耗时，就放到子线程去操作。当子线程图片下载完成后，回到主线程进行图片赋值并展示。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-fd9dd66807df84cb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170619_10.png"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本篇文章主要讲解了多线程的一些基础知识和 pthread 和 NSTread 两种多线程方案。接下来会在下一篇文章中介绍 GCD 和 NSOpreation 的使用。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/06/17/ iOS的内存分析和内存管理/" data-toggle="tooltip" data-placement="top"
+                           title="iOS的内存分析和内存管理">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-线程和进程"><span class="toc-text">1.线程和进程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#进程"><span class="toc-text">进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程"><span class="toc-text">线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程的执行方式"><span class="toc-text">线程的执行方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多线程"><span class="toc-text">多线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多线程的优缺点"><span class="toc-text">多线程的优缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-多线程在iOS开发中的应用"><span class="toc-text">2 多线程在iOS开发中的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#iOS中多线程的实现方案"><span class="toc-text">iOS中多线程的实现方案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-pthread-创建线程的简单使用"><span class="toc-text">3. pthread 创建线程的简单使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-NSThread"><span class="toc-text">4 NSThread</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-一个NSThread对象就代表一条线程"><span class="toc-text">4.1 一个NSThread对象就代表一条线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-其他创建线程的方式"><span class="toc-text">4.2 其他创建线程的方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-线程的状态"><span class="toc-text">4.3 线程的状态</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-多线程的安全隐患"><span class="toc-text">5 多线程的安全隐患</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安全隐患实例-–-存取钱-amp-amp-卖票"><span class="toc-text">安全隐患实例 – 存取钱 && 卖票</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-原子和非原子属性"><span class="toc-text">6 原子和非原子属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-线程间通信"><span class="toc-text">7 线程间通信</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                        <a class="tag" href="/tags/#多线程"
+                           title="多线程">多线程</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>
