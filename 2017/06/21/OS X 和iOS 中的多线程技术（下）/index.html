@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        OS X 和iOS 中的多线程技术（下）｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/06/21/OS X 和iOS 中的多线程技术（下）/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/light.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/light.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>OS X 和iOS 中的多线程技术（下）</h1>
+                    
+                    <h2 class="subheading">iOS回顾系列</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2017-06-21
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                        <a class="tag" href="/tags/#多线程"
+                           title="多线程">多线程</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            OS X 和iOS 中的多线程技术（下）
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p>上篇文章中介绍了 pthread 和 NSThread 两种多线程的方式，本文将继续介绍 GCD 和 NSOperation 这两种方式。。</p>
+<h2 id="1-GCD"><a href="#1-GCD" class="headerlink" title="1.GCD"></a>1.GCD</h2><h3 id="1-1-什么是GCD"><a href="#1-1-什么是GCD" class="headerlink" title="1.1 什么是GCD"></a>1.1 什么是GCD</h3><ul>
+<li>GCD 全称 <strong>Grand Central Dispatch</strong>，可译为“牛逼的中枢调度器”</li>
+<li>GCD 基于纯 C 语言，内部封装了强大的函数库</li>
+</ul>
+<h3 id="1-2-使用-GCD-有什么优势"><a href="#1-2-使用-GCD-有什么优势" class="headerlink" title="1.2 使用 GCD 有什么优势"></a>1.2 使用 GCD 有什么优势</h3><ul>
+<li>GCD 是苹果公司为<strong>多核</strong>的<strong>并行</strong>运算提出的解决方案</li>
+<li>GCD 会自动利用更多的CPU内核 （如 二核 ，四核）</li>
+<li>GCD 会自动管理线程的生命周期（创建 、 调度 、 销毁线程）</li>
+<li>程序员只需要告诉 GCD 想要执行什么任务，不需要编写任何线程管理代码</li>
+</ul>
+<h3 id="1-3-GCD-的使用"><a href="#1-3-GCD-的使用" class="headerlink" title="1.3 GCD 的使用"></a>1.3 GCD 的使用</h3><ul>
+<li><p>GCD 有两个核心的概念</p>
+<ul>
+<li>任务 ： 需要执行的操作</li>
+<li>队列 ： 用来存放任务</li>
+</ul>
+</li>
+<li><p>GCD 的使用步骤</p>
+<ul>
+<li>制定任务</li>
+<li>将任务放入到队列中，GCD会自动将队列中的任务取出，放到对应的线程中执行，队列中的任务取出遵循 <strong>FIFO</strong>原则。(FIFO:先进先出，队列原则)</li>
+</ul>
+</li>
+<li><p>GCD 中有两个用来执行任务的常用函数</p>
+<ul>
+<li><p><strong>同步</strong>方法执行任务</p>
+  <figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="built_in">dispatch_sync</span>(<span class="built_in">dispatch_queue_t</span>  _Nonnull queue, ^(<span class="keyword">void</span>)block)</div><div class="line"></div><div class="line">queue : 队列</div><div class="line">Block : 任务</div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>异步</strong>方法执行任务</p>
+  <figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="built_in">dispatch_async</span>(<span class="built_in">dispatch_queue_t</span>  _Nonnull queue, ^(<span class="keyword">void</span>)block)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>同步和异步的区别</p>
+<ul>
+<li><strong>同步</strong> : 只能在<strong>当前</strong>的线程中执行任务，<strong>不具备</strong>开启新线程的能力</li>
+<li><strong>异步</strong> : 可以在<strong>新的</strong>线程中执行任务，<strong>具备</strong>开启新线程的能力</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-4-队列的类型"><a href="#1-4-队列的类型" class="headerlink" title="1.4 队列的类型"></a>1.4 队列的类型</h3><p>GCD 的队列可以分为 2 大类</p>
+<ul>
+<li><strong>并发</strong>队列 （ Concurrent Dispatch Queue ）<ul>
+<li>可以让多任务<strong>并发</strong>执行，自动开启多个线程同时执行任务</li>
+<li><strong>并发</strong>功能只有在<strong>异步（dispatch_async）</strong>函数下才有效</li>
+</ul>
+</li>
+<li><strong>串行</strong>队列 （ Serial Dispatch Queue ）<ul>
+<li>让任务一个接一个地有序执行（一个任务执行完毕后才开始执行下一个）</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意：同步 、 异步、并发、串行的区分</strong>  </p>
+<ul>
+<li><code>同步</code> 和 <code>异步</code> 主要影响： 能不能开启新的线程<ul>
+<li><strong>同步 ：</strong> 只是在当前线程中执行任务 ，不具备开启新线程的能力</li>
+<li><strong>异步 ：</strong> 可以在新的线程中执行任务，具备开启新县城的能力</li>
+</ul>
+</li>
+<li><code>并发</code> 和 <code>串行</code> 主要影响： 任务的执行方式<ul>
+<li><strong>并发 ：</strong> 多个任务并发执行</li>
+<li><strong>串行 ：</strong> 多个任务一次顺序执行</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-5-GCD-的各种队列的组合"><a href="#1-5-GCD-的各种队列的组合" class="headerlink" title="1.5 GCD 的各种队列的组合"></a>1.5 GCD 的各种队列的组合</h3><ul>
+<li>异步函数 + 并发队列：可以同时开启多条线程</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 1.获得全局的并发队列</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="comment">// 2.将任务加入队列</span></div><div class="line"><span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSInteger</span> i = <span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"1-----%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"><span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSInteger</span> i = <span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"2-----%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>同步函数 + 并发队列：不会开启新的线程</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 1.获得全局的并发队列</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="comment">// 2.将任务加入队列</span></div><div class="line"><span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"1-----%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">&#125;);</div><div class="line"><span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"2-----%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>异步函数 + 串行队列：会开启新的线程，但是任务是串行的，执行完一个任务，再执行下一个任务</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">    <span class="comment">// 1.创建串行队列</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.coder.queue"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"><span class="comment">//    dispatch_queue_t queue = dispatch_queue_create("com.coder.queue", NULL);</span></div><div class="line">    </div><div class="line">    <span class="comment">// 2.将任务加入队列</span></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"1-----%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"2-----%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>异步函数 + 主队列：只在主线程中执行任务</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 1.创建串行队列</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.coder.queue"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line"><span class="comment">// 2.将任务加入队列</span></div><div class="line"><span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"1-----%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">&#125;);</div><div class="line"><span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"2-----%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>同步函数 + 主队列：</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 1.获得主队列</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_get_main_queue();</div><div class="line"></div><div class="line"><span class="comment">// 2.将任务加入队列</span></div><div class="line"><span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"1-----%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">&#125;);</div><div class="line"><span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"2-----%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>各种队列的执行效果 ： </p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-c8f13b70b6170e80.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170620_1.png"></p>
+<p><strong>注意：</strong><br>使用 sync 函数往<strong>当前串行</strong>队列中添加任务，会卡住当前的串行队列</p>
+<h3 id="1-6-GCD-个线程之间通信"><a href="#1-6-GCD-个线程之间通信" class="headerlink" title="1.6 GCD 个线程之间通信"></a>1.6 GCD 个线程之间通信</h3><p>通常开辟子线程是为了执行耗时操作。如下载图片的等，使用 GCD 进行线程间通信非常方便，示例代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 子线程中下载网络图片 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^&#123;</span></div><div class="line">        <span class="comment">// 图片的网络路径</span></div><div class="line">        <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://img.pconline.com.cn/images/photoblog/9/9/8/1/9981681/200910/11/1255259355826.jpg"</span>];</div><div class="line">        </div><div class="line">        <span class="comment">// 加载图片</span></div><div class="line">        <span class="built_in">NSData</span> *data = [<span class="built_in">NSData</span> dataWithContentsOfURL:url];</div><div class="line">        </div><div class="line">        <span class="comment">// 生成图片</span></div><div class="line">        <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithData:data];</div><div class="line">        </div><div class="line">        <span class="comment">// 回到主线程</span></div><div class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</div><div class="line">            <span class="keyword">self</span>.imageView.image = image;</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
+<h3 id="1-7-GCD-其他常用函数"><a href="#1-7-GCD-其他常用函数" class="headerlink" title="1.7 GCD 其他常用函数"></a>1.7 GCD 其他常用函数</h3><ul>
+<li>阻隔执行任务的函数</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">dispatch_barrier_sync(<span class="built_in">dispatch_queue_t</span>  _Nonnull queue, ^(<span class="keyword">void</span>)block)</div><div class="line"></div><div class="line"><span class="comment">// 此函数起一个阻隔任务执行的作用， 它前面的任务执行完之后它才执行，等它执行完后面的任务才能执行</span></div></pre></td></tr></table></figure>
+<ul>
+<li>延迟执行</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// GCD 延迟执行</span></div><div class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">2.0</span> * <span class="built_in">NSEC_PER_SEC</span>)), dispatch_get_main_queue(), ^&#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"run-----"</span>);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line"><span class="comment">// iOS 中其他方式的延迟执行还有 </span></div><div class="line">[<span class="keyword">self</span> performSelector:<span class="keyword">@selector</span>(run) withObject:<span class="literal">nil</span> afterDelay:<span class="number">2.0</span>];</div><div class="line"></div><div class="line">和定时器</div><div class="line">[<span class="built_in">NSTimer</span> scheduledTimerWithTimeInterval:<span class="number">2.0</span> target:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(run) userInfo:<span class="literal">nil</span> repeats:<span class="literal">NO</span>];</div><div class="line"></div><div class="line">---------------- run  方法 -----------------</div><div class="line">- (<span class="keyword">void</span>)run</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"run-----"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>一次性函数</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">一次性函数在整个程序运行中只会执行一次</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</div><div class="line"><span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</div><div class="line">   <span class="built_in">NSLog</span>(<span class="string">@"------run-----"</span>);</div><div class="line">   <span class="comment">// 内部代码默认是线程安全的</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>快速迭代函数（遍历）</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">快速迭代行数，实际上在全局队列中遍历子线程执行任务，用于显著提高执行效率。</div><div class="line">案例：【文件假拷贝】，【App Store 所有App同时更新】让每个任务都开子线程去并发执行会充分利用CPU，提高效率。</div><div class="line"></div><div class="line"><span class="comment">// 本示例代码是将 From 文件夹下的内容拷贝到 TO 文件夹下</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line"><span class="built_in">NSString</span> *from = <span class="string">@"/Users/xiaoyou/Desktop/From"</span>;</div><div class="line"><span class="built_in">NSString</span> *to = <span class="string">@"/Users/xiaoyou/Desktop/To"</span>;</div><div class="line">    </div><div class="line"><span class="built_in">NSFileManager</span> *mgr = [<span class="built_in">NSFileManager</span> defaultManager];</div><div class="line"><span class="built_in">NSArray</span> *subpaths = [mgr subpathsAtPath:from];</div><div class="line">    </div><div class="line">dispatch_apply(subpaths.count, queue, ^(size_t index) &#123;</div><div class="line">   <span class="built_in">NSString</span> *subpath = subpaths[index];</div><div class="line">   <span class="built_in">NSString</span> *fromFullpath = [from stringByAppendingPathComponent:subpath];</div><div class="line">   <span class="built_in">NSString</span> *toFullpath = [to stringByAppendingPathComponent:subpath];</div><div class="line">   <span class="comment">// 剪切</span></div><div class="line">   [mgr moveItemAtPath:fromFullpath toPath:toFullpath error:<span class="literal">nil</span>];</div><div class="line">   </div><div class="line">   <span class="built_in">NSLog</span>(<span class="string">@"%@---%@"</span>, [<span class="built_in">NSThread</span> currentThread], subpath);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>GCD 队列组</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">队列组中的任务执行完，组会受到一个通知，然后执行最终的操作</div><div class="line"></div><div class="line"><span class="comment">// 1. 创建全局队列</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line"><span class="comment">// 2. 创建一个队列组</span></div><div class="line">dispatch_group_t group = dispatch_group_create();</div><div class="line">    </div><div class="line"><span class="comment">// 任务 1.下载图片1</span></div><div class="line">dispatch_group_async(group, queue, ^&#123;</div><div class="line">   <span class="comment">// 图片的网络路径</span></div><div class="line">   <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://img.pconline.com.cn/images/photoblog/9/9/8/1/9981681/200910/11/1255259355826.jpg"</span>];</div><div class="line">   </div><div class="line">   <span class="comment">// 加载图片</span></div><div class="line">   <span class="built_in">NSData</span> *data = [<span class="built_in">NSData</span> dataWithContentsOfURL:url];</div><div class="line">   </div><div class="line">   <span class="comment">// 生成图片</span></div><div class="line">   <span class="keyword">self</span>.image1 = [<span class="built_in">UIImage</span> imageWithData:data];</div><div class="line">&#125;);</div><div class="line">    </div><div class="line"><span class="comment">// 任务 2.下载图片2</span></div><div class="line">dispatch_group_async(group, queue, ^&#123;</div><div class="line">   <span class="comment">// 图片的网络路径</span></div><div class="line">   <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://pic38.nipic.com/20140228/5571398_215900721128_2.jpg"</span>];</div><div class="line">   </div><div class="line">   <span class="comment">// 加载图片</span></div><div class="line">   <span class="built_in">NSData</span> *data = [<span class="built_in">NSData</span> dataWithContentsOfURL:url];</div><div class="line">   </div><div class="line">   <span class="comment">// 生成图片</span></div><div class="line">   <span class="keyword">self</span>.image2 = [<span class="built_in">UIImage</span> imageWithData:data];</div><div class="line">&#125;);</div><div class="line">    </div><div class="line"><span class="comment">// 任务 3.将图片1、图片2合成一张新的图片</span></div><div class="line">dispatch_group_notify(group, queue, ^&#123;</div><div class="line">   <span class="comment">// 开启新的图形上下文</span></div><div class="line">   <span class="built_in">UIGraphicsBeginImageContext</span>(<span class="built_in">CGSizeMake</span>(<span class="number">100</span>, <span class="number">100</span>));</div><div class="line">   </div><div class="line">   <span class="comment">// 绘制图片</span></div><div class="line">   [<span class="keyword">self</span>.image1 drawInRect:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">50</span>, <span class="number">100</span>)];</div><div class="line">   [<span class="keyword">self</span>.image2 drawInRect:<span class="built_in">CGRectMake</span>(<span class="number">50</span>, <span class="number">0</span>, <span class="number">50</span>, <span class="number">100</span>)];</div><div class="line">   </div><div class="line">   <span class="comment">// 取得上下文中的图片</span></div><div class="line">   <span class="built_in">UIImage</span> *image = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</div><div class="line">   </div><div class="line">   <span class="comment">// 结束上下文</span></div><div class="line">   <span class="built_in">UIGraphicsEndImageContext</span>();</div><div class="line">   </div><div class="line">   <span class="comment">// 回到主线程显示图片</span></div><div class="line">   <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</div><div class="line">       <span class="comment">// 4.将新图片显示出来 </span></div><div class="line">       <span class="keyword">self</span>.imageView.image = image;</div><div class="line">   &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="2-使用-GCD-实现单例"><a href="#2-使用-GCD-实现单例" class="headerlink" title="2. 使用 GCD 实现单例"></a>2. 使用 GCD 实现单例</h2><h3 id="2-1-单例模式"><a href="#2-1-单例模式" class="headerlink" title="2.1 单例模式"></a>2.1 单例模式</h3><p>单例模式是开发过程中长期积累的一种编程习惯。</p>
+<p>单例模式作用如下：</p>
+<ul>
+<li>可以保证在程序运行过程中，一个类只有一个实例，而且该实例易于供外界访问</li>
+<li>方便控制实例的个数，节约系统资源</li>
+</ul>
+<p>单例模式使用场合：</p>
+<ul>
+<li>在整个应用中，共享一份资源（该资源只需要创建初始化1次，如Application，NSUserDefault 等） </li>
+</ul>
+<h3 id="2-2-单例模式的实现-纯代码"><a href="#2-2-单例模式的实现-纯代码" class="headerlink" title="2.2 单例模式的实现(纯代码)"></a>2.2 单例模式的实现(纯代码)</h3><ul>
+<li>在 .m 中保留一个全局的 static 实例</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">id</span> _instance;</div></pre></td></tr></table></figure>
+<ul>
+<li>重写 allocWithZone: 方法，创建唯一实例</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">+ (<span class="keyword">instancetype</span>)allocWithZone:(<span class="keyword">struct</span> _NSZone *)zone</div><div class="line">&#123;</div><div class="line">    <span class="comment">// 使用GCD一次性函数，保证线程安全</span></div><div class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</div><div class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</div><div class="line">        _instance = [<span class="keyword">self</span> allocWithZone:zone];</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> _instance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>提供类方法，供外界使用</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">+ (<span class="keyword">instancetype</span>)shareInstance&#123;</div><div class="line">    <span class="comment">// 使用GCD一次性函数，保证线程安全</span></div><div class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</div><div class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</div><div class="line">        _instance = [[<span class="keyword">self</span> alloc] init];</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> _instance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>实现 copyWithZone: 方法</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">+ (<span class="keyword">id</span>)copyWithZone:(<span class="keyword">struct</span> _NSZone *)zone</div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> _instance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-3-单例模式的实现-宏"><a href="#2-3-单例模式的实现-宏" class="headerlink" title="2.3 单例模式的实现(宏)"></a>2.3 单例模式的实现(宏)</h3><p>从上面的实现中可以看到，单例的实现方式是一样的，我们可以把它抽取成一个宏来实现，这样更加方便使用.</p>
+<p>如下是单例的宏实现，只需在对应的单例类中添加两个对应的宏，就可轻松实现单例。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// .h文件</span></div><div class="line"><span class="meta">#define XMGSingletonH(name) + (instancetype)shared##name;</span></div><div class="line"></div><div class="line"><span class="comment">// .m文件</span></div><div class="line"><span class="meta">#define XMGSingletonM(name) \</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">id</span> _instance; \</div><div class="line"> \</div><div class="line">+ (<span class="keyword">instancetype</span>)allocWithZone:(<span class="keyword">struct</span> _NSZone *)zone \</div><div class="line">&#123; \</div><div class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken; \</div><div class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123; \</div><div class="line">        _instance = [<span class="keyword">super</span> allocWithZone:zone]; \</div><div class="line">    &#125;); \</div><div class="line">    <span class="keyword">return</span> _instance; \</div><div class="line">&#125; \</div><div class="line"> \</div><div class="line">+ (<span class="keyword">instancetype</span>)shared<span class="meta">##name \</span></div><div class="line">&#123; \</div><div class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken; \</div><div class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123; \</div><div class="line">        _instance = [[<span class="keyword">self</span> alloc] init]; \</div><div class="line">    &#125;); \</div><div class="line">    <span class="keyword">return</span> _instance; \</div><div class="line">&#125; \</div><div class="line"> \</div><div class="line">- (<span class="keyword">id</span>)copyWithZone:(<span class="built_in">NSZone</span> *)zone \</div><div class="line">&#123; \</div><div class="line">    <span class="keyword">return</span> _instance; \</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>思考：</strong>为什么不使用继承？</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">继承：看似可行，实际会有问题，程序中的GCD一次性代码只会执行一次，当第一次有子类 A 调用之后，再有子类 B 调用返回的直接是第一次调用 A 的实例，无法返回正确类型 B 单例</div><div class="line"></div><div class="line">也就是说如果有 static 这样的内部类对象不能用继承。</div></pre></td></tr></table></figure>
+<h2 id="3-NSOperation"><a href="#3-NSOperation" class="headerlink" title="3. NSOperation"></a>3. NSOperation</h2><h3 id="3-1-NSOperation-简介"><a href="#3-1-NSOperation-简介" class="headerlink" title="3.1 NSOperation 简介"></a>3.1 NSOperation 简介</h3><p>NSOperation 是 OS X 和 iOS 开发中最后一种多线程实现方式，它是基于 GCD 的 OC 封装，使用更加面向对象。</p>
+<ul>
+<li>NSOperation 的作用<ul>
+<li>配合使用NSOperation 和 NSOperationQueue 实现多线程</li>
+</ul>
+</li>
+<li>NSOperation 和 NSOperationQueue 实现多线程的具体步骤<ul>
+<li>先将需要执行的操作封装到一个 NSOperation 对象中</li>
+<li>然后将 NSOperation 对象添加到 NSOperationQueue 中</li>
+<li>系统会自动将 NSOperationQueue 中的 NSOperation 取出来，并将封装的操作放到一条新线程中执行</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-NSOperation-的子类"><a href="#3-2-NSOperation-的子类" class="headerlink" title="3.2 NSOperation 的子类"></a>3.2 NSOperation 的子类</h3><ul>
+<li><p>NSOperation是个抽象类，并不具备封装操作的能力，必须使用它的子类</p>
+</li>
+<li><p>使用NSOperation子类的方式有3种</p>
+<ul>
+<li>NSInvocationOperation</li>
+<li>NSBlockOperation</li>
+<li>自定义子类继承NSOperation，实现内部相应的方法</li>
+</ul>
+</li>
+</ul>
+<p><strong>NSInvocationOperation</strong></p>
+<ul>
+<li>创建NSInvocationOperation对象</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">id</span>)initWithTarget:(<span class="keyword">id</span>)target selector:(SEL)sel object:(<span class="keyword">id</span>)arg;</div></pre></td></tr></table></figure>
+<ul>
+<li>调用start方法开始执行操作</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)start;</div><div class="line"></div><div class="line">一旦执行操作，就会调用target的sel方法</div></pre></td></tr></table></figure>
+<p><strong>注意</strong></p>
+<ul>
+<li>默认情况下，调用了start方法后并不会开一条新线程去执行操作，而是在当前线程同步执行操作</li>
+<li>只有将NSOperation放到一个NSOperationQueue中，才会异步执行操作</li>
+</ul>
+<p><strong>NSBlockOperation</strong></p>
+<ul>
+<li>创建NSBlockOperation对象</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">+ (<span class="keyword">id</span>)blockOperationWithBlock:(<span class="keyword">void</span> (^)(<span class="keyword">void</span>))block;</div></pre></td></tr></table></figure>
+<ul>
+<li>通过addExecutionBlock:方法添加更多的操作</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)addExecutionBlock:(<span class="keyword">void</span> (^)(<span class="keyword">void</span>))block;</div></pre></td></tr></table></figure>
+<p><strong>注意：</strong></p>
+<p>只要NSBlockOperation封装的操作数 &gt; 1，就会异步执行操作</p>
+<h3 id="3-3-NSOperationQueue"><a href="#3-3-NSOperationQueue" class="headerlink" title="3.3 NSOperationQueue"></a>3.3 NSOperationQueue</h3><ul>
+<li><p>NSOperationQueue的作用</p>
+<ul>
+<li>NSOperation可以调用start方法来执行任务，但默认是同步执行的</li>
+<li>如果将NSOperation添加到NSOperationQueue（操作队列）中，系统会自动异步执行NSOperation中的操作</li>
+</ul>
+</li>
+<li><p>添加操作到NSOperationQueue中</p>
+</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)addOperation:(<span class="built_in">NSOperation</span> *)op;</div><div class="line">- (<span class="keyword">void</span>)addOperationWithBlock:(<span class="keyword">void</span> (^)(<span class="keyword">void</span>))block;</div></pre></td></tr></table></figure>
+<h3 id="3-4-最大并发数"><a href="#3-4-最大并发数" class="headerlink" title="3.4 最大并发数"></a>3.4 最大并发数</h3><ul>
+<li><p>什么是并发数？</p>
+<ul>
+<li>同时执行的任务数</li>
+<li>比如，同时开3个线程执行3个任务，并发数就是3</li>
+</ul>
+</li>
+<li><p>最大并发数的相关方法</p>
+</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="built_in">NSInteger</span>)maxConcurrentOperationCount;</div><div class="line">- (<span class="keyword">void</span>)setMaxConcurrentOperationCount:(<span class="built_in">NSInteger</span>)cnt;</div></pre></td></tr></table></figure>
+<h3 id="3-5-队列的取消、暂停、恢复"><a href="#3-5-队列的取消、暂停、恢复" class="headerlink" title="3.5 队列的取消、暂停、恢复"></a>3.5 队列的取消、暂停、恢复</h3><ul>
+<li>取消队列的所有操作</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)cancelAllOperations;</div></pre></td></tr></table></figure>
+<p><strong>提示：</strong>也可以调用NSOperation的- (void)cancel方法取消单个操作</p>
+<ul>
+<li>暂停和恢复队列</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)setSuspended:(<span class="built_in">BOOL</span>)b; <span class="comment">// YES代表暂停队列，NO代表恢复队列</span></div><div class="line">- (<span class="built_in">BOOL</span>)isSuspended;</div></pre></td></tr></table></figure>
+<h3 id="3-6-操作依赖"><a href="#3-6-操作依赖" class="headerlink" title="3.6 操作依赖"></a>3.6 操作依赖</h3><ul>
+<li>NSOperation之间可以设置依赖来保证执行顺序<ul>
+<li>比如一定要让操作A执行完后，才能执行操作B，可以这么写</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">[operationB addDependency:operationA]; <span class="comment">// 操作B依赖于操作A</span></div></pre></td></tr></table></figure>
+<ul>
+<li>可以在不同queue的NSOperation之间创建依赖关系（如图）</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-ba5dd3b155ca385d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170621_1.png"></p>
+<p><strong>注意：</strong><br>不能相互依赖，比如A依赖B，B依赖A</p>
+<h3 id="3-7-操作的监听"><a href="#3-7-操作的监听" class="headerlink" title="3.7 操作的监听"></a>3.7 操作的监听</h3><p>可以监听一个操作的执行完毕</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span> (^)(<span class="keyword">void</span>))completionBlock;</div><div class="line">- (<span class="keyword">void</span>)setCompletionBlock:(<span class="keyword">void</span> (^)(<span class="keyword">void</span>))block;</div></pre></td></tr></table></figure>
+<h3 id="3-8-自定义NSOperation"><a href="#3-8-自定义NSOperation" class="headerlink" title="3.8 自定义NSOperation"></a>3.8 自定义NSOperation</h3><p>自定义NSOperation的步骤很简单</p>
+<ul>
+<li>重写<code>- (void)main</code>方法，在里面实现想执行的任务</li>
+<li>重写<code>- (void)main</code>方法的注意点<ul>
+<li>自己创建自动释放池（因为如果是异步操作，无法访问主线程的自动释放池）</li>
+<li>经常通过<code>- (BOOL)isCancelled</code>方法检测操作是否被取消，对取消做出响应</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">苹果建议：应该对自定义的 Operation 中的执行完一个耗时操作，应该手动调用一下 isCancelled 方法查看是不是已经取消并做对应的操作</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 需要执行的任务</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)main</div><div class="line">&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSInteger</span> i = <span class="number">0</span>; i&lt;<span class="number">1000</span>; i++) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"download1 -%zd-- %@"</span>, i, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.isCancelled) <span class="keyword">return</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSInteger</span> i = <span class="number">0</span>; i&lt;<span class="number">1000</span>; i++) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"download2 -%zd-- %@"</span>, i, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.isCancelled) <span class="keyword">return</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSInteger</span> i = <span class="number">0</span>; i&lt;<span class="number">1000</span>; i++) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"download3 -%zd-- %@"</span>, i, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.isCancelled) <span class="keyword">return</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="3-9-NSOperation-线程间通信"><a href="#3-9-NSOperation-线程间通信" class="headerlink" title="3.9 NSOperation 线程间通信"></a>3.9 NSOperation 线程间通信</h3><p>此处依旧以下载并合成一张图片为例，只需开启两个子线程分别下载image，第三个线程为合并操作， 然后添加线程依赖。并放到队列中</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="built_in">NSOperationQueue</span> *queue = [[<span class="built_in">NSOperationQueue</span> alloc] init];</div><div class="line"></div><div class="line">__block <span class="built_in">UIImage</span> *image1 = <span class="literal">nil</span>;</div><div class="line"><span class="comment">// 下载图片1</span></div><div class="line"><span class="built_in">NSBlockOperation</span> *download1 = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^&#123;</div><div class="line">   </div><div class="line">   <span class="comment">// 图片的网络路径</span></div><div class="line">   <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://img.pconline.com.cn/images/photoblog/9/9/8/1/9981681/200910/11/1255259355826.jpg"</span>];</div><div class="line">   </div><div class="line">   <span class="comment">// 加载图片</span></div><div class="line">   <span class="built_in">NSData</span> *data = [<span class="built_in">NSData</span> dataWithContentsOfURL:url];</div><div class="line">   </div><div class="line">   <span class="comment">// 生成图片</span></div><div class="line">   image1 = [<span class="built_in">UIImage</span> imageWithData:data];</div><div class="line">&#125;];</div><div class="line">    </div><div class="line">__block <span class="built_in">UIImage</span> *image2 = <span class="literal">nil</span>;</div><div class="line"><span class="comment">// 下载图片2</span></div><div class="line"><span class="built_in">NSBlockOperation</span> *download2 = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^&#123;</div><div class="line">   </div><div class="line">   <span class="comment">// 图片的网络路径</span></div><div class="line">   <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://pic38.nipic.com/20140228/5571398_215900721128_2.jpg"</span>];</div><div class="line"></div><div class="line">   </div><div class="line">   <span class="comment">// 加载图片</span></div><div class="line">   <span class="built_in">NSData</span> *data = [<span class="built_in">NSData</span> dataWithContentsOfURL:url];</div><div class="line">   </div><div class="line">   <span class="comment">// 生成图片</span></div><div class="line">   image2 = [<span class="built_in">UIImage</span> imageWithData:data];</div><div class="line">&#125;];</div><div class="line">    </div><div class="line"><span class="comment">// 合成图片</span></div><div class="line"><span class="built_in">NSBlockOperation</span> *combine = [<span class="built_in">NSBlockOperation</span> blockOperationWithBlock:^&#123;</div><div class="line">   <span class="comment">// 开启新的图形上下文</span></div><div class="line">   <span class="built_in">UIGraphicsBeginImageContext</span>(<span class="built_in">CGSizeMake</span>(<span class="number">100</span>, <span class="number">100</span>));</div><div class="line">   </div><div class="line">   <span class="comment">// 绘制图片</span></div><div class="line">   [image1 drawInRect:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">50</span>, <span class="number">100</span>)];</div><div class="line">   image1 = <span class="literal">nil</span>;</div><div class="line">   </div><div class="line">   [image2 drawInRect:<span class="built_in">CGRectMake</span>(<span class="number">50</span>, <span class="number">0</span>, <span class="number">50</span>, <span class="number">100</span>)];</div><div class="line">   image2 = <span class="literal">nil</span>;</div><div class="line">   </div><div class="line">   <span class="comment">// 取得上下文中的图片</span></div><div class="line">   <span class="built_in">UIImage</span> *image = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</div><div class="line">   </div><div class="line">   <span class="comment">// 结束上下文</span></div><div class="line">   <span class="built_in">UIGraphicsEndImageContext</span>();</div><div class="line">   </div><div class="line">   <span class="comment">// 回到主线程</span></div><div class="line">   [[<span class="built_in">NSOperationQueue</span> mainQueue] addOperationWithBlock:^&#123;</div><div class="line">       <span class="keyword">self</span>.imageView.image = image;</div><div class="line">   &#125;];</div><div class="line">&#125;];</div><div class="line">[combine addDependency:download1];</div><div class="line">[combine addDependency:download2];</div><div class="line">    </div><div class="line">[queue addOperation:download1];</div><div class="line">[queue addOperation:download2];</div><div class="line">[queue addOperation:combine];</div></pre></td></tr></table></figure>
+<p>简单的，只有下载图片然后放到主线程展示的线程通信如下：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">[[[<span class="built_in">NSOperationQueue</span> alloc] init] addOperationWithBlock:^&#123;</div><div class="line">   <span class="comment">// 图片的网络路径</span></div><div class="line">  <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://img.pconline.com.cn/images/photoblog/9/9/8/1/9981681/200910/11/1255259355826.jpg"</span>];</div><div class="line">     </div><div class="line">   </div><div class="line">   <span class="comment">// 加载图片</span></div><div class="line">   <span class="built_in">NSData</span> *data = [<span class="built_in">NSData</span> dataWithContentsOfURL:url];</div><div class="line">   </div><div class="line">   <span class="comment">// 生成图片</span></div><div class="line">   <span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageWithData:data];</div><div class="line">   </div><div class="line">   <span class="comment">// 回到主线程</span></div><div class="line">   [[<span class="built_in">NSOperationQueue</span> mainQueue] addOperationWithBlock:^&#123;</div><div class="line">       <span class="keyword">self</span>.imageView.image = image;</div><div class="line">   &#125;];</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<h2 id="4-小结"><a href="#4-小结" class="headerlink" title="4 小结"></a>4 小结</h2><p>本文主要讲解了 GCD 和 NSOperation 两种多线程的创建和使用方式。加上上篇文章 共有 pthread 、 NSThread 、 GCD 和 NSOperation 四种多线程方案，实际使用中需要根据项目需求灵活使用。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/06/17/ iOS的内存分析和内存管理/" data-toggle="tooltip" data-placement="top"
+                           title="iOS的内存分析和内存管理">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-GCD"><span class="toc-text">1.GCD</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-什么是GCD"><span class="toc-text">1.1 什么是GCD</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-使用-GCD-有什么优势"><span class="toc-text">1.2 使用 GCD 有什么优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-GCD-的使用"><span class="toc-text">1.3 GCD 的使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-队列的类型"><span class="toc-text">1.4 队列的类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-GCD-的各种队列的组合"><span class="toc-text">1.5 GCD 的各种队列的组合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-GCD-个线程之间通信"><span class="toc-text">1.6 GCD 个线程之间通信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-7-GCD-其他常用函数"><span class="toc-text">1.7 GCD 其他常用函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-使用-GCD-实现单例"><span class="toc-text">2. 使用 GCD 实现单例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-单例模式"><span class="toc-text">2.1 单例模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-单例模式的实现-纯代码"><span class="toc-text">2.2 单例模式的实现(纯代码)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-单例模式的实现-宏"><span class="toc-text">2.3 单例模式的实现(宏)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-NSOperation"><span class="toc-text">3. NSOperation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-NSOperation-简介"><span class="toc-text">3.1 NSOperation 简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-NSOperation-的子类"><span class="toc-text">3.2 NSOperation 的子类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-NSOperationQueue"><span class="toc-text">3.3 NSOperationQueue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-最大并发数"><span class="toc-text">3.4 最大并发数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-队列的取消、暂停、恢复"><span class="toc-text">3.5 队列的取消、暂停、恢复</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-操作依赖"><span class="toc-text">3.6 操作依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-操作的监听"><span class="toc-text">3.7 操作的监听</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-8-自定义NSOperation"><span class="toc-text">3.8 自定义NSOperation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-9-NSOperation-线程间通信"><span class="toc-text">3.9 NSOperation 线程间通信</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-小结"><span class="toc-text">4 小结</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                        <a class="tag" href="/tags/#多线程"
+                           title="多线程">多线程</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>
