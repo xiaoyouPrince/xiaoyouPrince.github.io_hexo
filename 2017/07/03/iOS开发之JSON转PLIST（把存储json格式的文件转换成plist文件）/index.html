@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        iOS开发之 OC 与 JS 互相调用｜xiaoyou&#39;s blog
+        iOS开发之JSON转PLIST（把存储json格式的文件转换成plist文件）｜xiaoyou&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://xiaoyouprince.com/2017/07/04/iOS开发之 OC 与 JS 互相调用/">
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/07/03/iOS开发之JSON转PLIST（把存储json格式的文件转换成plist文件）/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -153,14 +153,14 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>iOS开发之 OC 与 JS 互相调用</h1>
+                    <h1>iOS开发之JSON转PLIST（把存储json格式的文件转换成plist文件）</h1>
                     
                     <h2 class="subheading">iOS回顾系列</h2>
                     
                     <span class="meta">
                          作者 xiaoyouPrince
                         <span>
-                          日期 2017-07-04
+                          日期 2017-07-03
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -178,7 +178,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            iOS开发之 OC 与 JS 互相调用
+            iOS开发之JSON转PLIST（把存储json格式的文件转换成plist文件）
         </span>
     </div>
 </header>
@@ -189,15 +189,10 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>有时候iOS开发过程中使用 UIWebView 经常需要加载网页，但是网页中有很多明显的标记让人一眼就能看出来是加载的网页，而我们又不想被人卡出来。</p>
-<p>如网页中的这个导航<br><img src="http://upload-images.jianshu.io/upload_images/1256297-de36dbe2392bf2a6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170704_1.png"></p>
-<p>通常我们不需要WebView中的 导航栏，也不需要里面的返回上一级的交互。。</p>
-<p>对WebView常用的另外一种功能就是对某个点击添加对用function实现JS调用OC的交互功能。</p>
-<p>下面一一介绍：</p>
-<h2 id="1-UIWebView-调用JS代码"><a href="#1-UIWebView-调用JS代码" class="headerlink" title="1. UIWebView 调用JS代码"></a>1. UIWebView 调用JS代码</h2><p>OC调用JS通常是，在webView加载完成后调用，直接实现WebView代理方法</p>
-<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)webViewDidFinishLoad:(<span class="built_in">UIWebView</span> *)webView</div><div class="line">&#123;</div><div class="line">    <span class="comment">//    webView</span></div><div class="line">    <span class="comment">// 执行JS代码实现--这里移除头部，只是进来的时候移除一次，</span></div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span> *jsCode = <span class="string">@"var headerElement = document.getElementsByTagName('header')[0];"</span></div><div class="line">    <span class="string">"headerElement.parentNode.removeChild(headerElement);"</span>;</div><div class="line">    [webView stringByEvaluatingJavaScriptFromString:jsCode];</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="2-JS-调用-OC-方法"><a href="#2-JS-调用-OC-方法" class="headerlink" title="2. JS 调用 OC 方法"></a>2. JS 调用 OC 方法</h2><p>此种用法通常是WebView中某按钮点击要进入下一级页面或其他操作。此时需要实现两个WebView的代理方法配合实现。</p>
-<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)webViewDidFinishLoad:(<span class="built_in">UIWebView</span> *)webView</div><div class="line">&#123;</div><div class="line">    <span class="comment">//    webView</span></div><div class="line">    <span class="built_in">NSString</span> *exeCode =</div><div class="line">    <span class="comment">//找到对应的元素</span></div><div class="line">    <span class="string">@"var figureElement = document.getElementsByTagName('div')[0];"</span></div><div class="line">    <span class="comment">//    "var imgElement = figureElement.children[0];"</span></div><div class="line">    <span class="comment">//添加相应事件（这里是点击事件）</span></div><div class="line">    <span class="string">"figureElement.onclick = function()&#123;window.location.href = 'http://www.baidu.com'&#125;;"</span>;</div><div class="line">    [webView stringByEvaluatingJavaScriptFromString:exeCode];</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.request = webView.request;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">- (<span class="built_in">BOOL</span>)webView:(<span class="built_in">UIWebView</span> *)webView shouldStartLoadWithRequest:(<span class="built_in">NSURLRequest</span> *)request navigationType:(<span class="built_in">UIWebViewNavigationType</span>)navigationType</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> ([request.URL.absoluteString isEqualToString:<span class="string">@"http://www.baidu.com/"</span>]) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">UIAlertView</span> *a = [[<span class="built_in">UIAlertView</span> alloc] initWithTitle:<span class="string">@"提示"</span> message:<span class="string">@"政策原因，请移步网站投注"</span> delegate:<span class="keyword">self</span> cancelButtonTitle:<span class="string">@"好的"</span> otherButtonTitles:<span class="literal">nil</span>, <span class="literal">nil</span>];</div><div class="line">        [a show];</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+                <p>有时开发过程中，经常需要调试接口，但是可能经常没有网络，导致调试无法正常进行。</p>
+<p>对此可以自己手动设置一些假数据，也可以通过计算机来为我们保存一份真实的网络数据，并自己转化成plist数据，存在本地使用。</p>
+<h2 id="直接在Mac上运行"><a href="#直接在Mac上运行" class="headerlink" title="直接在Mac上运行"></a>直接在Mac上运行</h2><figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="built_in">NSString</span> *path = <span class="string">@"/Users/xiaoyou/Desktop/lot.json"</span>;  </div><div class="line"><span class="built_in">NSArray</span> *array = [<span class="built_in">NSJSONSerialization</span> JSONObjectWithData:[<span class="built_in">NSData</span> dataWithContentsOfFile:path] options:<span class="built_in">NSJSONReadingMutableLeaves</span> error:<span class="literal">nil</span>];  </div><div class="line">[array writeToFile:<span class="string">@"/Users/xiaoyou/Desktop/lot.plist"</span> atomically:<span class="literal">YES</span>];</div></pre></td></tr></table></figure>
+<h2 id="直接在模拟器上运行"><a href="#直接在模拟器上运行" class="headerlink" title="直接在模拟器上运行"></a>直接在模拟器上运行</h2><figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"lot.json"</span> ofType:<span class="literal">nil</span>];  </div><div class="line">  </div><div class="line"><span class="built_in">NSArray</span> *array = [<span class="built_in">NSJSONSerialization</span> JSONObjectWithData:[<span class="built_in">NSData</span> dataWithContentsOfFile:path] options:<span class="built_in">NSJSONReadingMutableLeaves</span> error:<span class="literal">nil</span>];  </div><div class="line">  </div><div class="line"><span class="built_in">NSString</span> *newPath = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@%@"</span>,[[<span class="built_in">NSBundle</span> mainBundle] bundlePath],<span class="string">@"/lot.plist"</span> ];  </div><div class="line">  </div><div class="line">[array writeToFile:newPath atomically:<span class="literal">YES</span>];</div></pre></td></tr></table></figure>
 
                 <hr>
                 
@@ -205,10 +200,15 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/07/03/iOS开发之JSON转PLIST（把存储json格式的文件转换成plist文件）/" data-toggle="tooltip" data-placement="top"
-                           title="iOS开发之JSON转PLIST（把存储json格式的文件转换成plist文件）">&larr; Previous Post</a>
+                        <a href="/2017/06/21/OS X 和iOS 中的多线程技术（下）/" data-toggle="tooltip" data-placement="top"
+                           title="OS X 和iOS 中的多线程技术（下）">&larr; Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2017/07/04/iOS开发之 OC 与 JS 互相调用/" data-toggle="tooltip" data-placement="top"
+                           title="iOS开发之 OC 与 JS 互相调用">Next Post &rarr;</a>
+                    </li>
                     
                 </ul>
 
@@ -220,7 +220,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-UIWebView-调用JS代码"><span class="toc-text">1. UIWebView 调用JS代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-JS-调用-OC-方法"><span class="toc-text">2. JS 调用 OC 方法</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#直接在Mac上运行"><span class="toc-text">直接在Mac上运行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#直接在模拟器上运行"><span class="toc-text">直接在模拟器上运行</span></a></li></ol>
                 </div>
             </div>
         </div>
