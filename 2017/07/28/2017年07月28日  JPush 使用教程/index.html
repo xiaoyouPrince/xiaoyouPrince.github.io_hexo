@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        JPush 使用教程｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/07/28/2017年07月28日  JPush 使用教程/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/lizi.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/lizi.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>JPush 使用教程</h1>
+                    
+                    <h2 class="subheading">iOS</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2017-07-28
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS"
+                           title="iOS">iOS</a>
+                        
+                        <a class="tag" href="/tags/#技术"
+                           title="技术">技术</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            JPush 使用教程
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h1 id="JPush-使用教程"><a href="#JPush-使用教程" class="headerlink" title="JPush 使用教程"></a>JPush 使用教程</h1><p>自己使用的一些经验，为了方便直接从这里复制过去就行。<br>就当做个笔记，防止长时间忘记之后，还需要去官网看文档。</p>
+<p>主要思路： sdk文件 + 三方依赖系统库 + 头文件 + 添加代理 + 初始化代码</p>
+<h3 id="1-版本信息"><a href="#1-版本信息" class="headerlink" title="1.版本信息"></a>1.版本信息</h3><ul>
+<li>JPush : 2.2.0 </li>
+<li>Xcode : 8.3.3</li>
+<li>iOS : 6.0 +</li>
+</ul>
+<h3 id="2-使用步骤"><a href="#2-使用步骤" class="headerlink" title="2.使用步骤"></a>2.使用步骤</h3><ul>
+<li>导入头文件</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="meta">#import <span class="meta-string">"JPUSHService.h"</span></span></div><div class="line"><span class="comment">// iOS10注册APNs所需头文件</span></div><div class="line"><span class="meta">#ifdef NSFoundationVersionNumber_iOS_9_x_Max</span></div><div class="line"><span class="meta">#import <span class="meta-string">&lt;UserNotifications/UserNotifications.h&gt;</span></span></div><div class="line"><span class="meta">#endif</span></div></pre></td></tr></table></figure>
+<ul>
+<li>添加如下代码（支持版本为 iOS 6.0+）</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="meta">#pragma mark -- JPush</span></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> 注册apns</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)registerAPNSWithOptions:(<span class="built_in">NSDictionary</span> *)launchOptions&#123;</div><div class="line">    <span class="comment">//Required</span></div><div class="line">    <span class="comment">//notice: 3.0.0及以后版本注册可以这样写，也可以继续用之前的注册方式</span></div><div class="line">    JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];</div><div class="line">    entity.types = UNAuthorizationOptionAlert|UNAuthorizationOptionBadge|UNAuthorizationOptionSound;</div><div class="line">    <span class="keyword">if</span> ([[<span class="built_in">UIDevice</span> currentDevice].systemVersion floatValue] &gt;= <span class="number">8.0</span>) &#123;</div><div class="line">        <span class="comment">// 可以添加自定义categories</span></div><div class="line">        <span class="comment">// NSSet&lt;UNNotificationCategory *&gt; *categories for iOS10 or later</span></div><div class="line">        <span class="comment">// NSSet&lt;UIUserNotificationCategory *&gt; *categories for iOS8 and iOS9</span></div><div class="line">    &#125;</div><div class="line">    [JPUSHService registerForRemoteNotificationConfig:entity delegate:<span class="keyword">self</span>];</div><div class="line">    </div><div class="line">    <span class="comment">// Required</span></div><div class="line">    <span class="comment">// init Push</span></div><div class="line">    <span class="comment">// notice: 2.1.5版本的SDK新增的注册方法，改成可上报IDFA，如果没有使用IDFA直接传nil</span></div><div class="line">    <span class="comment">// 如需继续使用pushConfig.plist文件声明appKey等配置内容，请依旧使用[JPUSHService setupWithOption:launchOptions]方式初始化。</span></div><div class="line">    [JPUSHService setupWithOption:launchOptions appKey:<span class="string">@"2c6034060b406cfe94d4e2e2"</span></div><div class="line">                          channel:<span class="string">@"App Store"</span></div><div class="line">                 apsForProduction:<span class="literal">YES</span></div><div class="line">            advertisingIdentifier:<span class="literal">nil</span>];</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="built_in">NSNotificationCenter</span> *defaultCenter = [<span class="built_in">NSNotificationCenter</span> defaultCenter];</div><div class="line">    [defaultCenter addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:<span class="literal">nil</span>];</div><div class="line">    </div><div class="line">&#125;</div><div class="line"><span class="comment">/**</span></div><div class="line"> 极光推送消息处理</div><div class="line"> </div><div class="line"> @param notification 极光推送通知</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)networkDidReceiveMessage:(<span class="built_in">NSNotification</span> *)notification &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSDictionary</span> * userInfo = [notification userInfo];</div><div class="line">    <span class="built_in">NSString</span> *content = [userInfo valueForKey:<span class="string">@"content"</span>];</div><div class="line">    <span class="built_in">NSDictionary</span> *extras = [userInfo valueForKey:<span class="string">@"extras"</span>];</div><div class="line">    <span class="built_in">NSString</span> *customizeField1 = [extras valueForKey:<span class="string">@"customizeField1"</span>]; <span class="comment">//服务端传递的Extras附加字段，key是自己定义的</span></div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)application:(<span class="built_in">UIApplication</span> *)application</div><div class="line">didRegisterForRemoteNotificationsWithDeviceToken:(<span class="built_in">NSData</span> *)deviceToken &#123;</div><div class="line">    </div><div class="line">    <span class="comment">/// Required - 注册 DeviceToken</span></div><div class="line">    [JPUSHService registerDeviceToken:deviceToken];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">#pragma mark- JPUSHRegisterDelegate</span></div><div class="line"></div><div class="line"><span class="comment">// iOS 10 Support</span></div><div class="line">- (<span class="keyword">void</span>)jpushNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSInteger</span>))completionHandler &#123;</div><div class="line">    <span class="comment">// Required</span></div><div class="line">    <span class="built_in">NSDictionary</span> * userInfo = notification.request.content.userInfo;</div><div class="line">    <span class="keyword">if</span>([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger <span class="keyword">class</span>]]) &#123;</div><div class="line">        [JPUSHService handleRemoteNotification:userInfo];</div><div class="line">    &#125;</div><div class="line">    completionHandler(UNNotificationPresentationOptionAlert); <span class="comment">// 需要执行这个方法，选择是否提醒用户，有Badge、Sound、Alert三种类型可以选择设置</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// iOS 10 Support</span></div><div class="line">- (<span class="keyword">void</span>)jpushNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(<span class="keyword">void</span> (^)())completionHandler &#123;</div><div class="line">    <span class="comment">// Required</span></div><div class="line">    <span class="built_in">NSDictionary</span> * userInfo = response.notification.request.content.userInfo;</div><div class="line">    <span class="keyword">if</span>([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger <span class="keyword">class</span>]]) &#123;</div><div class="line">        [JPUSHService handleRemoteNotification:userInfo];</div><div class="line">    &#125;</div><div class="line">    completionHandler();  <span class="comment">// 系统要求执行这个方法</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)application:(<span class="built_in">UIApplication</span> *)application didReceiveRemoteNotification:(<span class="built_in">NSDictionary</span> *)userInfo fetchCompletionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">UIBackgroundFetchResult</span>))completionHandler &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span> *content = [userInfo valueForKey:<span class="string">@"content"</span>];</div><div class="line">    <span class="built_in">NSDictionary</span> *extras = [userInfo valueForKey:<span class="string">@"extras"</span>];</div><div class="line">    <span class="built_in">NSString</span> *customizeField1 = [extras valueForKey:<span class="string">@"customizeField1"</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"content --- %@"</span>,content);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"extras --- %@"</span>,extras);</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"customizeField1 --- %@"</span>,customizeField1);</div><div class="line">    </div><div class="line">    <span class="comment">// Required, iOS 7 Support</span></div><div class="line">    [JPUSHService handleRemoteNotification:userInfo];</div><div class="line">    completionHandler(<span class="built_in">UIBackgroundFetchResultNewData</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)application:(<span class="built_in">UIApplication</span> *)application didReceiveRemoteNotification:(<span class="built_in">NSDictionary</span> *)userInfo &#123;</div><div class="line">    </div><div class="line">    <span class="comment">// Required,For systems with less than or equal to iOS6</span></div><div class="line">    [JPUSHService handleRemoteNotification:userInfo];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">#pragma mark -- JPush</span></div></pre></td></tr></table></figure>
+<ul>
+<li>添加依赖库文件</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-d895cdd020b35d23.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170728_5.png"></p>
+<h3 id="3-其他配置"><a href="#3-其他配置" class="headerlink" title="3.其他配置"></a>3.其他配置</h3><ul>
+<li>在 JPush 官网注册应用，记住对应的Appkey，</li>
+</ul>
+<p>代码中注册的时候使用。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-da7e845167d45577.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170728_2.png"></p>
+<ul>
+<li>证书配置</li>
+</ul>
+<p>直接导出调试推送证书 和 发布推送证书 的 .12 文件上传到JPush 官网。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-28cc68400ef51942.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170728_1.png"></p>
+<ul>
+<li>开放App的后台能力 和 推送能力</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-f5542268e7caef60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170728_3.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-d8a736a0a39e5c63.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170728_4.png"></p>
+<p><a href="https://www.jiguang.cn/accounts/login/form" target="_blank" rel="external">JPush 官网: https://www.jiguang.cn/accounts/login/form</a></p>
+<p><a href="https://docs.jiguang.cn/jpush/client/iOS/ios_guide_new/" target="_blank" rel="external">官方iOS SDK 集成指南:https://docs.jiguang.cn/jpush/client/iOS/ios_guide_new/</a></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/07/04/iOS开发之 OC 与 JS 互相调用/" data-toggle="tooltip" data-placement="top"
+                           title="iOS开发之 OC 与 JS 互相调用">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JPush-使用教程"><span class="toc-text">JPush 使用教程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-版本信息"><span class="toc-text">1.版本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-使用步骤"><span class="toc-text">2.使用步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-其他配置"><span class="toc-text">3.其他配置</span></a></li></ol></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS"
+                           title="iOS">iOS</a>
+                        
+                        <a class="tag" href="/tags/#技术"
+                           title="技术">技术</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>
