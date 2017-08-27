@@ -80,7 +80,7 @@
                         
 							
                         <li>
-                            <a href="/tags/">tags</a>
+                            <a href="/My-Works/">My Works</a>
                         </li>
 							
 						
@@ -88,7 +88,7 @@
                         
 							
                         <li>
-                            <a href="/My-Works/">My Works</a>
+                            <a href="/tags/">tags</a>
                         </li>
 							
 						
@@ -219,10 +219,14 @@
 <ol>
 <li><p>创建新文件 -&gt; Other -&gt; PCH File<br><img src="http://upload-images.jianshu.io/upload_images/1256297-26da6228614df637.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170412_5.png"></p>
 </li>
-<li><p>配置预编译文件及相应路径: Build Settings -&gt; Prefix 修改配置信息：<br><img src="http://upload-images.jianshu.io/upload_images/1256297-9f8e18913b2a4816.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170412_6.png"></p>
+<li><p>配置预编译文件及相应路径: Build Settings -&gt; Prefix 修改配置信息：</p>
 </li>
-<li><p>自定义LOG<br></p>
-</li>
+</ol>
+<p><strong>这里的路径一定要使用相对路径：</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$(SRCROOT)/项目名/PrefixHeader.pch  </div><div class="line"></div><div class="line">或者：</div><div class="line"></div><div class="line">项目名/PrefixHeader.pch</div></pre></td></tr></table></figure>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-9f8e18913b2a4816.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170412_6.png"></p>
+<ol>
+<li>自定义LOG<br></li>
 </ol>
 <figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 宏里面可变参数：...</span></div><div class="line"><span class="comment">// 函数中可变参数: __VA_ARGS__</span></div><div class="line"></div><div class="line"><span class="meta">#ifdef DEBUG // 调试阶段</span></div><div class="line"><span class="meta">#define XYLog(...)  NSLog(__VA_ARGS__)</span></div><div class="line"></div><div class="line"><span class="meta">#else // 发布阶段</span></div><div class="line"></div><div class="line"><span class="meta">#define XYLog(...)</span></div><div class="line"></div><div class="line"><span class="meta">#endif</span></div></pre></td></tr></table></figure>
 <ol>
