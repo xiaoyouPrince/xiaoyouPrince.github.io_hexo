@@ -245,6 +245,26 @@
 <li>在Xcode 6 之前需要开发者手动导入框架，Frameworks文件夹中的是最常用的 Foundation、UIKit等基础框架，当开发者需要导入其他框架的时候也会导入到里面</li>
 <li>Xcode 6 之后系统不再生成此文件夹，项目中用到的一些基础框架系统会默认在用的时候加载。当开发者需要导入其他框架的时候也会生成Frameworks文件夹并导入到里面<br><img src="http://upload-images.jianshu.io/upload_images/1256297-552d9c5b714521ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170412_1.png"></li>
 </ul>
+<h3 id="4-Assests-xcassests-和-LaunchScreen-storyboard"><a href="#4-Assests-xcassests-和-LaunchScreen-storyboard" class="headerlink" title="4. Assests.xcassests 和 LaunchScreen.storyboard"></a>4. Assests.xcassests 和 LaunchScreen.storyboard</h3><p>两者分别用于 app 部署时候设置 AppIcon 和 启动图。</p>
+<ul>
+<li>在Xcode 6 之前设置 AppIcon 默认需要在  s.xcassests -&gt; AppIcon 中设置。同样启动图也是在 Assests.xcassests 中自己生成一个 Assest 设置启动图。</li>
+<li>Xcode 6 之后苹果推出 LaunchScreen.storyboard 来用来更方便的设置启动图。</li>
+</ul>
+<p><strong>两者区别和各种利弊：</strong></p>
+<ul>
+<li><p>优先级 ： LaunchScreen &gt; LaunchImage(Assest)</p>
+<pre><code>如果在 Xcode 中设置了使用LaunchImage不起作用
+1. command + shift + k 清理缓存
+2. 直接删除程序，重新运行
+3. 如果使用launchImage 必须让美工提供各种合适尺寸的启动图片
+</code></pre></li>
+<li><p>LaunchScreen 在 Xcode 6 之后推出。它的优势：</p>
+<pre><code>1. 自动识别当前真机或者模拟器的尺寸，
+2. 只要让美工提供一张可以拉伸的图片即可
+3. 可以展示更过的内容，和编辑一个StoryBoard页面一样
+4. LaunchScreen底层实现是把 LaunchScreen截屏，生成一张图片作为启动图使用
+</code></pre></li>
+</ul>
 
                 <hr>
                 
@@ -272,7 +292,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#下面分别介绍这几个文件"><span class="toc-text">下面分别介绍这几个文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-info-plist"><span class="toc-text">1. info.plist</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-pch文件"><span class="toc-text">2. pch文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Frameworks文件夹"><span class="toc-text">3. Frameworks文件夹</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#下面分别介绍这几个文件"><span class="toc-text">下面分别介绍这几个文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-info-plist"><span class="toc-text">1. info.plist</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-pch文件"><span class="toc-text">2. pch文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Frameworks文件夹"><span class="toc-text">3. Frameworks文件夹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Assests-xcassests-和-LaunchScreen-storyboard"><span class="toc-text">4. Assests.xcassests 和 LaunchScreen.storyboard</span></a></li></ol></li></ol>
                 </div>
             </div>
         </div>
