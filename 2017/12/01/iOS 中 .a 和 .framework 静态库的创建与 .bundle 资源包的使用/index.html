@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        iOS 中 .a 和 .framework 静态库的创建与 .bundle 资源包的使用｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/12/01/iOS 中 .a 和 .framework 静态库的创建与 .bundle 资源包的使用/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/lizi.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/lizi.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>iOS 中 .a 和 .framework 静态库的创建与 .bundle 资源包的使用</h1>
+                    
+                    <h2 class="subheading">iOS回顾系列</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2017-12-01
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            iOS 中 .a 和 .framework 静态库的创建与 .bundle 资源包的使用
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>开发中经常使用三方库去实现某特定功能，而这些三方库通常又分为开源库和闭源库。开源库可以直接拿到源码，和自己写的没有什么区别，我们可以最大程度的修改源码来适应自己功能。闭源库就是被发布者提前打包好的静态库或 Bundle 包，对此我们无法看到内部实现，对于其封装好的特定功能，我们也只需要调用其开放的API即可。</p>
+<p>本文就来讲解一下 .a 和 .framework 静态库的创建与 .bundle 资源包的使用。</p>
+<h2 id="库"><a href="#库" class="headerlink" title="库"></a>库</h2><p>库分静态库和动态库两种。从本质上来说是一种可执行代码的二进制格式，可以被载入内存中执行。</p>
+<p>静态库和动态库是相对编译期和运行期的：静态库在程序编译时会被链接到目标代码中，程序运行时将不再需要改静态库；而动态库在程序编译时并不会被链接到目标代码中，只是在程序运行时才被载入，因为在程序运行期间还需要动态库的存在。</p>
+<h3 id="静态库的形式"><a href="#静态库的形式" class="headerlink" title="静态库的形式"></a>静态库的形式</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">形式为 ：.a 和 .framework 两种</div><div class="line"></div><div class="line">其中 .framework 类型的库如果是系统内部的是动态库，我们自己创建的是静态库</div></pre></td></tr></table></figure>
+<h3 id="a-和-framework-的区别"><a href="#a-和-framework-的区别" class="headerlink" title=".a 和 .framework 的区别"></a>.a 和 .framework 的区别</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">.a是一个纯二进制文件，.framework中除了有二进制文件之外还有资源文件。</div><div class="line">.a文件不能直接使用，至少要有.h文件配合，.framework文件可以直接使用。</div><div class="line">.a + .h + sourceFile = .framework。</div><div class="line">建议用.framework。</div></pre></td></tr></table></figure>
+<h3 id="静态库的优势"><a href="#静态库的优势" class="headerlink" title="静态库的优势"></a>静态库的优势</h3><ol>
+<li>方便共享代码，便于合理使用。</li>
+<li>实现iOS程序的模块化。可以把固定的业务模块化成静态库。</li>
+<li>和别人分享你的代码库，但不想让别人看到你代码的实现。</li>
+<li>开发第三方sdk的需要。</li>
+</ol>
+<h3 id="创建和打包-a-静态库"><a href="#创建和打包-a-静态库" class="headerlink" title="创建和打包 .a 静态库"></a>创建和打包 .a 静态库</h3><ol>
+<li>创建静态库项目<br> <br>iOS –&gt; Framework &amp; Library –&gt; Cocoa Touch Static Library</li>
+<li>把需要编译成静态库的代码拖进项目</li>
+<li>设置可见的.h文件。<br> <br>Build Phases –&gt; Copy Files 添加.h文件即可。</li>
+</ol>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-4b8bbe814f2b77c6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="15121192841839.jpg"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-672be65de18ee0e1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="15121206665244.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-99797dcda5b889e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="15121206796855.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-0f5bbc597f78c27a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="15121206850570.png"></p>
+<ol>
+<li><p>修改支持的架构<br> 4.1 设置支持所有模拟器架构  Build Settings –&gt; Build Active Architecture Only –&gt; Debug 改为 NO<br> 4.2设置支持所有手机架构 </p>
+</li>
+<li><p>编译<br> 编译一次模拟器,编译一次手机。<br>会生成.a文件 和 可见的头文件。<br>使用命令行，合并刚刚生成的的两个路径，到另一个路径，例如：<br><code>lipo -create 模拟器lib路径 真机lib路径 -output /Users/username/Desktop/libPSSTest.a</code></p>
+</li>
+</ol>
+<ol>
+<li>使用静态库<br> 注意：如果这个静态库需要依赖库，也是需要引入依赖库。</li>
+</ol>
+<h3 id="创建和打包-a-静态库-1"><a href="#创建和打包-a-静态库-1" class="headerlink" title="创建和打包 .a 静态库"></a>创建和打包 .a 静态库</h3><ol>
+<li><p>创建Framework项目<br> iOS –&gt; Framework &amp; Library –&gt; Cocoa Touch Framework</p>
+</li>
+<li><p>修改打包的framework是动态库还是静态库<br> framework项目默认是动态库。<br>静态库配置：Build Settings –&gt; Mach-O Type –&gt; 改为 Static Library</p>
+</li>
+<li><p>把需要编译成静态库的代码拖进项目<br> 设置可见头文件<br> 项目创建后,项目中只有一个主头文件。<br>Build Phases –&gt; Headers –&gt; public 添加头文件</p>
+</li>
+<li><p>编译<br> 编译一次模拟器,编译一次手机    </p>
+</li>
+<li>使用<br> 把framework引入项目。<br>如果是动态库需要在 General –&gt; Embedded Binaries 中引入配置。<br>如果是静态库就不需要配置了。</li>
+</ol>
+<h3 id="静态库问题"><a href="#静态库问题" class="headerlink" title="静态库问题"></a>静态库问题</h3><ol>
+<li>静态库位置<br> Debug运行真机编译会把静态库生成到 Debug-iphoneos目录下<br><br> Debug运行模拟器编译会把静态库生成到 Debug-iphonesimulator目录下<br><br> Release运行真机编译会把静态库生成到 Release-iphoneos目录下<br>Release运行模拟器编译会把静态库生成到 Release-iphonesimulator目录下</li>
+<li>Debug版本 VS Release版本<ul>
+<li>调试版<br>  <br>调试版本会包含完整的符号信息，以方便调试 <br>调试版本不会对代码进行优化</li>
+<li>发布版<br>  <br>发布版本不会包含完整的符号信息<br>  发布版本的执行代码是进行过优化的<br>发布版本的大小会比调试版本的略小<br>在执行速度方面，调试版本会更快些，但不意味着会有显著的提升</li>
+</ul>
+</li>
+<li>Undefind symbols for architecture arm64(i386)<pre><code>&lt;br&gt;原因：是静态库不支持cpu arm64(i386)架构
+</code></pre></li>
+<li><p>iPhone手机的cpu架构</p>
+<ul>
+<li>模拟器<br>  <br>iPhone4s,5 是 i386架构 <br>iPhone5s以后 是x86_64架构</li>
+<li>发布版<br>  <br>iphone1代,3G,3GS 是 armv6架构<br><br>iPhone4,4s 是 armv7架构<br><br>iphone5,5s,5c  是 armv7s架构<br><br>iPhone6,6s,6plus,6splus 是 arm64架构</li>
+</ul>
+</li>
+<li><p>查看.a库所支持的架构类型<br> lipo -info xxx.a</p>
+</li>
+<li>.a静态库合并<br> lipo -create 真机静态库.a  模拟器静态库.a  -output 新文件.a<br>(最好指定一个目录,否则会默认当前目录)<br>只合并Debug版本  或者 只合并Release版本即可。</li>
+<li>查看.framework库所支持的架构类型<br> 7.1 进入到framework文件夹中<br>7.2 lipo -info Framework 即可</li>
+</ol>
+<h3 id="静态库编译错误"><a href="#静态库编译错误" class="headerlink" title="静态库编译错误"></a>静态库编译错误</h3><ol>
+<li>MRC 错误：会提示好多的autorelease,release,retain等错误<br><br>解决方案：给这个文件MRC编译 或者项目改成MRC环境</li>
+<li>找不到 <code>&lt;libxml/HTMLparser.h&gt;</code>头文件<br>编译缺少系统库，配置：Build Settings –&gt; 搜索Header Search Paths –&gt; 配置 $(SDK_DIR)/usr/include/libxml2</li>
+<li>framework项目，名字中不能带特殊字符<br> 会报 test-framework is not a valid PROJECT_NAME</li>
+</ol>
+<h3 id="依赖库错误"><a href="#依赖库错误" class="headerlink" title="依赖库错误"></a>依赖库错误</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">1._SCNetWork开头</div><div class="line">导入SystemConfiguration.framework</div><div class="line">2._UITypeCopy开头 + _kUITag开头</div><div class="line">  导入MobileCoreServices.framework</div><div class="line">3._defalate开头 + _inflate开头</div><div class="line">  导入 libz.tbd</div><div class="line">4._xml开头</div><div class="line">  导入libxml2.tbd</div></pre></td></tr></table></figure>
+<h3 id="引入静态库运行错误"><a href="#引入静态库运行错误" class="headerlink" title="引入静态库运行错误"></a>引入静态库运行错误</h3><p>1.运行崩溃<br>  假设不是静态库内部错误,那么就设置项目的Build Settings –&gt; Other Linker Flags –&gt; 为 -ObjC</p>
+<h3 id="资源静态库-bundle"><a href="#资源静态库-bundle" class="headerlink" title="资源静态库.bundle"></a>资源静态库.bundle</h3><p>1.创建一个文件夹<br>2.把资源(图片,plist…)放到文件夹中<br>3.把文件夹后缀改为bundle就可以了<br>4.资源库的使用<br> 在静态库中，我们获得资源的方式改为从这个bundle资源包中获得就可以了。<br> 例如：[UIImage imageNamed:@”xxx.bundle/xxx”];</p>
+<h3 id="创建一个可测试的静态库"><a href="#创建一个可测试的静态库" class="headerlink" title="创建一个可测试的静态库"></a>创建一个可测试的静态库</h3><p>1.创建一个项目<br>2.给项目添加一个静态库Target<br>3.编译静态库<br>4.配置引用静态库<br>General –&gt; Linked Frameworks and Libraries –&gt; 添加静态库.a<br>5.运行项目 – 这样就可以调试了.</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/11/01/Apple 公司开发者账号添加团队成员/" data-toggle="tooltip" data-placement="top"
+                           title="Apple 公司开发者账号添加团队成员">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/12/05/iOS 跳转到 App Store 下载评分页面/" data-toggle="tooltip" data-placement="top"
+                           title="iOS 跳转到 App Store 下载评分页面">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#库"><span class="toc-text">库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#静态库的形式"><span class="toc-text">静态库的形式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#a-和-framework-的区别"><span class="toc-text">.a 和 .framework 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#静态库的优势"><span class="toc-text">静态库的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建和打包-a-静态库"><span class="toc-text">创建和打包 .a 静态库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建和打包-a-静态库-1"><span class="toc-text">创建和打包 .a 静态库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#静态库问题"><span class="toc-text">静态库问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#静态库编译错误"><span class="toc-text">静态库编译错误</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖库错误"><span class="toc-text">依赖库错误</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#引入静态库运行错误"><span class="toc-text">引入静态库运行错误</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#资源静态库-bundle"><span class="toc-text">资源静态库.bundle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建一个可测试的静态库"><span class="toc-text">创建一个可测试的静态库</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS开发"
+                           title="iOS开发">iOS开发</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>

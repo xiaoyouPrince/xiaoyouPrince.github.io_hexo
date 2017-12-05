@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Apple 公司开发者账号添加团队成员｜xiaoyou&#39;s blog
+        iOS 跳转到 App Store 下载评分页面｜xiaoyou&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://xiaoyouprince.com/2017/11/01/Apple 公司开发者账号添加团队成员/">
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/12/05/iOS 跳转到 App Store 下载评分页面/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -153,20 +153,20 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Apple 公司开发者账号添加团队成员</h1>
+                    <h1>iOS 跳转到 App Store 下载评分页面</h1>
                     
-                    <h2 class="subheading">iOS 团队开发</h2>
+                    <h2 class="subheading">iOS回顾系列</h2>
                     
                     <span class="meta">
                          作者 xiaoyouPrince
                         <span>
-                          日期 2017-11-01
+                          日期 2017-12-05
                          </span>
                     </span>
                     <div class="tags text-center">
                         
-                        <a class="tag" href="/tags/#iOS开发"
-                           title="iOS开发">iOS开发</a>
+                        <a class="tag" href="/tags/#iOS"
+                           title="iOS">iOS</a>
                         
                     </div>
                 </div>
@@ -175,7 +175,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Apple 公司开发者账号添加团队成员
+            iOS 跳转到 App Store 下载评分页面
         </span>
     </div>
 </header>
@@ -186,72 +186,29 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <h1 id="Apple-公司开发者账号添加团队成员"><a href="#Apple-公司开发者账号添加团队成员" class="headerlink" title="Apple 公司开发者账号添加团队成员"></a>Apple 公司开发者账号添加团队成员</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>首先公司内部团队开发需要的账号类型为公司账号，可以添加团队成员协同开发。</p>
-<p>账号下的团队成员有三种角色：</p>
+                <p>许多应用都有跳转 App Store 评分或者下载更新的功能，网上查到很多跳转方法，这里记录一下</p>
+<p>主要跳转方法有两种</p>
 <ul>
-<li><p>Team Agent (代理)</p>
-<p>  <strong>代理:</strong> 就是注册开发者账号的那一个，权限最高，续费和创建开发商证书只能使用该账号</p>
-</li>
-<li><p>Admin (管理) </p>
-<p>  <strong>管理:</strong> 管理分发证书、管理测试设备、管理应用配置等等</p>
-</li>
-<li><p>Member (成员)</p>
-<p>  <strong>队员:</strong> 没有管理权限，只能下载和请求数据,只能做开发过程中真机调试</p>
-</li>
+<li>使用官方 StoreKit.framework 框架</li>
+<li>应用间跳转直接跳到 App Store 应用，并携带自己 App 的 AppID。</li>
 </ul>
-<p><a href="https://developer.apple.com/support/roles/" target="_blank" rel="external">官方关于团队成员的详细介绍</a></p>
-<h2 id="双方操作"><a href="#双方操作" class="headerlink" title="双方操作"></a>双方操作</h2><p><strong>被邀请方：</strong></p>
-<ul>
-<li>注册免费 AppleID ，登录开发者中心，升级成为免费版开发者账号</li>
-<li>找公司账号的代理（管理者）邀请你进入开发者成员组</li>
-<li><p>通过邀请邮件进入对应登录页面，接受邀请即可</p>
-<p>  <img src="http://upload-images.jianshu.io/upload_images/1256297-1fe248e4d5a540af.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="接受邀请"></p>
-</li>
-</ul>
-<p><strong>邀请方（公司账号）</strong></p>
-<ul>
-<li><p>代理账号登录开<a href="https://developer.apple.com/" target="_blank" rel="external">发者中心</a>、点击成员页面</p>
-<p>  <img src="http://upload-images.jianshu.io/upload_images/1256297-1bbf1ee2d04f9608.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="选择成员"></p>
-</li>
-</ul>
-<ul>
-<li><p>点击邀请按钮，根据要邀请的类型输入要邀请者的邮箱即可(这里用的是代理的账号，可以邀请管理员和普通队员，如果是管理员账号，只能邀请普通队员。)</p>
-<p>  <img src="http://upload-images.jianshu.io/upload_images/1256297-0805ca0cad1bac92.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="选择邀请按钮"></p>
-<p>  <img src="http://upload-images.jianshu.io/upload_images/1256297-e9d61629f9c4d8d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="根据邮箱邀请"></p>
-</li>
-</ul>
-<ul>
-<li>被邀请人收到邮件之后，进入对应连接就如最上边图，选择Accept 即可。</li>
-</ul>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ol>
-<li><p>更加安全</p>
-<p> 这样各个被邀请成员只拥有测试开发权限，只可以创建一个属于自己账户的 iOS 开发证书，只能用于真机测试，<br>对于其他账户（管理员证书和其他组员账户）的账号均没有修改和移除权限、同样对于增加设备、创建描述文件也没有响应的操作权限。</p>
-</li>
-</ol>
-<ol>
-<li><p>权责分明，便于管理</p>
-<p> 公司主要的账号管理会比较清晰，不会出现生成过多又乱的开发证书、测试证书的情况。</p>
-</li>
-<li><p>缺点就是需要使用公司开发者账号、申请比较麻烦</p>
-</li>
-</ol>
-<p><a href="https://developer.apple.com/library/content/documentation/IDEs/Conceptual/AppDistributionGuide/ManagingYourTeam/ManagingYourTeam.html#//apple_ref/doc/uid/TP40012582-CH16-SW1" target="_blank" rel="external">苹果官方文档</a></p>
-
+<h2 id="使用官方框架"><a href="#使用官方框架" class="headerlink" title="使用官方框架"></a>使用官方框架</h2><p>苹果提供了StoreKit.framework框架，工程中可以导入这个框架的主头文件<br><code>#import &lt;StoreKit/StoreKit.h&gt;</code>，<br>也可以直接导入<br><code>#import&lt;StoreKit/SKStoreProductViewController.h &gt;</code>，<br>添加代理并实现代理方法<code>&lt;SKStoreProductViewControllerDelegate&gt;</code></p>
+<p><strong>示例代码</strong></p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> 应用内跳转到App Store页</div><div class="line"> */</div><div class="line">- (<span class="keyword">IBAction</span>)jump:(<span class="keyword">id</span>)sender &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span> *appId = <span class="string">@"1066602104"</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 创建对象</span></div><div class="line">    <span class="built_in">SKStoreProductViewController</span> *storeVC = [[<span class="built_in">SKStoreProductViewController</span> alloc] init];</div><div class="line">    <span class="comment">// 设置代理</span></div><div class="line">    storeVC.delegate = <span class="keyword">self</span>;</div><div class="line">    <span class="comment">// 初始化参数</span></div><div class="line">    <span class="built_in">NSDictionary</span> *dict = [<span class="built_in">NSDictionary</span> dictionaryWithObject:appId forKey:<span class="built_in">SKStoreProductParameterITunesItemIdentifier</span>];</div><div class="line">    </div><div class="line">    <span class="comment">// 跳转App Store页</span></div><div class="line">    [storeVC loadProductWithParameters:dict completionBlock:^(<span class="built_in">BOOL</span> result, <span class="built_in">NSError</span> * _Nullable error) &#123;</div><div class="line">        <span class="keyword">if</span> (error) &#123;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"错误信息：%@"</span>,error.userInfo);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span></div><div class="line">        &#123;</div><div class="line">            <span class="comment">// 弹出模态视图</span></div><div class="line">            [<span class="keyword">self</span> presentViewController:storeVC animated:<span class="literal">YES</span> completion:<span class="literal">nil</span>];</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">#pragma mark -- SKStoreProductViewControllerDelegate</span></div><div class="line"><span class="comment">/**</span></div><div class="line"> SKStoreProductViewControllerDelegate 方法，选择完成之后的处理</div><div class="line"></div><div class="line"> @param viewController SKStoreProductViewController</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)productViewControllerDidFinish:(<span class="built_in">SKStoreProductViewController</span> *)viewController</div><div class="line">&#123;</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"将要退出 App Store 页面了"</span>);</div><div class="line">    [viewController dismissViewControllerAnimated:<span class="literal">YES</span> completion:^&#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"已经退出 App Store 页面完成了"</span>);</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="应用内跳转直接到-App-Store-页面"><a href="#应用内跳转直接到-App-Store-页面" class="headerlink" title="应用内跳转直接到 App Store 页面"></a>应用内跳转直接到 App Store 页面</h2><p>此方法使用 <code>[[UIApplication sharedApplication] openURL:url];</code>打开链接的方式跳转到App Store。</p>
+<p>此方法主要是需要拿到自己要跳转 App 的 App Store 的 URL 地址 </p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> 直接跳转</div><div class="line"> */</div><div class="line">- (<span class="keyword">IBAction</span>)justJumpToOtherPage:(<span class="keyword">id</span>)sender &#123;</div><div class="line"></div><div class="line">    <span class="comment">// 应用地址</span></div><div class="line">    <span class="built_in">NSString</span> *appStr = <span class="string">@"https://itunes.apple.com/app/apple-store/id1317248738?pt=118536605&amp;ct=web&amp;mt=8"</span>;</div><div class="line">    <span class="comment">// 跳转</span></div><div class="line">    <span class="built_in">NSDictionary</span> *options = @&#123;<span class="built_in">UIApplicationOpenURLOptionUniversalLinksOnly</span></div><div class="line">                              :@(<span class="literal">YES</span>)&#125;;</div><div class="line">    [[<span class="built_in">UIApplication</span> sharedApplication] openURL:[<span class="built_in">NSURL</span> URLWithString:appStr] options:options completionHandler:^(<span class="built_in">BOOL</span> success) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"将要进入 App Store 页面了"</span>);</div><div class="line">    &#125;];  </div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">IBAction</span>)jumpToScorePage</div><div class="line">&#123;</div><div class="line"></div><div class="line">        </div><div class="line">   <span class="built_in">NSLog</span>(<span class="string">@"将要进入 App Store 评分页面了"</span>);</div><div class="line">   </div><div class="line">   <span class="comment">// 评分页面地址</span></div><div class="line">   <span class="built_in">NSString</span> *scoreStr = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=%@&amp;pageNumber=0&amp;sortOrdering=2&amp;type=Purple+Software&amp;mt=8"</span>,appID];</div><div class="line">        </div><div class="line">   <span class="comment">// 判断系统用对应方法</span></div><div class="line">   <span class="keyword">if</span> ( @available(iOS <span class="number">10</span> , * )) &#123;</div><div class="line">       [[<span class="built_in">UIApplication</span> sharedApplication] openURL:[<span class="built_in">NSURL</span> URLWithString:scoreStr] options:options completionHandler:^(<span class="built_in">BOOL</span> success) &#123;</div><div class="line">       </div><div class="line">           <span class="built_in">NSLog</span>(<span class="string">@"已经进入 App Store 页面了"</span>);</div><div class="line">       &#125;];</div><div class="line">   &#125; <span class="keyword">else</span> &#123;</div><div class="line">       [[<span class="built_in">UIApplication</span> sharedApplication] openURL:[<span class="built_in">NSURL</span> URLWithString:appStr]];</div><div class="line">   &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="【注意】-跳转-App-Store-需要真机运行"><a href="#【注意】-跳转-App-Store-需要真机运行" class="headerlink" title="【注意】 跳转 App Store 需要真机运行"></a><strong>【注意】</strong> 跳转 App Store 需要真机运行</h2>
                 <hr>
                 
 
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/07/28/2017年07月28日  JPush 使用教程/" data-toggle="tooltip" data-placement="top"
-                           title="JPush 使用教程">&larr; Previous Post</a>
-                    </li>
-                    
-                    
-                    <li class="next">
                         <a href="/2017/12/01/iOS 中 .a 和 .framework 静态库的创建与 .bundle 资源包的使用/" data-toggle="tooltip" data-placement="top"
-                           title="iOS 中 .a 和 .framework 静态库的创建与 .bundle 资源包的使用">Next Post &rarr;</a>
+                           title="iOS 中 .a 和 .framework 静态库的创建与 .bundle 资源包的使用">&larr; Previous Post</a>
                     </li>
+                    
                     
                 </ul>
 
@@ -263,7 +220,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Apple-公司开发者账号添加团队成员"><span class="toc-text">Apple 公司开发者账号添加团队成员</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#双方操作"><span class="toc-text">双方操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用官方框架"><span class="toc-text">使用官方框架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#应用内跳转直接到-App-Store-页面"><span class="toc-text">应用内跳转直接到 App Store 页面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#【注意】-跳转-App-Store-需要真机运行"><span class="toc-text">【注意】 跳转 App Store 需要真机运行</span></a></li></ol>
                 </div>
             </div>
         </div>
@@ -285,8 +242,8 @@
                     </h5>
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS开发"
-                           title="iOS开发">iOS开发</a>
+                        <a class="tag" href="/tags/#iOS"
+                           title="iOS">iOS</a>
                         
                     </div>
                 </section>
