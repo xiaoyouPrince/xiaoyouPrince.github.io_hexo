@@ -321,6 +321,8 @@
 <li>调用<code>cellForRowAtIndexPath</code>返回对应的真实行高</li>
 </ol>
 <p>所以使用估算行高的方法可提高效率。</p>
+<p><strong>【注意】</strong><br>经过iOS 11适配的测试发现：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">iOS <span class="number">11</span> 中tableViewCell的高度计算顺序发生变化</div><div class="line"></div><div class="line">iOS <span class="number">11</span> 中数据源方法的调用顺序(无论有没有估算高度都是直接先执行cellForRow)</div><div class="line">    estimatedHeightForRow --&gt; cellForRow -- &gt; heightForRow 或</div><div class="line">    cellForRow -- &gt; heightForRow</div><div class="line"></div><div class="line">iOS <span class="number">10</span> 以下有没有估算高度是不同的</div><div class="line">    estimatedHeightForRow --&gt; cellForRow -- &gt; heightForRow</div><div class="line">    heightForRow -- &gt; cellForRow</div></pre></td></tr></table></figure>
 <h3 id="2-强制布局方法-cell-layoutIfNeeded"><a href="#2-强制布局方法-cell-layoutIfNeeded" class="headerlink" title="2. 强制布局方法 : [cell layoutIfNeeded];"></a>2. 强制布局方法 : [cell layoutIfNeeded];</h3><ul>
 <li><p>当cell调用setModel方法后，虽已赋值，但cell尚未展示。所以系统不会根据约束进行布局。所以此时无法得到cell真实的frame等数值。</p>
 </li>
