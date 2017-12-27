@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        数据结构(四)--队列｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/12/27/数据结构(四)--队列/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/wall.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/wall.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>数据结构(四)--队列</h1>
+                    
+                    <h2 class="subheading">数据结构回顾</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2017-12-27
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#数据结构"
+                           title="数据结构">数据结构</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            数据结构(四)--队列
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h1 id="数据结构-四-–队列"><a href="#数据结构-四-–队列" class="headerlink" title="数据结构(四)–队列"></a>数据结构(四)–队列</h1><p>本文主要讲解了队列的定义和队列主要功能实现的算法。最后会列举一些队列在程序设计当中常见的应用实例！相信了解了队列对你理解数据结构和程序设计会更加有益处！</p>
+<h2 id="1-队列的定义"><a href="#1-队列的定义" class="headerlink" title="1. 队列的定义"></a>1. 队列的定义</h2><p><strong>队列 (Queue)</strong>是一种先进先出(first in first out : <strong>FIFO</strong>)的线性表。它只允许在表的一端进行插入，在另一端进行删除元素。这和我们平时战队买票很一样。最早进入队列的元素最先离开，在队列中，允许插入的一端叫做<strong>队尾(rear)</strong>,允许删除的一段则称为<strong>队头(front)</strong>.示意图如下：<br><img src="http://upload-images.jianshu.io/upload_images/1256297-ee087e98b8d26509.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="300.队列示意图.png"></p>
+<h2 id="2-队列的分类"><a href="#2-队列的分类" class="headerlink" title="2. 队列的分类"></a>2. 队列的分类</h2><p>队列主要分为两类：</p>
+<ul>
+<li>链式队列：链式队列即用链表实现的队列</li>
+<li>顺序队列：顺序队列是用数组实现的队列，顺序队列通常必须是循环队列</li>
+</ul>
+<p>本文主要以顺序队列（循环队列）为例，通过如下几个问题来分析和介绍顺序队列的相关知识，(链式队列内部以链表实现相对更加简单)</p>
+<ol>
+<li>顺序队列为什么是循环队列？</li>
+<li>一共需要几个参数，分别是什么含义？</li>
+<li>入队伪算法思路</li>
+<li>出队伪算法思路</li>
+<li>如何判断循环队列是否为空</li>
+<li>如何判断循环队列已满</li>
+<li>什么时候该使用顺序队列？什么时候该使用链式队列</li>
+</ol>
+<h3 id="2-0-循环队列–队列的顺序表示和实现整体分析"><a href="#2-0-循环队列–队列的顺序表示和实现整体分析" class="headerlink" title="2.0 循环队列–队列的顺序表示和实现整体分析"></a>2.0 循环队列–队列的顺序表示和实现整体分析</h3><p>顺序队列本身是一种数组表示。在队列的顺序存储结构中，除了用一组连续的存储单元依次存放从队列头到队列尾的元素之外，尚需附设两个指针 front 和 rear 分别指示队列头元素及队列尾元素的位置。为了在C语言中描述方便，通常有如下约定：初始化创建空队列时，令 front = rear = 0，每当插入新的队列尾元素时，“尾指针增 1”；每当删除队列头元素时，“头指针增 1”；因此，在非空队列下，头指针始终指向队列头元素，而尾指针始终指向队列尾元素的下一个位置，如图所示：<br><img src="http://upload-images.jianshu.io/upload_images/1256297-c7dd58e73b4c6425.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="301.顺序队列示意图.png"></p>
+<p>假设当前队列分配最大空间为6，则当队列处于上图(d)的状态时，不可再继续插入新的队尾元素，否则会因为数组越界而导致程序代码被破坏。然而此时又不宜进行存储再分配扩大数组空间，因为队列的实际可用空间并未占满。一个巧妙的办法是将顺序队列臆造为一个环状的空间，如图所示，称之为循环队列：<br><img src="http://upload-images.jianshu.io/upload_images/1256297-594e737d482eaabe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="302.循环队列示意图.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1256297-1f8e43121566fb84.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="303.循环队列.jpg"></p>
+<p>如图，指针和队列之间的关系不变，上图 (a) 所示循环队列中，队列头元素是 J3 ，队列尾元素是 J5,之后J6,J7和J8相继插入，则队列空间均被占满，如图 (b) 所示，此时 Q.front = Q.rear; 反之，若 J3,J4 和 J5 相继从图 (a) 队列中删除，使队列呈“空”的状态，如图 (c) 所示，此时存在关系为 Q.front = Q.rear, 由此可见只凭等式 Q.front = Q.rear无法判断队列是“空”还是“满”。有两种可处理方式：一种是另外设置一个标志以区别队列是 “空” 还是 “满”；另一种是少用一个元素空间，约定以“队列头指针在队列尾指针的下一位置(指环状的下一位置)”作为队列呈“满”状态的标志。</p>
+<p>从此分析中可见，在C语言中不能用动态分配的一维数组来实现循环队列，如果用户的应用程序中设有循环队列，则必须为它设定一个最大队列长度，若用户无法预估所用队列的最大长度，则宜采用链式队列。</p>
+<h3 id="2-1-顺序队列为什么是循环队列"><a href="#2-1-顺序队列为什么是循环队列" class="headerlink" title="2.1 顺序队列为什么是循环队列"></a>2.1 顺序队列为什么是循环队列</h3><p>循环队列是针对顺序队列中最大内存空间有限，当队列处于上图(d)的状态时，不可再继续插入新的队尾元素，否则会因为数组越界而导致程序代码被破坏。然而此时又不宜进行存储再分配扩大数组空间，因为队列的实际可用空间并未占满的问题的一种合理的解决方案。</p>
+<h3 id="2-2-一共需要几个参数，分别是什么含义"><a href="#2-2-一共需要几个参数，分别是什么含义" class="headerlink" title="2.2 一共需要几个参数，分别是什么含义"></a>2.2 一共需要几个参数，分别是什么含义</h3><p><strong>front &amp;&amp; rear</strong><br>不同场合下含义不同。</p>
+<ol>
+<li>队列初始化 – front 和 rear 的值都是零</li>
+<li>队列非空 – front 代表队列的第一个元素，rear 代表队列的最后一个有效元素的下一个元素</li>
+<li>队列为空 – front 和 rear 相等，但不一定是零</li>
+</ol>
+<h3 id="2-3-入队伪算法"><a href="#2-3-入队伪算法" class="headerlink" title="2.3 入队伪算法"></a>2.3 入队伪算法</h3><p>尾部入队，分两步完成</p>
+<ol>
+<li>将值存入r所代表的位置</li>
+<li>错误写法 r = r + 1; 正确写法： r = (r + 1) % 数组的长度   【n-1对n取余，结果就是n-1】</li>
+</ol>
+<h3 id="2-4-出队伪算法"><a href="#2-4-出队伪算法" class="headerlink" title="2.4 出队伪算法"></a>2.4 出队伪算法</h3><p>头部出队，分两步完成</p>
+<ol>
+<li>将f出队的值保存起来（可以根据具体需求确定是否要保存）</li>
+<li>f 的指针变动正确写法： f = (f + 1) % 数组的长度   【n-1对n取余，结果就是n-1】</li>
+</ol>
+<h3 id="2-5-如何判断循环队列是否为空"><a href="#2-5-如何判断循环队列是否为空" class="headerlink" title="2.5 如何判断循环队列是否为空"></a>2.5 如何判断循环队列是否为空</h3><p>如果front  == rear ，则该队列一定为空</p>
+<h3 id="2-6-如何判断循环队列已满"><a href="#2-6-如何判断循环队列已满" class="headerlink" title="2.6 如何判断循环队列已满"></a>2.6 如何判断循环队列已满</h3><p>预备知识：<br>front 的值可能比 rear 大<br>front 的值也可能比 rear 小<br>当然两者也完全可能相等</p>
+<p>判断已满两种方式：</p>
+<ol>
+<li>多增加一个标识参数</li>
+<li>少用数组中的一个元素【可以直接用两个参数，通常使用第二种方式】<br> 如果r 和 f 的值紧挨着，则标识队列已满<br> C语言标识就是：<br> if ( (r+1)%数组长度 == f)<pre><code>队列已满
+</code></pre> else<pre><code>队列未满
+</code></pre></li>
+</ol>
+<h3 id="2-7-什么时候该使用顺序队列？什么时候该使用链式队列？"><a href="#2-7-什么时候该使用顺序队列？什么时候该使用链式队列？" class="headerlink" title="2.7 什么时候该使用顺序队列？什么时候该使用链式队列？"></a>2.7 什么时候该使用顺序队列？什么时候该使用链式队列？</h3><p>如果用户的应用程序中设有循环队列，则必须为它设定一个最大队列长度，若用户无法预估所用队列的最大长度，则宜采用链式队列</p>
+<h2 id="3-队列的伪算法和实现"><a href="#3-队列的伪算法和实现" class="headerlink" title="3. 队列的伪算法和实现"></a>3. 队列的伪算法和实现</h2><p>此小节实现的是一个最大队列长度为 6 的环形队列，下面是本队列的定义和相关实现。</p>
+<p>队列类型的定义</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> kQueueMaxLength 6   <span class="comment">// 假设最大长度为 6</span></span></div><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Queue</span>&#123;</span></div><div class="line">    <span class="keyword">int</span> * pBase;    <span class="comment">// 队列中操作的数组</span></div><div class="line">    <span class="keyword">int</span> front;      <span class="comment">// 队头</span></div><div class="line">    <span class="keyword">int</span> rear;       <span class="comment">// 对尾</span></div><div class="line">&#125;QUEUE;</div></pre></td></tr></table></figure>
+<p>队列的初始化</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> 初始化队列</div><div class="line"> @param pQueue 要被初始化队列地址</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">init_queue</span><span class="params">(QUEUE *pQueue)</span></span>&#123;</div><div class="line">    pQueue-&gt;pBase = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * kQueueMaxLength); <span class="comment">// 初始化，pBase指向长度6的 int* 数组</span></div><div class="line">    pQueue-&gt;front = pQueue-&gt;rear = <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>元素入队</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> 入队</div><div class="line"></div><div class="line"> @param pQueue 要入队的队列地址</div><div class="line"> @param val 入队元素的值</div><div class="line"> @return 入队成功/失败</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">en_queue</span><span class="params">(QUEUE *pQueue , <span class="keyword">int</span> val)</span></span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (full_queue(pQueue)) &#123; <span class="comment">// 队列已满，直接返回入队失败</span></div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">    &#125;<span class="keyword">else</span></div><div class="line">    &#123;   <span class="comment">// 队列未满，执行入队操作</span></div><div class="line">        </div><div class="line">        <span class="comment">// 1.元素插入数组中</span></div><div class="line">        pQueue-&gt;pBase[pQueue-&gt;rear] = val;</div><div class="line">        <span class="comment">// 2.队头队尾的表示</span></div><div class="line">        pQueue-&gt;rear = (pQueue-&gt;rear + <span class="number">1</span>) % kQueueMaxLength;</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>元素出队</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> 出队</div><div class="line"></div><div class="line"> @param pQueue 要出队队列地址</div><div class="line"> @param val 被出队元素地址</div><div class="line"> @return 出队成功/失败</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">de_queue</span><span class="params">(QUEUE *pQueue , <span class="keyword">int</span> *val)</span></span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (empty_queue(pQueue)) &#123;  <span class="comment">// 如果是空队列，直接出队失败</span></div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">    &#125;<span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        <span class="comment">// 出队-&gt;保存被出队元素的值</span></div><div class="line">        *val = pQueue-&gt;pBase[pQueue-&gt;front];</div><div class="line">        <span class="comment">// 修改队头位置</span></div><div class="line">        pQueue-&gt;front = (pQueue-&gt;front + <span class="number">1</span>) % kQueueMaxLength;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>遍历队列</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> 遍历队列</div><div class="line"></div><div class="line"> @param pQueue 要遍历的队列的地址</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">tranverce_queue</span><span class="params">(QUEUE *pQueue)</span></span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">int</span> i = pQueue-&gt;front;</div><div class="line">    <span class="keyword">int</span> lenght = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (i != pQueue-&gt;rear) &#123;</div><div class="line">        lenght ++;</div><div class="line">        i = (i + <span class="number">1</span>) % kQueueMaxLength;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"队列中共有 %d 个元素\n"</span>,lenght);</div><div class="line">    </div><div class="line">    i = pQueue-&gt;front;</div><div class="line">    <span class="keyword">while</span> (i != pQueue-&gt;rear) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">printf</span>(<span class="string">"第 %d 个元素为 %d\n"</span>,i + <span class="number">1</span>,pQueue-&gt;pBase[i]);</div><div class="line">        i = (i + <span class="number">1</span>) % kQueueMaxLength;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>主函数中使用队列</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">    QUEUE q;            <span class="comment">// 声明队列q</span></div><div class="line">    init_queue(&amp;q);     <span class="comment">// 初始化队列q</span></div><div class="line">    </div><div class="line">    en_queue(&amp;q, <span class="number">2</span>);    <span class="comment">// 插入元素</span></div><div class="line">    en_queue(&amp;q, <span class="number">21</span>);    <span class="comment">// 插入元素</span></div><div class="line">    en_queue(&amp;q, <span class="number">3</span>);    <span class="comment">// 插入元素</span></div><div class="line">    en_queue(&amp;q, <span class="number">4</span>);    <span class="comment">// 插入元素</span></div><div class="line">    en_queue(&amp;q, <span class="number">5</span>);    <span class="comment">// 插入元素</span></div><div class="line">    en_queue(&amp;q, <span class="number">6</span>);    <span class="comment">// 插入元素</span></div><div class="line">    en_queue(&amp;q, <span class="number">7</span>);    <span class="comment">// 插入元素</span></div><div class="line">    en_queue(&amp;q, <span class="number">8</span>);    <span class="comment">// 插入元素</span></div><div class="line">    </div><div class="line">    tranverce_queue(&amp;q);    <span class="comment">//遍历队列</span></div><div class="line">    </div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    <span class="keyword">bool</span> b;</div><div class="line">    b = de_queue(&amp;q, &amp;i);   <span class="comment">// 出队</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"出队%s,元素为 %d\n"</span>,b?<span class="string">"成功"</span>:<span class="string">"失败"</span>,i);</div><div class="line">    </div><div class="line">    b = de_queue(&amp;q, &amp;i);   <span class="comment">// 出队</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"出队%s,元素为 %d\n"</span>,b?<span class="string">"成功"</span>:<span class="string">"失败"</span>,i);</div><div class="line">    </div><div class="line">    b = de_queue(&amp;q, &amp;i);   <span class="comment">// 出队</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"出队%s,元素为 %d\n"</span>,b?<span class="string">"成功"</span>:<span class="string">"失败"</span>,i);</div><div class="line">    </div><div class="line">    tranverce_queue(&amp;q);    <span class="comment">//遍历队列</span></div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="4-小结"><a href="#4-小结" class="headerlink" title="4. 小结"></a>4. 小结</h2><p>队列主要应用在和时间有关的操作。</p>
+<p>常见的例子如现实生活中排队买票，银行排队处理事情。再如操作系统中执行队列，等待队列。又如我们在编写程序过程中的多线程编程，也需要通过队列来管理线程的访问顺序等。</p>
+<p>文中代码地址：<a href="https://github.com/xiaoyouPrince/DataStructure" target="_blank" rel="external">https://github.com/xiaoyouPrince/DataStructure</a></p>
+<!-- 队列模拟银行排队实例 Page 80-->
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/12/21/数据结构(三)--栈/" data-toggle="tooltip" data-placement="top"
+                           title="数据结构(三)--栈">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#数据结构-四-–队列"><span class="toc-text">数据结构(四)–队列</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-队列的定义"><span class="toc-text">1. 队列的定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-队列的分类"><span class="toc-text">2. 队列的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-0-循环队列–队列的顺序表示和实现整体分析"><span class="toc-text">2.0 循环队列–队列的顺序表示和实现整体分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-顺序队列为什么是循环队列"><span class="toc-text">2.1 顺序队列为什么是循环队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-一共需要几个参数，分别是什么含义"><span class="toc-text">2.2 一共需要几个参数，分别是什么含义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-入队伪算法"><span class="toc-text">2.3 入队伪算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-出队伪算法"><span class="toc-text">2.4 出队伪算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-如何判断循环队列是否为空"><span class="toc-text">2.5 如何判断循环队列是否为空</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-如何判断循环队列已满"><span class="toc-text">2.6 如何判断循环队列已满</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-什么时候该使用顺序队列？什么时候该使用链式队列？"><span class="toc-text">2.7 什么时候该使用顺序队列？什么时候该使用链式队列？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-队列的伪算法和实现"><span class="toc-text">3. 队列的伪算法和实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-小结"><span class="toc-text">4. 小结</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#数据结构"
+                           title="数据结构">数据结构</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>
