@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        appledoc导出iOS代码文档的使用和问题详解（干货篇）｜xiaoyou&#39;s blog
+        iOS 11 导航栏 item 偏移问题 和 Swift 下 UIButton 设置 title、image 显示问题｜xiaoyou&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://xiaoyouprince.com/2017/03/29/appledoc导出iOS代码文档的使用和问题详解（干货篇）/">
+    <link rel="canonical" href="http://xiaoyouprince.com/2018/04/04/2018:04:04-iOS 11 导航栏 item 偏移问题 和 Swift 下 UIButton 设置 title、image 显示问题/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -136,13 +136,13 @@
 
 
 <img class="wechat-title-img"
-     src="http://oozx6yayl.bkt.clouddn.com/lizi.jpg">
+     src="http://oozx6yayl.bkt.clouddn.com/love.jpg">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('http://oozx6yayl.bkt.clouddn.com/lizi.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/love.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
     }
 
     
@@ -153,20 +153,20 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>appledoc导出iOS代码文档的使用和问题详解（干货篇）</h1>
+                    <h1>iOS 11 导航栏 item 偏移问题 和 Swift 下 UIButton 设置 title、image 显示问题</h1>
                     
-                    <h2 class="subheading">iOS回顾系列</h2>
+                    <h2 class="subheading">工作问题</h2>
                     
                     <span class="meta">
                          作者 xiaoyouPrince
                         <span>
-                          日期 2017-03-29
+                          日期 2018-04-04
                          </span>
                     </span>
                     <div class="tags text-center">
                         
-                        <a class="tag" href="/tags/#iOS开发"
-                           title="iOS开发">iOS开发</a>
+                        <a class="tag" href="/tags/#工作问题"
+                           title="工作问题">工作问题</a>
                         
                     </div>
                 </div>
@@ -175,7 +175,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            appledoc导出iOS代码文档的使用和问题详解（干货篇）
+            iOS 11 导航栏 item 偏移问题 和 Swift 下 UIButton 设置 title、image 显示问题
         </span>
     </div>
 </header>
@@ -186,66 +186,37 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <h2 id="1-简单说一下背景和自己感受"><a href="#1-简单说一下背景和自己感受" class="headerlink" title="1. 简单说一下背景和自己感受"></a>1. 简单说一下背景和自己感受</h2><blockquote>
-<p>背景：<br>项目好像突然黄了，公司让详细写项目代码的注释并且导出文档，弄完之后就要封版。</p>
-</blockquote>
-<p><strong>说实话：听到这个消息之后心里还是很担心的，因为我知道公司不可能养闲人，我手上的项目本来年后就没有什么起色，加上突然来了这样的一个‘噩耗’，顿时就知道后面肯定没好事</strong></p>
-<p>我知道公司不会养闲人，所以在这几天项目闲下来的日子里，忐忑过,也想到了项目可能面临的种种，当然也包括自己所可能受到的种种影响。但是毕竟我们只是听上面安排的一线开发人员，做不了项目大方向的主，只能服从安排，所以不管心情如何还是要把工作完成，只是想记录一下心情和工作中遇到的问题。</p>
-<a id="more"></a>
-<h2 id="2-Xcode代码导出注释实践"><a href="#2-Xcode代码导出注释实践" class="headerlink" title="2. Xcode代码导出注释实践"></a>2. Xcode代码导出注释实践</h2><p>Xcode导出代码文档的方式一共有三种，Doxygen, headdoc 和 appledoc 。以下是三者官网链接：</p>
+                <h1 id="iOS-11-导航栏-item-偏移问题-和-Swift-下-UIButton-设置-title、image-显示问题"><a href="#iOS-11-导航栏-item-偏移问题-和-Swift-下-UIButton-设置-title、image-显示问题" class="headerlink" title="iOS 11 导航栏 item 偏移问题 和 Swift 下 UIButton 设置 title、image 显示问题"></a>iOS 11 导航栏 item 偏移问题 和 Swift 下 UIButton 设置 title、image 显示问题</h1><p>记录两个最近开发中遇到的两个问题</p>
 <ul>
-<li><a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank" rel="external">Doxygen</a></li>
-<li><a href="http://developer.apple.com/opensource/tools/headerdoc.html" target="_blank" rel="external">headdoc</a></li>
-<li><a href="http://gentlebytes.com/appledoc/" target="_blank" rel="external">appledoc</a></li>
+<li>iOS 11 下导航栏 item 会在 push 和 pop 的时候发生偏移问题</li>
+<li>Swift 中 UIButton 设置了 image 和 title 后，title 无法显示问题 </li>
 </ul>
-<h2 id="3-介绍appledoc"><a href="#3-介绍appledoc" class="headerlink" title="3. 介绍appledoc"></a>3. 介绍appledoc</h2><p>由于我查到的资料显示appledoc最受欢迎，并且生成的文档风格和apple一致，非常满足我的需求，故我使用的也是appledoc，有兴趣的同学可以自行进入官网或网页自行查询。</p>
-<p>appledoc的几点优点：</p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>iOS 11 中导航栏在使用过程中 item 发生位置偏移，效果如图:<br><img src="https://upload-images.jianshu.io/upload_images/1256297-6c87d4c6a90a3508.gif?imageMogr2/auto-orient/strip" alt="NavBug.gif"></p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><ol>
+<li>iOS 10 之前没有问题！</li>
+<li>必须使用系统创建方式</li>
+<li>两边 item 必须是使用同样的创建方式</li>
+</ol>
+<p>基类中:XYNavigationController中</p>
+<ol>
+<li>统一创建返回按钮，使用系统方法(从栈中的第二个VC开始)</li>
+<li>nav栈中首个VC，自己创建BackBtn(同样用系统方法)</li>
+</ol>
+<p>分类中:UIBarButtonItem (XYAdd)</p>
+<ol>
+<li>提供快速创建方法的 leftItem</li>
+<li>提供快速创建方法的 rightItem </li>
+</ol>
+<h2 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h2><ul>
+<li>导航栏基类中，重写并拦截对应的 Push 方法</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)pushViewController:(<span class="built_in">UIViewController</span> *)viewController animated:(<span class="built_in">BOOL</span>)animated</div><div class="line">&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.childViewControllers.count &gt; <span class="number">0</span>) &#123; <span class="comment">//非rootViewController</span></div><div class="line">        </div><div class="line">        <span class="comment">// 设置返回按钮  【这里必须用系统方法创建，使用自定义 View 设置 item 会发生偏移】</span></div><div class="line">        <span class="comment">//viewController.navigationItem.leftBarButtonItem = [UIBarButtonItem itemWithimage:[UIImage imageNamed:@"navigationButtonReturn"] selImage:[UIImage imageNamed:@"navigationButtonReturnClick"] target:self action:@selector(back)]; //返回</span></div><div class="line">        </div><div class="line">        viewController.navigationItem.leftBarButtonItem = [[<span class="built_in">UIBarButtonItem</span> alloc] initWithImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"navigationButtonReturn"</span>] style:<span class="built_in">UIBarButtonItemStylePlain</span> target:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(back)];</div><div class="line">        viewController.navigationItem.leftBarButtonItem.tintColor = [<span class="built_in">UIColor</span> blackColor];</div><div class="line">        </div><div class="line">        viewController.hidesBottomBarWhenPushed = <span class="literal">YES</span>;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    [<span class="keyword">super</span> pushViewController:viewController animated:animated];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)back&#123;</div><div class="line">    [<span class="keyword">self</span> popViewControllerAnimated:<span class="literal">YES</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
-<li>它默认生成的文档风格和苹果的官方文档是一致的，无需额外配置。</li>
-<li>appledoc 就是用 objective-c 生成的，必要的时候调试和改动也比较方便。</li>
-<li>可以生成 docset，并且集成到 Xcode 中。这一点是很赞的，相当于在源码中按住 option 再单击就可以调出相应方法的帮助。</li>
+<li>可定义 UIBarButtonItem 分类，快速创建 item，内部在iOS 11 下不可再用自定义 View 的方式</li>
 </ul>
-<h2 id="4-安装appledoc"><a href="#4-安装appledoc" class="headerlink" title="4.安装appledoc"></a>4.安装appledoc</h2><p>安装appledoc步骤非常简单，只需两步：</p>
-<ol>
-<li>终端中clone项目到本地</li>
-<li>运行安装脚本</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">git clone git://github.com/tomaz/appledoc.git</div><div class="line">cd appledoc</div><div class="line">sudo sh install-appledoc.sh</div></pre></td></tr></table></figure>
-<p><strong>验证是否安装成功</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">appledoc --version</div></pre></td></tr></table></figure>
-<p>我这边版本如下：<br><img src="http://upload-images.jianshu.io/upload_images/1256297-f917b6627a2bf54c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170320_3.png"></p>
-<h2 id="5-使用"><a href="#5-使用" class="headerlink" title="5.使用"></a>5.使用</h2><p>appledoc的使用非常简单，2步即可：</p>
-<ol>
-<li>在终端中进入要导出文档的目录下</li>
-<li>输入如下命令</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">appledoc --project-name &quot;XYBannerView&quot; --project-company &quot;xiaoyouPrince&quot; ./</div></pre></td></tr></table></figure>
-<p><strong>注意：</strong></p>
-<ol>
-<li>XYBannerView：是你自己的项目名（随便写也可以）</li>
-<li>xiaoyouPrince： 是项目对应的公司名（随便写也可以）</li>
-<li><code>./</code> 导出到当前路径的一个参数，前面要有空格！</li>
-</ol>
-<p>appledoc 会扫描当前路径下的所有文件，然后生成好文档放到 doc 目录下。你也可以用 appledoc –help 查看所有可用的参数。</p>
-<p>基本上使用起来还是比较方便的，详细的信息可以查看官方的文档：<a href="http://gentlebytes.com/appledoc/" target="_blank" rel="external">http://gentlebytes.com/appledoc/</a></p>
-<h2 id="6-我遇到的问题：Command-bin-sh-failed-with-exit-code-250"><a href="#6-我遇到的问题：Command-bin-sh-failed-with-exit-code-250" class="headerlink" title="6.我遇到的问题：Command /bin/sh failed with exit code 250"></a>6.我遇到的问题：Command /bin/sh failed with exit code 250</h2><p>报错信息：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Command /bin/sh failed with exit code 250</div></pre></td></tr></table></figure>
-<p>如图：（遇到的同学肯定印象深刻，并且还很难找到答案，这也是我为什么想写这个文章的原因）</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1256297-a4a014e8d7f193b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170320_2.png"></p>
-<p>我从网上找到答案的主要意思（有很多是相关的，具体的答案真没找到）：</p>
-<ol>
-<li>和 enum 和 NS_ENUM 类型的支持有关（这个在作者的更新中已经修改好像）</li>
-<li>和 Pods 中的三方库等资源有关。由于项目大很多东西是不支持的</li>
-<li>警告一般是项目中的注释，缺少参数或格式问题（三方库中尤其明显）</li>
-</ol>
-<h2 id="7-解决方法"><a href="#7-解决方法" class="headerlink" title="7. 解决方法"></a>7. 解决方法</h2><p>说了这么多，下面说一下解决方法：</p>
-<p>由于三方库和一些资源有问题，那就跳过三方（Pods和一些手动导入的），进入下一层目录执行命令</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">appledoc --project-name &quot;XYBannerView&quot; --project-company &quot;xiaoyouPrince&quot; ./</div></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>这就对于项目中文件结构的分层很重要，我们自己的代码和项目中引用的三方代码需要分开</strong></p>
-</blockquote>
-<p><img src="http://upload-images.jianshu.io/upload_images/1256297-59d50ab10c84d4f2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20170320_5.png"><br>虽然还是有些警告和小问题，但是可以导出来了。</p>
-<p>我有些问题并没有研究很深入，希望有研究的朋友能不吝赐教，多多分享！</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">+ (<span class="built_in">UIBarButtonItem</span> *)xy_itemWithTarget:(<span class="keyword">id</span>)target action:(SEL)action title:(<span class="built_in">NSString</span> *)title&#123;</div><div class="line">    </div><div class="line">    <span class="built_in">UIBarButtonItem</span> *item = [[<span class="built_in">UIBarButtonItem</span> alloc] initWithTitle:title style:<span class="built_in">UIBarButtonItemStylePlain</span> target:target action:action];</div><div class="line">    item.tintColor = [<span class="built_in">UIColor</span> blackColor];</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> item;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Swift-中设置-title-和-不同状态-image-，title无法正常显示"><a href="#Swift-中设置-title-和-不同状态-image-，title无法正常显示" class="headerlink" title="Swift 中设置 title 和 不同状态 image ，title无法正常显示"></a>Swift 中设置 title 和 不同状态 image ，title无法正常显示</h2><p>Swift 下同时设置了UIButton 的 title 和 image ，title无法正确显示。<br>这应该是 Swift 的一个bug，项目中如果需要此功能，正确的实现方式应该是设置 Button 的不同状态下的背景图</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line">optionBtn.setBackgroundImage(<span class="type">UIImage</span>(named: <span class="string">"btn_image_normal"</span>), <span class="keyword">for</span>: .normal)</div><div class="line">optionBtn.setBackgroundImage(<span class="type">UIImage</span>(named: <span class="string">"btn_answer_highlighted"</span>), <span class="keyword">for</span>: .highlighted)</div><div class="line"></div><div class="line"><span class="comment">//optionBtn.setImage(UIImage(named: "btn_image_normal"), for: .normal)</span></div><div class="line"><span class="comment">//optionBtn.setImage(UIImage(named: "btn_answer_highlighted"), for: .highlighted)</span></div><div class="line"></div><div class="line">optionBtn.setTitle(<span class="string">"按我"</span>, <span class="keyword">for</span>: .normal)</div><div class="line">optionBtn.setTitle(<span class="string">"按我"</span>, <span class="keyword">for</span>: .highlighted)</div><div class="line">  </div><div class="line">optionBtn.setTitleColor(<span class="type">UIColor</span>.black, <span class="keyword">for</span>: .normal)</div><div class="line">optionBtn.setTitleColor(<span class="type">UIColor</span>.black, <span class="keyword">for</span>: .highlighted)</div></pre></td></tr></table></figure>
 
                 <hr>
                 
@@ -253,15 +224,10 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/03/26/阿房宫赋/" data-toggle="tooltip" data-placement="top"
-                           title="阿房宫赋">&larr; Previous Post</a>
+                        <a href="/2017/12/27/数据结构(四)--队列/" data-toggle="tooltip" data-placement="top"
+                           title="数据结构(四)--队列">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2017/04/19/Xcode旧项目引入CocoaPod遇到的问题与解决/" data-toggle="tooltip" data-placement="top"
-                           title="Xcode旧项目引入CocoaPod遇到的问题与解决">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
@@ -273,7 +239,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-简单说一下背景和自己感受"><span class="toc-text">1. 简单说一下背景和自己感受</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Xcode代码导出注释实践"><span class="toc-text">2. Xcode代码导出注释实践</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-介绍appledoc"><span class="toc-text">3. 介绍appledoc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-安装appledoc"><span class="toc-text">4.安装appledoc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-使用"><span class="toc-text">5.使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-我遇到的问题：Command-bin-sh-failed-with-exit-code-250"><span class="toc-text">6.我遇到的问题：Command /bin/sh failed with exit code 250</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-解决方法"><span class="toc-text">7. 解决方法</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS-11-导航栏-item-偏移问题-和-Swift-下-UIButton-设置-title、image-显示问题"><span class="toc-text">iOS 11 导航栏 item 偏移问题 和 Swift 下 UIButton 设置 title、image 显示问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题描述"><span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题分析"><span class="toc-text">问题分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决问题"><span class="toc-text">解决问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Swift-中设置-title-和-不同状态-image-，title无法正常显示"><span class="toc-text">Swift 中设置 title 和 不同状态 image ，title无法正常显示</span></a></li></ol></li></ol>
                 </div>
             </div>
         </div>
@@ -295,8 +261,8 @@
                     </h5>
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS开发"
-                           title="iOS开发">iOS开发</a>
+                        <a class="tag" href="/tags/#工作问题"
+                           title="工作问题">工作问题</a>
                         
                     </div>
                 </section>
