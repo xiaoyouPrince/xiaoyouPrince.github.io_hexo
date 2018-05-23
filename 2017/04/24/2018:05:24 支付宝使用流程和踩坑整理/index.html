@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        支付宝使用流程和踩坑整理｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/04/24/2018:05:24 支付宝使用流程和踩坑整理/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/lizi.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/lizi.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>支付宝使用流程和踩坑整理</h1>
+                    
+                    <h2 class="subheading">支付宝踩坑记</h2>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2017-04-24
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#支付宝集成"
+                           title="支付宝集成">支付宝集成</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            支付宝使用流程和踩坑整理
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h1 id="支付宝使用流程和踩坑整理"><a href="#支付宝使用流程和踩坑整理" class="headerlink" title="支付宝使用流程和踩坑整理"></a>支付宝使用流程和踩坑整理</h1><p><a href="https://docs.open.alipay.com/399/106917/" target="_blank" rel="external">官方开发指南</a></p>
+<blockquote>
+<p>本文记录了我使用支付宝的一些过程<br>第一部分是一些我根据官方文档中摘录的可用的重要信息<br>第二部分是整理的 iOS/Android App 接入主要流程 &amp;&amp; Demo<br>第三部分是遇到的几个坑，比较重要，<strong>特别记录一下</strong></p>
+</blockquote>
+<p><br></p>
+<h2 id="第一部分"><a href="#第一部分" class="headerlink" title="第一部分"></a>第一部分</h2><h2 id="应用创建及使用流程："><a href="#应用创建及使用流程：" class="headerlink" title="应用创建及使用流程："></a>应用创建及使用流程：</h2><p><img src="https://upload-images.jianshu.io/upload_images/1256297-9671b3de86d28d33.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="01_liucheng.jpg"></p>
+<h3 id="1-创建应用"><a href="#1-创建应用" class="headerlink" title="1.创建应用"></a>1.创建应用</h3><p>开发者使用支付宝账号登录开放平台（<strong>需实名认证的支付宝账号</strong>），根据实际需求创建应用（如“支付应用”）。<br><strong>备注：创建应用时的应用状态为“开发中”，无法在线上正式调用接口。如您已经了解应用的基本功能，可点击此处跳过此步骤；</strong></p>
+<h3 id="2-填写应用基础信息"><a href="#2-填写应用基础信息" class="headerlink" title="2.填写应用基础信息"></a>2.填写应用基础信息</h3><p>名称 &amp;&amp; 图标 将来会作为审核依据，<a href="https://render.alipay.com/p/f/fd-ir3b1iwo/index.html" target="_blank" rel="external">审核规则</a></p>
+<h3 id="3-配置应用环境"><a href="#3-配置应用环境" class="headerlink" title="3. 配置应用环境"></a>3. 配置应用环境</h3><table>
+<thead>
+<tr>
+<th>字段名称</th>
+<th>字段描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>应用网关<br>对应下图1</td>
+<td>用于接收支付宝异步通知，例如口碑开店中，<br>需要配置此网关来接收<a href="https://docs.open.alipay.com/205/105251#s1" target="_blank" rel="external">开发者门店被动通知</a></td>
+</tr>
+<tr>
+<td>授权回调地址<br>对应下图2</td>
+<td>第三方授权或用户信息授权后回调地址。<br>授权链接中配置的redirect_uri的值必须与此值保持一致。<br>(如：<a href="https://www.alipay.com" target="_blank" rel="external">https://www.alipay.com</a>) 注：当填入该地址时，系统会自动进行安全检测，<br>详情请参考<a href="https://docs.open.alipay.com/316/106274" target="_blank" rel="external">安全检测</a>。</td>
+</tr>
+<tr>
+<td>RSA(SHA256)密钥<br>（对应下图3）</td>
+<td>开发者要保证接口中使用的私钥与此处的公钥匹配，<br>否则无法调用接口。可参考密钥的生<a href="https://docs.open.alipay.com/291/105971" target="_blank" rel="external">成与配置</a>，且接口参数sign_type=RSA2。</td>
+</tr>
+<tr>
+<td>RSA(SHA1)密钥<br>（对应下图4）</td>
+<td>同上，且接口参数sign_type=RSA。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>UI 页面参考</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1256297-5ef0362022370434.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="02_peizhi.png"></p>
+<p><strong>签名与生成密钥</strong></p>
+<p>如何生成与配置密钥详见<a href="https://docs.open.alipay.com/291/105971" target="_blank" rel="external">签名专区</a>。<br>TIPS：必须填写“接口加密方式”（加密方式只需填写一个），才可以提交审核。</p>
+<h3 id="4-接入沙箱环境"><a href="#4-接入沙箱环境" class="headerlink" title="4.接入沙箱环境"></a>4.接入沙箱环境</h3><p>开发中的应用无法调用线上正式环境的接口，蚂蚁提供了沙箱环境帮助开发者进行开发调通工作，沙箱环境自动为开发者分配沙箱应用，不依赖线上环境的应用创建；<br>点击“开放平台-开发者中心-<a href="https://openhome.alipay.com/platform/appDaily.htm" target="_blank" rel="external">沙箱环境</a>”。进入沙箱环境页面，系统已经自动为你创建一个应用。与线上流程一致，只要配置了沙箱应用的密钥即可开始开发。</p>
+<h2 id="应用安全性开发指南"><a href="#应用安全性开发指南" class="headerlink" title="应用安全性开发指南"></a>应用安全性开发指南</h2><p><a href="https://docs.open.alipay.com/399/106918/" target="_blank" rel="external">《开放平台第三方应用安全开发指南》</a>给出常见开发场景下，帮助开发人员完善应用安全性的开发建议，同时也对常见的安全漏洞进行描述，并提供对应的修复方案。</p>
+<h2 id="各种官方Demo下载"><a href="#各种官方Demo下载" class="headerlink" title="各种官方Demo下载"></a>各种官方Demo下载</h2><p>各种版本Demo体验与下载 <a href="https://docs.open.alipay.com/399/106844/" target="_blank" rel="external">https://docs.open.alipay.com/399/106844/</a></p>
+<h2 id="开发上线指南"><a href="#开发上线指南" class="headerlink" title="开发上线指南"></a>开发上线指南</h2><p>上线和使用指南<a href="https://docs.open.alipay.com/399/106853/" target="_blank" rel="external">https://docs.open.alipay.com/399/106853/</a></p>
+<h2 id="第二部分"><a href="#第二部分" class="headerlink" title=" 第二部分 "></a><br><br><center> 第二部分 </center></h2><h2 id="iOS端接入指南"><a href="#iOS端接入指南" class="headerlink" title="iOS端接入指南"></a><a href="https://docs.open.alipay.com/204/105295/" target="_blank" rel="external">iOS端接入指南</a></h2><h2 id="Android端接入指南"><a href="#Android端接入指南" class="headerlink" title="Android端接入指南"></a><a href="https://docs.open.alipay.com/204/105296/" target="_blank" rel="external">Android端接入指南</a></h2><h2 id="第三部分"><a href="#第三部分" class="headerlink" title=" 第三部分 "></a><br><br><center> 第三部分 </center></h2><h2 id="遇到的坑和解决"><a href="#遇到的坑和解决" class="headerlink" title="遇到的坑和解决"></a>遇到的坑和解决</h2><p>这部分是集成Demo过程中主要遇到的三个问题解决，下面是我解决的方法，希望能帮到有缘人</p>
+<ul>
+<li>集成支付宝 报错 “openssl/asn1.h file not found”</li>
+<li>集成支付宝 报错 “library not found for -xxx”</li>
+<li>集成支付宝 报错 “duplicate symbol _base64_encode”</li>
+</ul>
+<p>下面分别说一下这三个问题</p>
+<h3 id="1-集成支付宝-报错-“openssl-asn1-h-file-not-found”"><a href="#1-集成支付宝-报错-“openssl-asn1-h-file-not-found”" class="headerlink" title="1.集成支付宝 报错 “openssl/asn1.h file not found”"></a>1.集成支付宝 报错 “openssl/asn1.h file not found”</h3><p><img src="https://upload-images.jianshu.io/upload_images/1256297-2501bd83f99384e7.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="03_q1.jpg"></p>
+<p>这个问题应该是最常见的问题，官方文档中也说了是查找头文件路径问题，解决方案如下:<br><strong>点击项目名称，点击“Build Settings”选项卡，在搜索框中，以关键字“search”搜索，对“Header Search Paths”增加头文件路径：$(SRCROOT)/项目名称。如果头文件信息已增加，可不必再增加。</strong></p>
+<p><strong>这里着重说一下原理</strong></p>
+<p>Build Setting 下面 Search 主要分三个类型</p>
+<ul>
+<li>Framework Search Paths</li>
+<li>Header Search Paths</li>
+<li>Library Search Paths</li>
+</ul>
+<p>这三个类别在官方文档里解释很清楚(如图)<br><img src="https://upload-images.jianshu.io/upload_images/1256297-e3ec5f817357d8e7.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="03_q12.jpg"></p>
+<ul>
+<li>Framework Search Paths</li>
+</ul>
+<p>在编译C、Objective-C、c++或objective - c++，以及产品使用的框架的链接器时，这是一个目录列表，其中包含了包含或导入头文件的编译器的目录。路径是由空格分隔的，因此任何带有空格的路径都必须正确引用。</p>
+<ul>
+<li>Header Search Paths</li>
+</ul>
+<p>这是在编译C、Objective-C、c++或objective - c++时，编译器要搜索的文件夹的路径列表。路径是由空格分隔的，因此任何带有空格的路径都需要正确引用。</p>
+<ul>
+<li>Library Search Paths</li>
+</ul>
+<p>这是一个目录列表，用于为该产品使用的库进行链接搜索。路径是由空格分隔的，因此任何带有空格的路径都需要正确引用。</p>
+<p><strong>小结</strong><br><strong>懂了原理就变的很清楚了，找不到文件实际上就是我们的路径没有配置正确</strong></p>
+<ul>
+<li>路径可以根据我们的项目分层自己设置，相应的路径配置也要配置正确</li>
+<li>经测试，openssl文件夹，Utils文件夹，和支付宝SDK的文件夹要配置在同一级</li>
+<li>Framework Search Paths 和 Library Search Paths 是编译器和连接器找库和头文件的路径，配置内容是一致的</li>
+<li>支付宝SDK的文件夹内部文件可以放一起，Header Search Paths 配置中只需要找到对应文件夹上一级即可</li>
+</ul>
+<p>最终配置方式：<br><img src="https://upload-images.jianshu.io/upload_images/1256297-27054101cedb50ca.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="03_q13.jpg"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1256297-37cf30cae41466bc.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="03_q14.jpg"></p>
+<h3 id="2-集成支付宝-报错-“library-not-found-for-xxx”"><a href="#2-集成支付宝-报错-“library-not-found-for-xxx”" class="headerlink" title="2.集成支付宝 报错 “library not found for -xxx”"></a>2.集成支付宝 报错 “library not found for -xxx”</h3><p><img src="https://upload-images.jianshu.io/upload_images/1256297-9700f2f06dcfb4d9.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="04_q1.jpg"></p>
+<p>这个问题就是上面说的 Library Search Paths 配置问题。<br>原因就是项目中使用的第三方库，Xcode找不到对应的静态库，根据上面原理配置即可</p>
+<h3 id="3-集成支付宝-报错-“duplicate-symbol-xxxxxx”"><a href="#3-集成支付宝-报错-“duplicate-symbol-xxxxxx”" class="headerlink" title="3.集成支付宝 报错 “duplicate symbol _xxxxxx”"></a>3.集成支付宝 报错 “duplicate symbol _xxxxxx”</h3><p><img src="https://upload-images.jianshu.io/upload_images/1256297-7ed5b2a790a9f7b5.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="05_q1.jpg"></p>
+<p>这个问题是我项目中在集成支付宝的同时也有其他的支付相关库，仔细看报错会发现其中有两个路径。一个是支付宝下面 libcrypto.a 一个LLPayUtils下的libRsaCrypto.a 两者在编译过程中生成了同样的连接符号 gost_sign.o 导致连接器在连接过程中无法正确连接。</p>
+<p>实际上就是两个库中都定义了 gost_sign.m 这样的源文件，文件内部有符号<code>_unpack_cp_signature</code> 和 <code>_gost94_compute_public</code> 等等</p>
+<p><strong>解决办法</strong></p>
+<ol>
+<li>如果是自己写的文件直接修改内部符号</li>
+<li>如果是三方静态库自己看不了实现，就删除一个吧（欢迎补充更好的方法）</li>
+</ol>
+<p><strong>小结</strong></p>
+<ol>
+<li>支付宝有些坑，但是如果懂原理，其实是很好解决的。要多学习</li>
+</ol>
+<p>最后献上一个自己集成的小Demo欢迎下载查看<br><a href="https://github.com/xiaoyouPrince/AliPayDemo" target="_blank" rel="external">支付宝集成Demo:https://github.com/xiaoyouPrince/AliPayDemo</a></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/04/19/Xcode旧项目引入CocoaPod遇到的问题与解决/" data-toggle="tooltip" data-placement="top"
+                           title="Xcode旧项目引入CocoaPod遇到的问题与解决">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/06/16/RELabel ： 一个极简的正则表达式匹配和展示框架 /" data-toggle="tooltip" data-placement="top"
+                           title="RELabel ： 一个极简的正则表达式匹配和展示框架">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#支付宝使用流程和踩坑整理"><span class="toc-text">支付宝使用流程和踩坑整理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#第一部分"><span class="toc-text">第一部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#应用创建及使用流程："><span class="toc-text">应用创建及使用流程：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-创建应用"><span class="toc-text">1.创建应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-填写应用基础信息"><span class="toc-text">2.填写应用基础信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-配置应用环境"><span class="toc-text">3. 配置应用环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-接入沙箱环境"><span class="toc-text">4.接入沙箱环境</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#应用安全性开发指南"><span class="toc-text">应用安全性开发指南</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#各种官方Demo下载"><span class="toc-text">各种官方Demo下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开发上线指南"><span class="toc-text">开发上线指南</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第二部分"><span class="toc-text"> 第二部分 </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS端接入指南"><span class="toc-text">iOS端接入指南</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Android端接入指南"><span class="toc-text">Android端接入指南</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第三部分"><span class="toc-text"> 第三部分 </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#遇到的坑和解决"><span class="toc-text">遇到的坑和解决</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-集成支付宝-报错-“openssl-asn1-h-file-not-found”"><span class="toc-text">1.集成支付宝 报错 “openssl/asn1.h file not found”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-集成支付宝-报错-“library-not-found-for-xxx”"><span class="toc-text">2.集成支付宝 报错 “library not found for -xxx”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-集成支付宝-报错-“duplicate-symbol-xxxxxx”"><span class="toc-text">3.集成支付宝 报错 “duplicate symbol _xxxxxx”</span></a></li></ol></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#支付宝集成"
+                           title="支付宝集成">支付宝集成</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2018
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>
