@@ -264,7 +264,7 @@
 <li>Framework Search Paths 和 Library Search Paths 是编译器和连接器找库和头文件的路径，配置内容是一致的</li>
 <li>支付宝SDK的文件夹内部文件可以放一起，Header Search Paths 配置中只需要找到对应文件夹上一级即可</li>
 </ul>
-<p>最终配置方式：<br><img src="https://upload-images.jianshu.io/upload_images/1256297-27054101cedb50ca.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="03_q13.jpg"></p>
+<p>最终配置方式：<br><img src="https://upload-images.jianshu.io/upload_images/1256297-0627fcd4f5b3871f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="03_q13.jpg"></p>
 <p><img src="https://upload-images.jianshu.io/upload_images/1256297-37cf30cae41466bc.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="03_q14.jpg"></p>
 <h3 id="2-集成支付宝-报错-“library-not-found-for-xxx”"><a href="#2-集成支付宝-报错-“library-not-found-for-xxx”" class="headerlink" title="2.集成支付宝 报错 “library not found for -xxx”"></a>2.集成支付宝 报错 “library not found for -xxx”</h3><p><img src="https://upload-images.jianshu.io/upload_images/1256297-9700f2f06dcfb4d9.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="04_q1.jpg"></p>
 <p>这个问题就是上面说的 Library Search Paths 配置问题。<br>原因就是项目中使用的第三方库，Xcode找不到对应的静态库，根据上面原理配置即可</p>
