@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        WKWebView 的使用和封装｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2017/12/15/2018:07:04 WKWebView使用和封装/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/wall.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/wall.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>WKWebView 的使用和封装</h1>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2017-12-15
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#iOS"
+                           title="iOS">iOS</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            WKWebView 的使用和封装
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <!--这个Hexo的md格式读取可能有些问题，和MWeb的解析出来不一样-->
+<h1 id="WKWebView-的使用和封装"><a href="#WKWebView-的使用和封装" class="headerlink" title="WKWebView 的使用和封装"></a>WKWebView 的使用和封装</h1><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
+<p>项目中有个新闻资讯模块展示公司和相关行业的最新动态。<br>这个部分基本是以展示网页为主，内部可能会有一些 native 和 JS 代码的交互。<br>因为是新项目，所以决定采用 iOS 8 中新出的 WebKit。<br>本文是对 WebKit 框架中 WKWebView 的一些学习和封装</p>
+</blockquote>
+<p><a href="https://github.com/xiaoyouPrince/WKWebViewDemo" target="_blank" rel="external">WKWebViewDemo 地址</a></p>
+<h3 id="UIWebView-和-WKWebView"><a href="#UIWebView-和-WKWebView" class="headerlink" title="UIWebView 和 WKWebView"></a>UIWebView 和 WKWebView</h3><p>这两者都是 iOS 中展示 web 相关的组件。前者 iOS 2.0 就有了，后者是 iOS 8.0 时候新加的。</p>
+<p>网络中关于两者的差异和性能对比分析很多，这里不再赘述。只是说明一下苹果文档中的重要提示以及自己需要功能的实现：</p>
+<p>官方文档中重要提示<br><img src="https://upload-images.jianshu.io/upload_images/1256297-c83d9920c281f85c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20180629_1.png"></p>
+<p>文档中主要说了以下几点：</p>
+<ul>
+<li>iOS 8 之后，应该用 WKWebView 代替 UIWebView。并可以设置 <code>WKPreferences</code> 的 <code>javaScriptEnabled</code> 属性决定是否支持 web 内容执行 JavaScript 代码</li>
+<li>iOS 10 之后必须在 info.plist 文件中包含要访问数据的描述。对于图库的访问必须包含 <code>NSPhotoLibraryUsageDescription</code> 和 <code>NSCameraUsageDescription</code> 否则会直接 crash</li>
+<li>加载本地 HTML 文件使用： <code>loadHTMLString:baseURL:</code> 方法</li>
+<li>加载网络内容使用 ： <code>loadRequest:</code> 方法</li>
+<li><code>stopLoading</code> 方法用来结束加载。<code>loading</code> 属性查看WK进程中是否加载中</li>
+<li><code>goBack</code> 和 <code>goForward</code> 方法可用于 WKWebView 的前进后退. <code>canGoBack</code> 和 <code>canGoForward</code> 属性来查看是否能前进后退</li>
+<li>通常WKWebView会自动识别电话号码，并把它设置成可打电话的链接。如果不用这个功能： 设置 <code>dataDetectorTypes</code> 属性中  <code>UIDataDetectorTypes</code> 的位字段不包含 <code>UIDataDetectorTypePhoneNumber</code>.</li>
+<li><code>scalesPageToFit</code> 属性用于第一次加载网页内容时候设置是否可以使用手势改变网页缩放。 设置后用户就可以手势缩放网页大小</li>
+<li>记录网页加载网络内容可以设置WKWebView 的 <code>delegate</code> 并遵守 <code>UIWebViewDelegate</code> 协议</li>
+<li>不要在 网页中嵌入 UIScrollView 及其子类，这样会导致手势等行为混乱</li>
+</ul>
+<p>有了基本的概念，就可以去看一下 WKWebView 的具体文档了。如果怕官方文档麻烦也可以直接看网络上别人整理好的<a href="http://www.cocoachina.com/ios/20170413/18963.html" target="_blank" rel="external">网络整理</a>。</p>
+<p>下面是我整理的 WebView 和 H5 调用逻辑图：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1256297-8163bb4dd43078a2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20180703_2.png"></p>
+<p>特别说明一点：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="number">0.</span> OC 执行 JS 方法</div><div class="line">- (<span class="keyword">void</span>)evaluateJavaScript:(<span class="built_in">NSString</span> *)javaScriptString completionHandler:(<span class="keyword">void</span> (^)(<span class="keyword">id</span>, <span class="built_in">NSError</span> *error))completionHandler;</div><div class="line"></div><div class="line">这个方法中webView调用JS，block只是成功或失败的回调</div><div class="line"></div><div class="line"><span class="number">1.</span> JS方法中</div><div class="line">window.webkit.messageHandlers.webViewApp.postMessage(message);</div><div class="line">作用是JS 向之前注册的 webViewApp 发送消息。</div><div class="line"></div><div class="line">OC 端接到消息会调用 &lt;<span class="built_in">WKScriptMessageHandler</span>&gt; 中下面代理方法</div><div class="line">- (<span class="keyword">void</span>)userContentController:(<span class="built_in">WKUserContentController</span> *)userContentController didReceiveScriptMessage:(<span class="built_in">WKScriptMessage</span> *)message</div></pre></td></tr></table></figure>
+<h3 id="功能需求"><a href="#功能需求" class="headerlink" title="功能需求"></a>功能需求</h3><p>对于项目而言，网页功能无需太多，主要满足以下几点</p>
+<p><strong>基本展示功能</strong></p>
+<ol>
+<li>导航栏下显示加载进度条 </li>
+<li>导航栏 title 展示网页内容当前 title</li>
+<li>网页内容的刷新、前进、后退</li>
+<li>网页内容加载、刷新过程中 HUD 提示</li>
+</ol>
+<p><strong>JS和OC交互功能：交互的数据格式和方法名等需要和H5端具体协调</strong></p>
+<ol>
+<li>App内登录后，访问 web 需要对应用户token</li>
+<li>网页中点击超链接，新开页面处理，同上也需要拦截新URL请求并补全token参数</li>
+<li>跟JS交互中对JS返回值的处理</li>
+<li>简单JS代码注入，如资讯内容底部加一些赞和分享等功能&lt;曾经就有接口只返回一段JS&gt;</li>
+</ol>
+<p>以上这些基本功能中基本展示功能都比较简单，和JS交互的部分需要和 H5 端小伙伴共同定义数据结构和互调的方法名、参数等。所以需要具体问题具体分析。项目以我自己 Demo 为例说一下。</p>
+<h3 id="功能实现"><a href="#功能实现" class="headerlink" title="功能实现"></a>功能实现</h3><p>为实现功能主要封装了三个类</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">XYWKWebViewController  ---&gt; 管理 webView 加载相关的代理方法</div><div class="line">XYWKWebView            ---&gt; 封装 webView 请求相关方法</div><div class="line">XYScriptMessage        ---&gt; 封装JS回调信息</div></pre></td></tr></table></figure>
+<p>XYWKWebView 核心功能</p>
+<p><strong>加载本地HTML文件</strong></p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> *  加载本地HTML页面</div><div class="line"> *</div><div class="line"> *  @param htmlName html页面文件名称</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)loadLocalHTMLWithFileName:(<span class="keyword">nonnull</span> <span class="built_in">NSString</span> *)htmlName</div></pre></td></tr></table></figure>
+<p>实现代码</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)loadLocalHTMLWithFileName:(<span class="keyword">nonnull</span> <span class="built_in">NSString</span> *)htmlName &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> mainBundle] bundlePath];</div><div class="line">    <span class="built_in">NSURL</span> *baseURL = [<span class="built_in">NSURL</span> fileURLWithPath:path];</div><div class="line">    <span class="built_in">NSString</span> * htmlPath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:htmlName</div><div class="line">                                                          ofType:<span class="string">@"html"</span>];</div><div class="line">    <span class="built_in">NSString</span> * htmlCont = [<span class="built_in">NSString</span> stringWithContentsOfFile:htmlPath</div><div class="line">                                                    encoding:<span class="built_in">NSUTF8StringEncoding</span></div><div class="line">                                                       error:<span class="literal">nil</span>];</div><div class="line">    </div><div class="line">    <span class="comment">// WKWebView 的 loadHTMLString: 方法</span></div><div class="line">    [<span class="keyword">self</span> loadHTMLString:htmlCont baseURL:baseURL];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>加载网络内容</strong></p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 加载网络内容，根据是否有参数选不同方法</span></div><div class="line">- (<span class="keyword">void</span>)loadRequestWithRelativeUrl:(<span class="keyword">nonnull</span> <span class="built_in">NSString</span> *)relativeUrl;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)loadRequestWithRelativeUrl:(<span class="keyword">nonnull</span> <span class="built_in">NSString</span> *)relativeUrl params:(<span class="keyword">nullable</span> <span class="built_in">NSDictionary</span> *)params;</div></pre></td></tr></table></figure>
+<p>实现代码</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)loadRequestWithRelativeUrl:(<span class="built_in">NSString</span> *)relativeUrl params:(<span class="built_in">NSDictionary</span> *)params &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSURL</span> *url = [<span class="keyword">self</span> generateURL:relativeUrl params:params];</div><div class="line">    </div><div class="line">    [<span class="keyword">self</span> loadRequest:[<span class="built_in">NSURLRequest</span> requestWithURL:url]];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">NSURL</span> *)generateURL:(<span class="built_in">NSString</span>*)baseURL params:(<span class="built_in">NSDictionary</span>*)params &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.webViewRequestUrl = baseURL;</div><div class="line">    <span class="keyword">self</span>.webViewRequestParams = params;</div><div class="line">    </div><div class="line">    <span class="built_in">NSMutableDictionary</span> *param = [<span class="built_in">NSMutableDictionary</span> dictionaryWithDictionary:params];</div><div class="line">    </div><div class="line">    <span class="built_in">NSMutableArray</span>* pairs = [<span class="built_in">NSMutableArray</span> array];</div><div class="line"></div><div class="line">    <span class="comment">//可以在这里将token参数添加进去，这样就可以实现补全token功能    </span></div><div class="line">    <span class="keyword">for</span> (<span class="built_in">NSString</span>* key <span class="keyword">in</span> param.keyEnumerator) &#123;</div><div class="line">        <span class="built_in">NSString</span> *value = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@"</span>,[param objectForKey:key]];</div><div class="line"></div><div class="line">        <span class="built_in">NSString</span>* escaped_value = (__bridge_transfer <span class="built_in">NSString</span> *)<span class="built_in">CFURLCreateStringByAddingPercentEscapes</span>(<span class="literal">NULL</span>,</div><div class="line">                                                                              (__bridge <span class="built_in">CFStringRef</span>)value,</div><div class="line">                                                                              <span class="literal">NULL</span>,</div><div class="line">                                                                              (<span class="built_in">CFStringRef</span>)<span class="string">@"!*'\"();:@&amp;=+$,/?%#[]% "</span>,</div><div class="line">                                                                              kCFStringEncodingUTF8);</div><div class="line">        </div><div class="line">        [pairs addObject:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@=%@"</span>, key, escaped_value]];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span> *query = [pairs componentsJoinedByString:<span class="string">@"&amp;"</span>];</div><div class="line">    baseURL = [baseURL stringByAddingPercentEscapesUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>];</div><div class="line">    </div><div class="line">    <span class="built_in">NSString</span>* url = <span class="string">@""</span>;</div><div class="line">    <span class="keyword">if</span> ([baseURL containsString:<span class="string">@"?"</span>]) &#123;</div><div class="line">        url = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@&amp;%@"</span>,baseURL, query];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        url = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@?%@"</span>,baseURL, query];</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//绝对地址</span></div><div class="line">    <span class="keyword">if</span> ([url.lowercaseString hasPrefix:<span class="string">@"http"</span>]) &#123;</div><div class="line">        <span class="keyword">return</span> [<span class="built_in">NSURL</span> URLWithString:url];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> [<span class="built_in">NSURL</span> URLWithString:url relativeToURL:<span class="keyword">self</span>.baseUrl];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>XYWKWebViewController 核心功能</p>
+<p>这是一个 Controller，建议创建新的Controller继承XYWKWebViewController 来使用，这样可以把不同的页面区分开，每个页面加载的url和相关的业务逻辑都可以单独处理，代码易读，也容易维护。如果项目后期添加功能也好处理<br>XYWKWebViewController主要完成了对一些功能的封装，比如进度条、页面title以及 webView 的生命周期。</p>
+<p>进度条和title都是通过KVO实现</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.shouldShowProgress) &#123;</div><div class="line">   [<span class="keyword">self</span>.webView addObserver:<span class="keyword">self</span> forKeyPath:<span class="string">@"estimatedProgress"</span> options:<span class="built_in">NSKeyValueObservingOptionNew</span> context:<span class="literal">NULL</span>];</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.isUseWebPageTitle) &#123;</div><div class="line">   [<span class="keyword">self</span>.webView addObserver:<span class="keyword">self</span> forKeyPath:<span class="string">@"title"</span> options:<span class="built_in">NSKeyValueObservingOptionNew</span> context:<span class="literal">NULL</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>设置title 和 progressView 直接是自己简单写了一个 View </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary&lt;NSString *,id&gt; *)change context:(void *)context &#123;</div><div class="line">    if ([keyPath isEqualToString:@&quot;estimatedProgress&quot;]) &#123;</div><div class="line">        </div><div class="line">        if (object == self.webView) &#123;</div><div class="line">            [self showLoadingProgress:self.webView.estimatedProgress andTintColor:[UIColor colorWithRed:24/255.0 green:124/255.0 blue:244/255.0f alpha:1.0]];</div><div class="line">        &#125;</div><div class="line">        else&#123;</div><div class="line">            [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    else if ([keyPath isEqualToString:@&quot;title&quot;])&#123;</div><div class="line">        if (object == self.webView) &#123;</div><div class="line">            if ([self isUseWebPageTitle]) &#123;</div><div class="line">                self.title = self.webView.title;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        else&#123;</div><div class="line">            [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    else &#123;</div><div class="line">        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>OC 与 JS 之间交互的处理</strong></p>
+<p>这部分是可定制化功能最多的，遇到的问题也是最多的。WKWebView 和 JS 之间的交互需要设置 ScriptMessageHandler 如下。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="keyword">instancetype</span>)initWithFrame:(<span class="built_in">CGRect</span>)frame configuration:(<span class="built_in">WKWebViewConfiguration</span> *)configuration &#123;</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame configuration:configuration];</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</div><div class="line">    </div><div class="line">        <span class="keyword">if</span> (configuration) &#123;</div><div class="line">            <span class="comment">//文档中说</span></div><div class="line">            <span class="comment">//Adds a script message handler.</span></div><div class="line">            <span class="comment">//Adding a script message handler with name name causes the JavaScript function window.webkit.messageHandlers.name.postMessage(messageBody) to be defined in all frames in all web views that use the user content controller.</span></div><div class="line">        </div><div class="line">            <span class="comment">// 这里就是设置 网页中 JS Message handler</span></div><div class="line">            <span class="comment">// 通过 “name” 注册之后，JS 内部函数 window.webkit.messageHandlers.“name”.postMessage(messageBody) 就被定义到整个用户的Web内容的控制器中。</span></div><div class="line">            <span class="comment">//后面的JS调用OC也是通过 “name” 联系的</span></div><div class="line">            [configuration.userContentController addScriptMessageHandler:<span class="keyword">self</span> name:<span class="string">@"webViewApp"</span>];</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">//默认允许系统自带的侧滑后退</span></div><div class="line">        <span class="keyword">self</span>.allowsBackForwardNavigationGestures = <span class="literal">YES</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后实现 WKScriptMessageHandler 代理</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// JS 调用 OC 的回调。JS 向OC 发送消息会调用这个方法</span></div><div class="line">- (<span class="keyword">void</span>)userContentController:(<span class="built_in">WKUserContentController</span> *)userContentController didReceiveScriptMessage:(<span class="built_in">WKScriptMessage</span> *)message &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"得到的 JS message 是 :%@"</span>,message.body);</div><div class="line">    <span class="keyword">if</span> ([message.body isKindOfClass:[<span class="built_in">NSDictionary</span> <span class="keyword">class</span>]]) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSDictionary</span> *body = (<span class="built_in">NSDictionary</span> *)message.body;</div><div class="line">        </div><div class="line">        <span class="comment">// 这里是对 JS 消息的一个处理，用自己定义的消息类型，封装并发送给代理去外部处理，具体格式需要工作中和H5共同制定</span></div><div class="line">        </div><div class="line">        XYScriptMessage *msg = [XYScriptMessage new];</div><div class="line">        [msg setValuesForKeysWithDictionary:body];</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.xy_messageHandlerDelegate &amp;&amp; [<span class="keyword">self</span>.xy_messageHandlerDelegate respondsToSelector:<span class="keyword">@selector</span>(xy_webView:didReceiveScriptMessage:)]) &#123;</div><div class="line">            [<span class="keyword">self</span>.xy_messageHandlerDelegate xy_webView:<span class="keyword">self</span> didReceiveScriptMessage:msg];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中自定义的 XYScriptMessage 如下</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> *  WKWebView与JS调用时参数规范实体</div><div class="line"> */</div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYScriptMessage</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> *  方法名</div><div class="line"> *  用来确定Native App的执行逻辑</div><div class="line"> */</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *method;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> *  方法参数</div><div class="line"> *  json字符串</div><div class="line"> */</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSDictionary</span> *params;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> *  回调函数名</div><div class="line"> *  Native App执行完后回调的JS方法名</div><div class="line"> */</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *callback;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>同时提供delegate方法供XYWKWebViewController实现</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> *  JS调用原生方法处理，其中方法名都需要和 H5 端相互协调</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)xy_webView:(XYWKWebView *)webView didReceiveScriptMessage:(XYScriptMessage *)message &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"webView method:%@"</span>,message.method);</div><div class="line">    </div><div class="line">    <span class="comment">//返回上一页</span></div><div class="line">    <span class="keyword">if</span> ([message.method isEqualToString:<span class="string">@"tobackpage"</span>]) &#123;</div><div class="line">        [<span class="keyword">self</span>.navigationController popViewControllerAnimated:<span class="literal">YES</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//打开新页面</span></div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> ([message.method isEqualToString:<span class="string">@"openappurl"</span>]) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">NSString</span> *url = [message.params objectForKey:<span class="string">@"url"</span>];</div><div class="line">        <span class="keyword">if</span> (url.length) &#123;</div><div class="line">            XYWKWebViewController *webViewController = [[XYWKWebViewController alloc] init];</div><div class="line">            webViewController.url = url;</div><div class="line">            </div><div class="line">            [<span class="keyword">self</span>.navigationController pushViewController:webViewController animated:<span class="literal">YES</span>];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><p>一个提供四类使用功能，使用方法建议直接继承 XYWKWebViewController。</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">class WebViewController: XYWKWebViewController &#123;</div><div class="line"></div><div class="line">    override func viewDidLoad() &#123;</div><div class="line">        super.viewDidLoad()</div><div class="line">        </div><div class="line">        /// #用法0： 直接加载对应的地址 &lt;没有参数&gt;</div><div class="line">        //self.webView.loadRequest(withRelativeUrl: "https://www.httpbin.org/")</div><div class="line">        </div><div class="line">        /// #用法1： 直接加载对应的地址 &lt;有参数&gt;</div><div class="line">        //let params = ["name":"xiaoyou",</div><div class="line">        //              "password" : "123456#/HTTP_Methods/get_get"]</div><div class="line">        //self.webView.loadRequest(withRelativeUrl: "https://www.httpbin.org/", params: params)</div><div class="line">        </div><div class="line">        /// #用法2： 直接加载本地HTML文件 &lt;没有参数&gt;</div><div class="line">        self.webView.loadLocalHTML(withFileName: "main")</div><div class="line">        </div><div class="line">        /// #用法3： JS 注入，添加一些方法 &lt;这里的原生坐标和JS之间无法直接相对应&gt;</div><div class="line">        let margin : CGFloat = 6.0</div><div class="line">        let padding : CGFloat = 10.0</div><div class="line">        let width = UIScreen.main.bounds.size.width - (margin * 2.0) - (margin * 7.0 + padding)</div><div class="line">        let btnWidth = (width - padding - 5) / 2.0</div><div class="line">        </div><div class="line">        let styleJS = """</div><div class="line">                    &lt;style type="text/css"&gt;</div><div class="line">                    #foot &#123;</div><div class="line">                        border:solid 10px #600;</div><div class="line">                        padding:\(padding)px;</div><div class="line">                        margin:\(margin)px;</div><div class="line">                        clear:both;</div><div class="line">                        width:\(width)px</div><div class="line">                    &#125;</div><div class="line">                    #share &#123;</div><div class="line">                        border:solid 1px #600;</div><div class="line">                        padding:2px;</div><div class="line">                        margin:2px;</div><div class="line">                        clear:both;</div><div class="line">                        width:\(btnWidth)px;</div><div class="line">                        heiht:150px</div><div class="line">                    &#125;</div><div class="line">                    #like &#123;</div><div class="line">                        border:solid 1px #600;</div><div class="line">                        padding:2px;</div><div class="line">                        margin:2px;</div><div class="line">                        clear:both;</div><div class="line">                        width:\(btnWidth)px;</div><div class="line">                        heiht:50px</div><div class="line">                    &#125;</div><div class="line">                    &lt;/style&gt;</div><div class="line">                    """</div><div class="line">        </div><div class="line">        let funcJS = """</div><div class="line">                    \t\t\tfunction testFunc(text)&#123;\n</div><div class="line">                    \t\t\t\tvar message = \"点我干什么\";\n</div><div class="line">                    \t\t\t\twindow.webkit.messageHandlers.webViewApp.postMessage(message);\n</div><div class="line">                    \t\t\t\talert(text);\n</div><div class="line">                    \t\t\t&#125;\n</div><div class="line">                    """</div><div class="line">        </div><div class="line">        let footerJS = """</div><div class="line">                    \t&lt;button onclick=\"testFunc('http://www.baidu.com/')\"&gt;自己添加的Footer的Button一个&lt;/button&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;\n</div><div class="line">                    \t &lt;div id=\"foot\"&gt;底部说明 &lt;br /&gt;</div><div class="line">                    &lt;button id=\"share\" onclick=\"testFunc('分享')\"&gt;分享&lt;/button&gt;</div><div class="line">                    &lt;button id=\"like\" onclick=\"testFunc('点赞')\"&gt;点赞&lt;/button&gt;&lt;br /&gt;</div><div class="line">                    &lt;/div&gt;</div><div class="line">                    """</div><div class="line">        self.webView.loadLocalHTML("main", withAddingStyleJS: styleJS, funcJS: funcJS, footerJS: footerJS)</div><div class="line">        </div><div class="line">        /// 设置导航</div><div class="line">        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "返回", style: .plain, target: self, action: #selector(backAction));</div><div class="line">        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "调用JS", style: .plain, target: self, action: #selector(callJS));</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">/// #用法4： OC 调用JS方法。这里可以调用JS，把H5需要的参数传给他们</div><div class="line">///  这里是JS 回调方法</div><div class="line">extension WebViewController&#123;</div><div class="line">    </div><div class="line">    @objc func backAction() &#123;</div><div class="line">        self.dismiss(animated: true, completion: nil)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    @objc func callJS() &#123;</div><div class="line">        self.webView.callJS("call('Hello World!')") &#123; (response) in</div><div class="line">            print("\(String(describing: response))")</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    /// 这里是重写了WebView接受到JS消息的回调，需要调用super方法才能执行内部方法，否则这里只是打印</div><div class="line">    override func xy_webView(_ webView: XYWKWebView, didReceive message: XYScriptMessage) &#123;</div><div class="line">        </div><div class="line">        // 如果完全自定义的js方法处理，无需重写父类，自行实现即可</div><div class="line">        super.xy_webView(webView, didReceive: message)</div><div class="line">        print(message)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>具体见Demo</p>
+<h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><p>HTML 中超链接，需要打开新页面的<a href="https://www.jianshu.com/p/3a75d7348843" target="_blank" rel="external">“_blank”处理</a></p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>WebKit 的小封装能实现目前所需功能，但很多内容还需要在需要的时候去探究，希望能帮到同样学习的小伙伴。</p>
+<p>如果看完有收获，不妨点个赞，让我也更有分享的动力！</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/12/15/数据结构(二)--数组和链表/" data-toggle="tooltip" data-placement="top"
+                           title="数据结构(二)--数组和链表">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/12/15/2018:05:09通信录使用/" data-toggle="tooltip" data-placement="top"
+                           title="通信录简单使用">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#WKWebView-的使用和封装"><span class="toc-text">WKWebView 的使用和封装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UIWebView-和-WKWebView"><span class="toc-text">UIWebView 和 WKWebView</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#功能需求"><span class="toc-text">功能需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#功能实现"><span class="toc-text">功能实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用方法"><span class="toc-text">使用方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#遇到的问题"><span class="toc-text">遇到的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li></ol></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS"
+                           title="iOS">iOS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2018
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>
