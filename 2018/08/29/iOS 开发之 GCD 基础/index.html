@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        iOS 开发之 GCD 基础｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2018/08/29/iOS 开发之 GCD 基础/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/wall.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/wall.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>iOS 开发之 GCD 基础</h1>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2018-08-29
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#GCD"
+                           title="GCD">GCD</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            iOS 开发之 GCD 基础
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <!--这个Hexo的md格式读取可能有些问题，和MWeb的解析出来不一样-->
+<h1 id="iOS-开发之-GCD-基础"><a href="#iOS-开发之-GCD-基础" class="headerlink" title="iOS 开发之 GCD 基础"></a>iOS 开发之 GCD 基础</h1><p>本文主要为 GCD 的 队列和执行方法等基础总结，目录如下:</p>
+<p>[TOC]</p>
+<h2 id="GCD是什么？"><a href="#GCD是什么？" class="headerlink" title="GCD是什么？"></a>GCD是什么？</h2><p>Grand Central Dispatch(GCD) 是 Apple 开发的一个多核编程的较新的解决方法。它主要用于优化应用程序以支持多核处理器以及其他对称多处理系统。它是一个在线程池模式的基础上执行的并发任务。在 Mac OS X 10.6 雪豹中首次推出，也可在 iOS 4 及以上版本使用。</p>
+<h4 id="GCD-基本原理-和-优势"><a href="#GCD-基本原理-和-优势" class="headerlink" title="GCD 基本原理 和 优势"></a>GCD 基本原理 和 优势</h4><p>GCD 通过提交工作来调度系统管理的队列，在多核硬件上同时执行代码。</p>
+<p>GCD 可用于多核的并行运算</p>
+<p>GCD 会自动利用更多的 CPU 内核（比如双核、四核）</p>
+<p>GCD 会自动管理线程的生命周期（创建线程、调度任务、销毁线程）</p>
+<p>程序员只需要告诉 GCD 想要执行什么任务，不需要编写任何线程管理代码</p>
+<h2 id="GCD的使用"><a href="#GCD的使用" class="headerlink" title="GCD的使用"></a>GCD的使用</h2><p>GCD 中有两个核心概念：<strong>任务和队列</strong>。</p>
+<p><strong>任务：</strong>就是执行操作的意思，换句话说就是你在线程中执行的那段代码。在 GCD 中是放在 block 中的。执行任务有两种方式：同步执行（sync）和异步执行（async）。两者的主要区别是：是否等待队列的任务执行结束，以及是否具备开启新线程的能力。</p>
+<p><strong>同步执行（sync）：</strong></p>
+<p>同步添加任务到指定的队列中，在添加的任务执行结束之前，会一直等待，直到队列里面的任务完成之后再继续执行。</p>
+<p><strong>只能在当前线程中执行任务，不具备开启新线程的能力。</strong></p>
+<p><strong>异步执行（async）：</strong></p>
+<p>异步添加任务到指定的队列中，它不会做任何等待，可以继续执行任务。</p>
+<p><strong>可以在新的线程中执行任务，具备开启新线程的能力。</strong></p>
+<p>举个简单例子：你要打电话给小明和小白。</p>
+<p>同步执行就是，你打电话给小明的时候，不能同时打给小白，等到给小明打完了，才能打给小白（等待任务执行结束）。而且只能用当前的电话（不具备开启新线程的能力）。</p>
+<p>而异步执行就是，你打电话给小明的时候，不等和小明通话结束，还能直接给小白打电话，不用等着和小明通话结束再打（不用等待任务执行结束）。除了当前电话，你还可以使用其他所能使用的电话（具备开启新线程的能力）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">注意： 异步执行（async） 虽然具有开启新线程的能力，但是并不一定开启新线程。这跟任务所指定的队列类型有关。</div></pre></td></tr></table></figure>
+<p><strong>队列（Dispatch Queue）</strong>：这里的队列指执行任务的等待队列，即用来存放任务的队列。队列是一种特殊的线性表，采用 FIFO（先进先出）的原则，即新任务总是被插入到队列的末尾，而读取任务的时候总是从队列的头部开始读取。每读取一个任务，则从队列中释放一个任务。队列的结构可参考下</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1256297-ee087e98b8d26509.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1198" alt="队列示意"></p>
+<p>在 GCD 中有两种队列：串行队列和并发队列。两者都符合 FIFO（先进先出）的原则。两者的主要区别是：执行顺序不同，以及开启线程数不同。</p>
+<p><strong>串行队列（Serial Dispatch Queue）:</strong></p>
+<p>每次只有一个任务被执行。让任务一个接着一个地执行。（只开启一个线程，一个任务执行完毕后，再执行下一个任务）</p>
+<p><strong>并发队列（Concurrent Dispatch Queue）:</strong></p>
+<p>可以让多个任务并发（同时）执行。（可以开启多个线程，并且同时执行任务）</p>
+<h3 id="GCD-的使用步骤"><a href="#GCD-的使用步骤" class="headerlink" title="GCD 的使用步骤"></a>GCD 的使用步骤</h3><p>GCD 的使用步骤其实很简单，只有两步。</p>
+<ul>
+<li><p>创建一个队列（串行队列或并发队列）</p>
+</li>
+<li><p>将任务追加到任务的等待队列中，然后系统就会根据任务类型执行任务（同步执行或异步执行）</p>
+</li>
+</ul>
+<p>下边来看看 队列的创建方法/获取方法，以及 任务的创建方法。</p>
+<h4 id="队列的创建方法-获取方法"><a href="#队列的创建方法-获取方法" class="headerlink" title="队列的创建方法/获取方法"></a>队列的创建方法/获取方法</h4><p>可以使用 dispatch_queue_create 来创建队列，需要传入两个参数，第一个参数表示队列的唯一标识符，用于 DEBUG，可为空，Dispatch Queue 的名称推荐使用应用程序 ID 这种逆序全程域名；第二个参数用来识别是串行队列还是并发队列。DISPATCH_QUEUE_SERIAL 表示串行队列，DISPATCH_QUEUE_CONCURRENT 表示并发队列。</p>
+<p>串行队列的创建方法</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">//串行队列</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.xiaoyouPrince"</span>, DISPATCH_QUEUE_SERIAL);</div></pre></td></tr></table></figure>
+<p>并发队列的创建方法</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 并发队列</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.xiaoyouPrince"</span>, DISPATCH_QUEUE_CONCURRENT);</div></pre></td></tr></table></figure>
+<p>对于串行队列，GCD 提供了的一种特殊的串行队列：<strong>主队列（Main Dispatch Queue）</strong>。</p>
+<p>所有放在主队列中的任务，都会放到主线程中执行。</p>
+<p>可使用 dispatch_get_main_queue() 获得主队列。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 主队列</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_get_main_queue();</div></pre></td></tr></table></figure>
+<p>对于并发队列，GCD 默认提供了<strong>全局并发队列（Global Dispatch Queue）</strong>。</p>
+<p>可以使用 dispatch_get_global_queue 来获取。需要传入两个参数。第一个参数表示队列优先级，一般用DISPATCH_QUEUE_PRIORITY_DEFAULT。第二个参数暂时没用，用0即可。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 全局并发队列的获取方法</span></div><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line"></div><div class="line">第二个参数 flags：文档中描述为保留未来使用，暂时指定为<span class="number">0</span>即可</div></pre></td></tr></table></figure>
+<h3 id="任务的创建方法"><a href="#任务的创建方法" class="headerlink" title="任务的创建方法"></a>任务的创建方法</h3><p>GCD 提供了同步执行任务的创建方法dispatch_sync和异步执行任务创建方法dispatch_async。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 同步执行任务创建方法</span></div><div class="line"><span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 这里放同步执行任务代码</span></div><div class="line"></div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// 异步执行任务创建方法</span></div><div class="line"><span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 这里放异步执行任务代码</span></div><div class="line"></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>虽然使用 GCD 只需两步，但是既然我们有两种队列（串行队列/并发队列），两种任务执行方式（同步执行/异步执行），那么我们就有了四种不同的组合方式。这四种不同的组合方式是：</p>
+<table>
+<thead>
+<tr>
+<th>种类</th>
+<th>方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>同步执行 + 并发队列</td>
+</tr>
+<tr>
+<td>2</td>
+<td>异步执行 + 并发队列</td>
+</tr>
+<tr>
+<td>3</td>
+<td>同步执行 + 串行队列</td>
+</tr>
+<tr>
+<td>4</td>
+<td>异步执行 + 串行队列</td>
+</tr>
+</tbody>
+</table>
+<p>实际上，刚才还说了两种特殊队列：全局并发队列、主队列。全局并发队列可以作为普通并发队列来使用。但是主队列因为有点特殊，所以我们就又多了两种组合方式。这样就有六种不同的组合方式了。</p>
+<table>
+<thead>
+<tr>
+<th>种类</th>
+<th>方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>同步执行 + 主队列</td>
+</tr>
+<tr>
+<td>6</td>
+<td>异步执行 + 主队列</td>
+</tr>
+</tbody>
+</table>
+<p>那么这几种不同组合方式各有什么区别呢，这里为了方便，先上结果，再来讲解。你可以直接查看表格结果，然后跳过 4. GCD 的基本使用 。</p>
+<table>
+<thead>
+<tr>
+<th>区别</th>
+<th>并发队列</th>
+<th>串行队列</th>
+<th>主队列  </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>同步(sync)</td>
+<td><strong>不开启</strong>新线程，<br><strong>串行</strong>执行任务</td>
+<td><strong>不开启</strong>新线程，<br><strong>串行</strong>执行任务</td>
+<td><strong>不开启</strong>新线程，<br><strong>串行</strong>执行任务</td>
+</tr>
+<tr>
+<td>异步(async)</td>
+<td><strong>开启</strong>新线程，<br><strong>并发</strong>执行任务</td>
+<td><strong>开启1条</strong>新线程，<br><strong>串行</strong>执行任务</td>
+<td><strong>不开启</strong>新线程，<br><strong>串行</strong>执行任务 </td>
+</tr>
+</tbody>
+</table>
+<p>下面通过代码来分别验证一下各个组合的使用方法</p>
+<h3 id="GCD-各个队列组合的验证"><a href="#GCD-各个队列组合的验证" class="headerlink" title="GCD 各个队列组合的验证"></a>GCD 各个队列组合的验证</h3><p>首先是并发队列的两种执行方式。</p>
+<h4 id="【并发执行方式1】同步执行-并发队列"><a href="#【并发执行方式1】同步执行-并发队列" class="headerlink" title="【并发执行方式1】同步执行 + 并发队列"></a>【并发执行方式1】同步执行 + 并发队列</h4><p>特点：在当前线程中执行任务，不会开启新线程，执行完一个任务，再执行下一个任务。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 同步执行 + 并发队列</div><div class="line"> * 特点：在当前线程中执行任务，不会开启新线程，执行完一个任务，再执行下一个任务。</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)syncConcurrent &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"syncConcurrent---begin"</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 1. 创建并发队列</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.xiaoyouPrince"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"></div><div class="line">    <span class="comment">// 2. 添加同步任务</span></div><div class="line">    <span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">        </div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务2</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">    </div><div class="line">        <span class="comment">// 追加任务3</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"3---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"syncConcurrent---end"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">------------------输出结果----------------</div><div class="line"></div><div class="line">currentThread---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">syncConcurrent---begin</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">syncConcurrent---end</div><div class="line"></div><div class="line">------------------输出结果----------------</div></pre></td></tr></table></figure>
+<p>从同步执行 + 并发队列中可看到：</p>
+<p>所有任务都是在当前线程（主线程）中执行的，没有开启新的线程（同步执行不具备开启新线程的能力）。</p>
+<p>所有任务都在打印的syncConcurrent—begin和syncConcurrent—end之间执行的（同步任务需要等待队列的任务执行结束）。</p>
+<p>任务按顺序执行的。按顺序执行的原因：虽然并发队列可以开启多个线程，并且同时执行多个任务。但是因为本身不能创建新线程，只有当前线程这一个线程（同步任务不具备开启新线程的能力），所以也就不存在并发。而且当前线程只有等待当前队列中正在执行的任务执行完毕之后，才能继续接着执行下面的操作（同步任务需要等待队列的任务执行结束）。所以任务只能一个接一个按顺序执行，不能同时被执行。</p>
+<h4 id="【并发执行方式2】异步执行-并发队列"><a href="#【并发执行方式2】异步执行-并发队列" class="headerlink" title="【并发执行方式2】异步执行 + 并发队列"></a>【并发执行方式2】异步执行 + 并发队列</h4><p>特点：可以开启多个线程，任务交替（同时）执行。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 异步执行 + 并发队列</div><div class="line"> * 特点：可以开启多个线程，任务交替（同时）执行。</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)asyncConcurrent &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"asyncConcurrent---begin"</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 1. 创建并发队列</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.xiaoyouPrince"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"></div><div class="line">    <span class="comment">// 2. 添加异步任务</span></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        </div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务2</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">    </div><div class="line">        <span class="comment">// 追加任务3</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"3---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"asyncConcurrent---end"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">------------------输出结果----------------</div><div class="line"></div><div class="line">currentThread---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">asyncConcurrent---begin</div><div class="line">asyncConcurrent---end</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">5</span>, name = (null)&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">5</span>, name = (null)&#125;</div><div class="line">------------------输出结果----------------</div></pre></td></tr></table></figure>
+<p>在异步执行 + 并发队列中可以看出：</p>
+<p>除了当前线程（主线程），系统又开启了3个线程，并且任务是交替/同时执行的。（异步执行具备开启新线程的能力。且并发队列可开启多个线程，同时执行多个任务）。</p>
+<p>所有任务是在打印的asyncConcurrent—begin和asyncConcurrent—end之后才执行的。说明当前线程没有等待，而是直接开启了新线程，在新线程中执行任务（异步执行不做等待，可以继续执行任务）。</p>
+<p>还能按到一点：当某个异步队列中添加并发任务后，所有需要执行的任务都会在其开辟的一条新线程中执行。新开辟的线程是并发执行的，但上面的任务是按序执行的</p>
+<p><strong>接下来再来讲讲串行队列的两种执行方式。</strong></p>
+<h4 id="【串行执行方式1】同步执行-串行队列"><a href="#【串行执行方式1】同步执行-串行队列" class="headerlink" title="【串行执行方式1】同步执行 + 串行队列"></a>【串行执行方式1】同步执行 + 串行队列</h4><p>特点：不会开启新线程，在当前线程执行任务。任务是串行的，执行完一个任务，再执行下一个任务。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 同步执行 + 串行队列</div><div class="line"> * 特点：不会开启新线程，在当前线程执行任务。任务是串行的，执行完一个任务，再执行下一个任务。</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)syncSerial &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"syncSerial---begin"</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 1. 创建并发队列</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.xiaoyouPrince"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line">    <span class="comment">// 2. 添加异步任务</span></div><div class="line">    <span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">        </div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务2</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">    </div><div class="line">        <span class="comment">// 追加任务3</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"3---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"syncSerial---end"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">------------------输出结果----------------</div><div class="line"></div><div class="line">currentThread---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">syncSerial---begin</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">syncSerial---end</div><div class="line">------------------输出结果----------------</div></pre></td></tr></table></figure>
+<p>在同步执行 + 串行队列可以看到：</p>
+<p>所有任务都是在当前线程（主线程）中执行的，并没有开启新的线程（同步执行不具备开启新线程的能力）。</p>
+<p>所有任务都在打印的syncSerial—begin和syncSerial—end之间执行（同步任务需要等待队列的任务执行结束）。</p>
+<p>任务是按顺序执行的（串行队列每次只有一个任务被执行，任务一个接一个按顺序执行）。</p>
+<h4 id="【串行执行方式2】异步执行-串行队列"><a href="#【串行执行方式2】异步执行-串行队列" class="headerlink" title="【串行执行方式2】异步执行 + 串行队列"></a>【串行执行方式2】异步执行 + 串行队列</h4><p>特点：会开启新线程，但是因为任务是串行的，执行完一个任务，再执行下一个任务</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 异步执行 + 串行队列</div><div class="line"> * 特点：会开启新线程，但是因为任务是串行的，执行完一个任务，再执行下一个任务</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)asyncSerial &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"asyncSerial---begin"</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 1. 创建并发队列</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.xiaoyouPrince"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line">    <span class="comment">// 2. 添加异步任务</span></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        </div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务2</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">    </div><div class="line">        <span class="comment">// 追加任务3</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"3---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"asyncSerial---end"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">------------------输出结果----------------</div><div class="line"></div><div class="line">currentThread---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">asyncSerial---begin</div><div class="line">asyncSerial---end</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">------------------输出结果----------------</div></pre></td></tr></table></figure>
+<p>在异步执行 + 串行队列可以看到：</p>
+<p>开启了一条新线程（异步执行具备开启新线程的能力，串行队列只开启一个线程）。</p>
+<p>所有任务是在打印的asyncSerial—begin和asyncSerial—end之后才开始执行的（异步执行不会做任何等待，可以继续执行任务）。</p>
+<p>任务是按顺序执行的（串行队列每次只有一个任务被执行，任务一个接一个按顺序执行）。</p>
+<p><strong>下边讲讲刚才我们提到过的特殊队列：主队列。</strong></p>
+<p>主队列：GCD自带的一种特殊的串行队列</p>
+<p><strong>所有放在主队列中的任务，都会放到主线程中执行</strong></p>
+<p>可使用dispatch_get_main_queue()获得主队列</p>
+<p>我们再来看看主队列的两种组合方式。</p>
+<h4 id="【主队列1】同步执行-主队列"><a href="#【主队列1】同步执行-主队列" class="headerlink" title="【主队列1】同步执行 + 主队列"></a>【主队列1】同步执行 + 主队列</h4><p>同步执行 + 主队列在不同线程中调用结果也是不一样，在主线程中调用会出现死锁，而在其他线程中则不会。</p>
+<h5 id="在主线程中调用同步执行-主队列"><a href="#在主线程中调用同步执行-主队列" class="headerlink" title="在主线程中调用同步执行 + 主队列"></a>在主线程中调用同步执行 + 主队列</h5><p>特点：互相等待卡住不可行</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 同步执行 + 主队列</div><div class="line"> * 特点(主线程调用)：互等卡主不执行。</div><div class="line"> * 特点(其他线程调用)：不会开启新线程，执行完一个任务，再执行下一个任务。</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)syncMain &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"syncMain---begin"</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 1.获取主队列</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_get_main_queue();</div><div class="line"></div><div class="line">    <span class="comment">// 2.添加同步任务</span></div><div class="line">    <span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">        <span class="comment">// 追加任务2</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_sync</span>(queue, ^&#123;</div><div class="line">        <span class="comment">// 追加任务3</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"3---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"syncMain---end"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">------------------输出结果----------------</div><div class="line"></div><div class="line">currentThread---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">syncMain---begin</div><div class="line">(lldb)</div><div class="line"></div><div class="line">------------------输出结果----------------</div></pre></td></tr></table></figure>
+<p>在同步执行 + 主队列可以惊奇的发现：</p>
+<p>在主线程中使用同步执行 + 主队列，追加到主线程的任务1、任务2、任务3都不再执行了，而且syncMain—end也没有打印，在XCode 9上还会报崩溃。这是为什么呢？</p>
+<p>这是因为我们在主线程中执行syncMain方法，相当于把syncMain任务放到了主线程的队列中。而同步执行会等待当前队列中的任务执行完毕，才会接着执行。那么当我们把任务1追加到主队列中，任务1就在等待主线程处理完syncMain任务。而syncMain任务需要等待任务1执行完毕，才能接着执行。</p>
+<p>那么，现在的情况就是syncMain任务和任务1都在等对方执行完毕。这样大家互相等待，所以就卡住了，所以我们的任务执行不了，而且syncMain—end也没有打印。</p>
+<p>要是如果不在主线程中调用，而在其他线程中调用会如何呢？</p>
+<h5 id="在其他线程中调用同步执行-主队列"><a href="#在其他线程中调用同步执行-主队列" class="headerlink" title="在其他线程中调用同步执行 + 主队列"></a>在其他线程中调用同步执行 + 主队列</h5><p>特点：不会开启新线程，执行完一个任务，再执行下一个任务</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">还是上面代码，我们使用 <span class="built_in">NSThread</span> 的 detachNewThreadSelector 方法会创建线程，并自动启动线程执行 selector 任务</div><div class="line"></div><div class="line"><span class="comment">// 新建线程执行 syncMain 方法</span></div><div class="line">[<span class="built_in">NSThread</span> detachNewThreadSelector:<span class="keyword">@selector</span>(syncMain) toTarget:<span class="keyword">self</span> withObject:<span class="literal">nil</span>];</div><div class="line"></div><div class="line"></div><div class="line">------------------输出结果----------------</div><div class="line">currentThread---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">syncMain---begin</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">syncMain---end</div><div class="line">------------------输出结果----------------</div></pre></td></tr></table></figure>
+<p>在其他线程中使用同步执行 + 主队列可看到：</p>
+<p>所有任务都是在主线程（非当前线程）中执行的，没有开启新的线程（所有放在主队列中的任务，都会放到主线程中执行）。</p>
+<p>所有任务都在打印的syncMain—begin和syncMain—end之间执行（同步任务需要等待队列的任务执行结束）。</p>
+<p>任务是按顺序执行的（主队列是串行队列，每次只有一个任务被执行，任务一个接一个按顺序执行）。</p>
+<p>为什么现在就不会卡住了呢？</p>
+<p>因为syncMain 任务放到了其他线程里，而任务1、任务2、任务3都在追加到主队列中，这三个任务都会在主线程中执行。syncMain 任务在其他线程中执行到追加任务1到主队列中，因为主队列现在没有正在执行的任务，所以，会直接执行主队列的任务1，等任务1执行完毕，再接着执行任务2、任务3。所以这里不会卡住线程。</p>
+<h4 id="【主队列2】异步执行-主队列"><a href="#【主队列2】异步执行-主队列" class="headerlink" title="【主队列2】异步执行 + 主队列"></a>【主队列2】异步执行 + 主队列</h4><p>特点:特点：只在主线程中执行任务，执行完一个任务，再执行下一个任务</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 异步执行 + 主队列</div><div class="line"> * 特点：只在主线程中执行任务，执行完一个任务，再执行下一个任务</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)asyncMain &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"asyncMain---begin"</span>);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_get_main_queue();</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        <span class="comment">// 追加任务2</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        <span class="comment">// 追加任务3</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"3---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"asyncMain---end"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">------------------输出结果----------------</div><div class="line">currentThread---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">asyncMain---begin</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">asyncMain---end</div><div class="line">------------------输出结果----------------</div></pre></td></tr></table></figure>
+<p>在异步执行 + 主队列可以看到：</p>
+<p>所有任务都是在当前线程（主线程）中执行的，并没有开启新的线程（虽然异步执行具备开启线程的能力，但因为是主队列，所以所有任务都在主线程中）。</p>
+<p>所有任务是在打印的syncConcurrent—begin和syncConcurrent—end之后才开始执行的（异步执行不会做任何等待，可以继续执行任务）。</p>
+<p>任务是按顺序执行的（因为主队列是串行队列，每次只有一个任务被执行，任务一个接一个按顺序执行）。</p>
+<p>弄懂了难理解、绕来绕去的队列+任务之后，我们来学习一个简单的东西：GCD 线程间的通信。</p>
+<h2 id="GCD-线程间的通信"><a href="#GCD-线程间的通信" class="headerlink" title="GCD 线程间的通信"></a>GCD 线程间的通信</h2><p>在 iOS 开发过程中，我们一般在主线程里边进行 UI 刷新，例如：点击、滚动、拖拽等事件。我们通常把一些耗时的操作放在其他线程，比如说图片下载、文件上传等耗时操作。而当我们有时候在其他线程完成了耗时操作时，需要回到主线程，那么就用到了线程之间的通讯。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 线程间通信</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)communication &#123;</div><div class="line"></div><div class="line">    <span class="comment">// 获取全局并发队列</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>); </div><div class="line"></div><div class="line">    <span class="comment">// 获取主队列</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> mainQueue = dispatch_get_main_queue(); </div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 异步追加任务</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 回到主线程</span></div><div class="line">        <span class="built_in">dispatch_async</span>(mainQueue, ^&#123;</div><div class="line">            <span class="comment">// 追加在主线程中执行的任务</span></div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">------------------输出结果----------------</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">------------------输出结果----------------</div></pre></td></tr></table></figure>
+<p>可以看到在其他线程中先执行任务，执行完了之后回到主线程执行主线程的相应操作。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文到此总结了 GCD 一些基本知识 和 【队列】+【任务】的各种组合与关系。<br>后面会总结一些 GCD 在实际场景中不同用法。</p>
+<p>欢迎继续阅读后续文章</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/07/04/2018:07:04WKWebView使用和封装/" data-toggle="tooltip" data-placement="top"
+                           title="WKWebView 的使用和封装">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS-开发之-GCD-基础"><span class="toc-text">iOS 开发之 GCD 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#GCD是什么？"><span class="toc-text">GCD是什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#GCD-基本原理-和-优势"><span class="toc-text">GCD 基本原理 和 优势</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GCD的使用"><span class="toc-text">GCD的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GCD-的使用步骤"><span class="toc-text">GCD 的使用步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#队列的创建方法-获取方法"><span class="toc-text">队列的创建方法/获取方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#任务的创建方法"><span class="toc-text">任务的创建方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GCD-各个队列组合的验证"><span class="toc-text">GCD 各个队列组合的验证</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#【并发执行方式1】同步执行-并发队列"><span class="toc-text">【并发执行方式1】同步执行 + 并发队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#【并发执行方式2】异步执行-并发队列"><span class="toc-text">【并发执行方式2】异步执行 + 并发队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#【串行执行方式1】同步执行-串行队列"><span class="toc-text">【串行执行方式1】同步执行 + 串行队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#【串行执行方式2】异步执行-串行队列"><span class="toc-text">【串行执行方式2】异步执行 + 串行队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#【主队列1】同步执行-主队列"><span class="toc-text">【主队列1】同步执行 + 主队列</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#在主线程中调用同步执行-主队列"><span class="toc-text">在主线程中调用同步执行 + 主队列</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#在其他线程中调用同步执行-主队列"><span class="toc-text">在其他线程中调用同步执行 + 主队列</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#【主队列2】异步执行-主队列"><span class="toc-text">【主队列2】异步执行 + 主队列</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GCD-线程间的通信"><span class="toc-text">GCD 线程间的通信</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#GCD"
+                           title="GCD">GCD</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2018
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>
