@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        runtime 之关联对象｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2018/09/14/runtime关联对象/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/wall.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/wall.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>runtime 之关联对象</h1>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2018-09-14
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#runtime"
+                           title="runtime">runtime</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            runtime 之关联对象
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <!--这个Hexo的md格式读取可能有些问题，和MWeb的解析出来不一样-->
+<h1 id="OC-runtime-之关联对象"><a href="#OC-runtime-之关联对象" class="headerlink" title="OC - runtime 之关联对象"></a>OC - runtime 之关联对象</h1><p>OC runtime 中关联对象的方法相信大家都使用过，但是其原理和内部实现就很多人不知道。这篇文章就来讲解一下 OC runtime 之关联对象，下面直接步入正题。</p>
+<h2 id="runtime-关联对象原理"><a href="#runtime-关联对象原理" class="headerlink" title="runtime 关联对象原理"></a>runtime 关联对象原理</h2><p><strong>runtime 中提供的 API 如下:</strong></p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/// 对象关联策略</span></div><div class="line"><span class="keyword">typedef</span> OBJC_ENUM(uintptr_t, objc_AssociationPolicy) &#123;</div><div class="line">    OBJC_ASSOCIATION_ASSIGN = <span class="number">0</span>,           <span class="comment">/**&lt; 关联一个弱引用 */</span></div><div class="line">    OBJC_ASSOCIATION_RETAIN_NONATOMIC = <span class="number">1</span>, <span class="comment">/**&lt; 指定关联一个强引用. 非原子性. */</span></div><div class="line">    OBJC_ASSOCIATION_COPY_NONATOMIC = <span class="number">3</span>,   <span class="comment">/**&lt; 指定关联一个拷贝引用. 非原子性. */</span></div><div class="line">    OBJC_ASSOCIATION_RETAIN = <span class="number">01401</span>,       <span class="comment">/**&lt; 指定关联一个强引用.原子性. */</span></div><div class="line">    OBJC_ASSOCIATION_COPY = <span class="number">01403</span>          <span class="comment">/**&lt; 指定关联一个拷贝引用.原子性. */</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">/** </span></div><div class="line"> * 用给定的 key 和关联策略 policy 为指定的 object 设置关联关系</div><div class="line"> */</div><div class="line"><span class="keyword">void</span> objc_setAssociatedObject(<span class="keyword">id</span> object, <span class="keyword">const</span> <span class="keyword">void</span> * key, <span class="keyword">id</span> value, objc_AssociationPolicy policy);</div><div class="line"></div><div class="line"><span class="comment">/** </span></div><div class="line"> * 通过给定的 object 和 key 拿到关联的对象</div><div class="line"> */</div><div class="line"><span class="keyword">id</span> objc_getAssociatedObject(<span class="keyword">id</span> object, <span class="keyword">const</span> <span class="keyword">void</span> * key);</div><div class="line"></div><div class="line"><span class="comment">/** </span></div><div class="line"> * 移除给定 object 所有关联的关系</div><div class="line"> */</div><div class="line"><span class="keyword">void</span> objc_removeAssociatedObjects(<span class="keyword">id</span> object)；</div></pre></td></tr></table></figure>
+<p>runtime 的 API 很简单，实际上工作中使用 runtime 的关联对象也很方便，如下：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">void</span> * _Nonnull titleKey = <span class="string">@"titleKey"</span>;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)setTitle:(<span class="built_in">NSString</span> *)title</div><div class="line">&#123;</div><div class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, titleKey, key, OBJC_ASSOCIATION_RETAIN);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">NSString</span> *)title</div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> objc_getAssociatedObject(<span class="keyword">self</span>, titleKey);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如此简单强大的功能，如果想要观察系统的实现，可以找关联对象的源码，我们可以从<a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="external">objc 源码</a>中拿到，</p>
+<p>从源码中，可以找到以上三个 API 的实现如下：<br><img src="https://upload-images.jianshu.io/upload_images/1256297-87fef94d74a3b84e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="runtime中API"></p>
+<p>以 <code>objc_setAssociatedObject</code> 方法为例，方法内部调用的一个内部方法，参数同上，进入内部方法</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/// 方法为我加过注释的代码。</span></div><div class="line"><span class="keyword">void</span> _object_set_associative_reference(<span class="keyword">id</span> object, <span class="keyword">void</span> *key, <span class="keyword">id</span> value, uintptr_t policy) &#123;</div><div class="line">    </div><div class="line">    <span class="comment">// 取原来的绑定关系，新绑定关系原来关系为空</span></div><div class="line">    ObjcAssociation old_association(<span class="number">0</span>, <span class="literal">nil</span>);</div><div class="line">    <span class="comment">// 验证参数</span></div><div class="line">    <span class="keyword">id</span> new_value = value ? acquireValue(value, policy) : <span class="literal">nil</span>;</div><div class="line">    &#123;</div><div class="line">        <span class="comment">// 内部绑定关系管理器.内部管理一个全局 AssociationsHashMap</span></div><div class="line">        AssociationsManager manager;</div><div class="line">        <span class="comment">// 管理器中的绑定关系Map</span></div><div class="line">        AssociationsHashMap &amp;associations(manager.associations());</div><div class="line">        <span class="comment">// 生成伪装地址。处理参数 object 地址</span></div><div class="line">        disguised_ptr_t disguised_object = DISGUISE(object);</div><div class="line">        <span class="keyword">if</span> (new_value) &#123;</div><div class="line">            <span class="comment">// 打破原来存在的绑定关系</span></div><div class="line">            AssociationsHashMap::iterator i = associations.find(disguised_object); <span class="comment">// 以伪装地址为key 在AssociationsHashMap找objc 对应的二级 Map</span></div><div class="line">            <span class="keyword">if</span> (i != associations.end()) &#123;</div><div class="line">                <span class="comment">// 二级Map存在。并取二级map： ObjectAssociationMap</span></div><div class="line">                ObjectAssociationMap *refs = i-&gt;second;</div><div class="line">                <span class="comment">// 同样的方法找到 ObjectAssociationMap 中绑定关系</span></div><div class="line">                ObjectAssociationMap::iterator j = refs-&gt;find(key); <span class="comment">// 通过key 在ObjectAssociationMap 中找ObjcAssociation</span></div><div class="line">                <span class="keyword">if</span> (j != refs-&gt;end()) &#123;</div><div class="line">                    <span class="comment">// 找到原来 ObjcAssociation 关系，直接赋值old_association</span></div><div class="line">                    old_association = j-&gt;second;</div><div class="line">                    j-&gt;second = ObjcAssociation(policy, new_value);</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="comment">// 不存在 -&gt; 重新创建一次</span></div><div class="line">                    (*refs)[key] = ObjcAssociation(policy, new_value);</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// 不存在二级Map 就直接从新创建</span></div><div class="line">                ObjectAssociationMap *refs = new ObjectAssociationMap;</div><div class="line">                associations[disguised_object] = refs;</div><div class="line">                (*refs)[key] = ObjcAssociation(policy, new_value);</div><div class="line">                object-&gt;setHasAssociatedObjects();</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 未传 value ，直接设置关联关系为nil。移除原来的绑定关系</span></div><div class="line">            AssociationsHashMap::iterator i = associations.find(disguised_object);</div><div class="line">            <span class="keyword">if</span> (i !=  associations.end()) &#123;</div><div class="line">                ObjectAssociationMap *refs = i-&gt;second;</div><div class="line">                ObjectAssociationMap::iterator j = refs-&gt;find(key);</div><div class="line">                <span class="keyword">if</span> (j != refs-&gt;end()) &#123;</div><div class="line">                    old_association = j-&gt;second;</div><div class="line">                    refs-&gt;erase(j);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 释放 old value.</span></div><div class="line">    <span class="keyword">if</span> (old_association.hasValue()) ReleaseValue()(old_association);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从源码中可以看到维护对象关联的对象主要有四个</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">AssociationsManager  <span class="comment">// 维护关联关系的全局管理者 ---&gt; 保存AssociationsHashMap</span></div><div class="line">AssociationsHashMap  <span class="comment">// 保存关联关系的HashMap ---&gt; 保存对象对应的关联关系的Map</span></div><div class="line">ObjectAssociationMap <span class="comment">// 对象关联关系的Map，二级Map</span></div><div class="line">ObjcAssociation      <span class="comment">// 关联关系</span></div></pre></td></tr></table></figure>
+<p>它们的关系用图像表示如下：<br><img src="https://upload-images.jianshu.io/upload_images/1256297-2c8932b45d976c4f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="关联对象内部逻辑"></p>
+<p>runtime 相当于从我们的对象外部重新创建并管理了一套对象关联机制，通过双层 hashMap 来维护对象之间的关联关系。其中 AssociationsHashMap(外层Map)是存放在 AssociationsManager 中的全局静态 map。通过要关联对象的内存地址处理得到和对象唯一绑定的 key 在 map 中保存和对象相关的ObjectAssociationMap，此 map 又维护一个一个的 ObjcAssociation (关联策略和值)。</p>
+<p>以上以 objc_setAssociatedObject 为例讲解了关联对象的原理，objc_getAssociatedObject和objc_removeAssociatedObjects 原理也是一样。</p>
+<h2 id="思维拓展"><a href="#思维拓展" class="headerlink" title="思维拓展"></a>思维拓展</h2><p>runtime 中对象关联的原理如上，学习了苹果源码中的思想。可以发现工作中很多类似的数据存储恰好能借鉴一下。</p>
+<p>恰好下午研究 runtime 对象关联原理的时候，朋友问我一个多用户系统的实现逻辑。</p>
+<p>大意是：</p>
+<ul>
+<li>用户通过手机号登录后会在内存中生成用户信息表，表中可以保存用户的诸如：个人基本信息、联系人信息、钱包信息……</li>
+<li>用户退出登录后，信息不会丢失。</li>
+<li>其他用户登录后，会同样创建对应的用户信息表，并保存</li>
+<li>之前用户登录后，依然能查看之前自己的用户信息</li>
+</ul>
+<p>看到这个问题，我直接感觉 runtime 中对象关联的实现恰好就是这个问题的极好实现。</p>
+<p>通过用户登录id为 key 创建用户信息Map。确定每个用户id对应唯一一个用户信息表，用户信息表中想保存什么信息就自定义啦。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/08/30/2018:08:30 iOS 开发之 GCD 不同场景使用/" data-toggle="tooltip" data-placement="top"
+                           title="iOS 开发之 GCD 不同场景使用">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OC-runtime-之关联对象"><span class="toc-text">OC - runtime 之关联对象</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#runtime-关联对象原理"><span class="toc-text">runtime 关联对象原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思维拓展"><span class="toc-text">思维拓展</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#runtime"
+                           title="runtime">runtime</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2018
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>

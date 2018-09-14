@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="记录技术积累之路、愿明天更美好">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="http://upload-images.jianshu.io/upload_images/1256297-fafd7a5e5c553bd3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240# your favicon png">
+    <link rel="alternate" type="application/atom+xml" title="xiaoyouPrince" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        iOS 开发之 GCD 不同场景使用｜xiaoyou&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://xiaoyouprince.com/2018/08/30/2018:08:30 iOS 开发之 GCD 不同场景使用/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    xiaoyouPrince
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/My-Works/">My Works</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oozx6yayl.bkt.clouddn.com/light.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oozx6yayl.bkt.clouddn.com/light.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>iOS 开发之 GCD 不同场景使用</h1>
+                    
+                    <span class="meta">
+                         作者 xiaoyouPrince
+                        <span>
+                          日期 2018-08-30
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#GCD"
+                           title="GCD">GCD</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            iOS 开发之 GCD 不同场景使用
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h1 id="iOS-开发之-GCD-不同场景使用"><a href="#iOS-开发之-GCD-不同场景使用" class="headerlink" title="iOS 开发之 GCD 不同场景使用"></a>iOS 开发之 GCD 不同场景使用</h1><p>本文在<a href="https://www.jianshu.com/p/29cc1f3440aa" target="_blank" rel="external">iOS 开发值 GCD 基础</a> 的基础上，继续总结了 GCD 的一些API 和在不同场景下的使用。</p>
+<h3 id="GCD-栅栏方法：dispatch-barrier-async"><a href="#GCD-栅栏方法：dispatch-barrier-async" class="headerlink" title="GCD 栅栏方法：dispatch_barrier_async"></a>GCD 栅栏方法：dispatch_barrier_async</h3><p>我们有时需要异步执行两组操作，而且第一组操作执行完之后，才能开始执行第二组操作。这样我们就需要一个相当于 栅栏 一样的一个方法将两组异步执行的操作组给分割起来，当然这里的操作组里可以包含一个或多个任务。这就需要用到dispatch_barrier_async方法在两个操作组间形成栅栏。</p>
+<p>dispatch_barrier_async函数会等待前边追加到并发队列中的任务全部执行完毕之后，再将指定的任务追加到该异步队列中。然后在dispatch_barrier_async函数追加的任务执行完毕之后，异步队列才恢复为一般动作，接着追加任务到该异步队列并开始执行.</p>
+<p>示意如图：<br><img src="https://upload-images.jianshu.io/upload_images/1256297-2165449594d4ba23.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000" alt=""></p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 栅栏方法 dispatch_barrier_async</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)barrier &#123;</div><div class="line"></div><div class="line">    <span class="comment">// 1. 创建并发队列队列</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"com.xiaoyouPrince"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"></div><div class="line">    <span class="comment">// 2. 添加异步任务</span></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        <span class="comment">// 追加任务2</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="comment">// 栅栏任务</span></div><div class="line">    dispatch_barrier_async(queue, ^&#123;</div><div class="line">        <span class="comment">// 追加任务 barrier</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"barrier---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);<span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        <span class="comment">// 追加任务3</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"3---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line">        <span class="comment">// 追加任务4</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"4---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">------------------打印结果-----------------</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">barrier---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">barrier---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">4</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">4</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">------------------打印结果-----------------</div></pre></td></tr></table></figure>
+<p>在dispatch_barrier_async相关代码执行结果中可以看出：</p>
+<p>在执行完栅栏前面的操作之后，才执行栅栏操作，最后再执行栅栏后边的操作</p>
+<h3 id="GCD-延时执行方法：dispatch-after"><a href="#GCD-延时执行方法：dispatch-after" class="headerlink" title="GCD 延时执行方法：dispatch_after"></a>GCD 延时执行方法：dispatch_after</h3><p>我们经常会遇到这样的需求：在指定时间（例如3秒）之后执行某个任务。可以用 GCD 的dispatch_after函数来实现。</p>
+<p>需要注意的是：dispatch_after函数并不是在指定时间之后才开始执行处理，而是在指定时间之后将任务追加到主队列中。严格来说，这个时间并不是绝对准确的，但想要大致延迟执行任务，dispatch_after函数是很有效的。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 延时执行方法 dispatch_after</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)after &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"after---begin"</span>);</div><div class="line"></div><div class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">2.0</span>* <span class="built_in">NSEC_PER_SEC</span>)), dispatch_get_main_queue(), ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 2.0秒后异步追加任务代码到主队列，并开始执行</span></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"after---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    &#125;);</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">输出结果：</div><div class="line"></div><div class="line"><span class="number">2018</span><span class="number">-08</span><span class="number">-29</span> <span class="number">17</span>:<span class="number">53</span>:<span class="number">08.713784</span>+<span class="number">0800</span> GCD-demo[<span class="number">20282</span>:<span class="number">5080295</span>] currentThread---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"></div><div class="line"><span class="number">2018</span><span class="number">-08</span><span class="number">-29</span> <span class="number">17</span>:<span class="number">53</span>:<span class="number">08.713962</span>+<span class="number">0800</span> GCD-demo[<span class="number">20282</span>:<span class="number">5080295</span>] after---begin</div><div class="line"></div><div class="line"><span class="number">2018</span><span class="number">-08</span><span class="number">-29</span> <span class="number">17</span>:<span class="number">53</span>:<span class="number">10.714283</span>+<span class="number">0800</span> GCD-demo[<span class="number">20282</span>:<span class="number">5080295</span>] after---&#123;number = <span class="number">1</span>, name = main&#125;</div></pre></td></tr></table></figure>
+<p>在dispatch_after相关代码执行结果中可以看出：在打印 after—begin 之后大约 2.0 秒的时间，打印了 after—{number = 1, name = main}</p>
+<h3 id="GCD-一次性代码（只执行一次）：dispatch-once"><a href="#GCD-一次性代码（只执行一次）：dispatch-once" class="headerlink" title="GCD 一次性代码（只执行一次）：dispatch_once"></a>GCD 一次性代码（只执行一次）：dispatch_once</h3><p>我们在创建单例、或者有整个程序运行过程中只执行一次的代码时，我们就用到了 GCD 的 dispatch_once 函数。使用dispatch_once 函数能保证某段代码在程序运行过程中只被执行1次，并且即使在多线程的环境下，dispatch_once也可以保证线程安全。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 一次性代码（只执行一次）dispatch_once</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)once &#123;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</div><div class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</div><div class="line">        <span class="comment">// 只执行1次的代码(这里面默认是线程安全的)</span></div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="GCD-快速迭代方法：dispatch-apply"><a href="#GCD-快速迭代方法：dispatch-apply" class="headerlink" title="GCD 快速迭代方法：dispatch_apply"></a>GCD 快速迭代方法：dispatch_apply</h3><p>通常我们会用 for 循环遍历，但是 GCD 给我们提供了快速迭代的函数dispatch_apply。dispatch_apply按照指定的次数将指定的任务追加到指定的队列中，并等待全部队列执行结束。</p>
+<p>我们可以利用异步队列同时遍历。比如说遍历 0~5 这6个数字，for 循环的做法是每次取出一个元素，逐个遍历。dispatch_apply可以同时遍历多个数字。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 快速迭代方法 dispatch_apply</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)apply &#123;</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"apply---begin"</span>);</div><div class="line"></div><div class="line">    dispatch_apply(<span class="number">6</span>, queue, ^(size_t index) &#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%zd---%@"</span>,index, [<span class="built_in">NSThread</span> currentThread]);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"apply---end"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">--------------------输出结果：-------------------</div><div class="line"></div><div class="line">apply---begin</div><div class="line"></div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">0</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">5</span>, name = (null)&#125;</div><div class="line"><span class="number">4</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">5</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"></div><div class="line">apply---end</div><div class="line"></div><div class="line">--------------------输出结果：-------------------</div></pre></td></tr></table></figure>
+<p>从 dispatch_apply 相关代码执行结果中可以看出：</p>
+<p>0~5 打印顺序不定，最后打印了 apply—end。</p>
+<p>因为是在并发队列中异步队执行任务，所以各个任务的执行时间长短不定，最后结束顺序也不定。但是apply—end一定在最后执行。这是因为 dispatch_apply 函数会等待全部任务执行完毕。</p>
+<h3 id="GCD-的队列组：dispatch-group"><a href="#GCD-的队列组：dispatch-group" class="headerlink" title="GCD 的队列组：dispatch_group"></a>GCD 的队列组：dispatch_group</h3><p>有时候我们会有这样的需求：分别异步执行2个耗时任务，然后当2个耗时任务都执行完毕后再回到主线程执行任务。这时候我们可以用到 GCD 的队列组。</p>
+<p>调用队列组的 dispatch_group_async 先把任务放到队列中，然后将队列放入队列组中。或者使用队列组的 dispatch_group_enter、dispatch_group_leave 组合 来实现dispatch_group_async。</p>
+<p>调用队列组的 dispatch_group_notify 回到指定线程执行任务。或者使用 dispatch_group_wait回到当前线程继续向下执行（会阻塞当前线程）。</p>
+<h4 id="dispatch-group-notify"><a href="#dispatch-group-notify" class="headerlink" title="dispatch_group_notify"></a>dispatch_group_notify</h4><p>监听 group 中任务的完成状态，当所有的任务都执行完成后，追加任务到 group 中，并执行任务。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 队列组 dispatch_group_notify</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)groupNotify &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"group---begin"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 1. 创建 group</span></div><div class="line">    dispatch_group_t group =  dispatch_group_create();</div><div class="line">    </div><div class="line">    <span class="comment">// 2. 异步执行组内的全局队列任务</span></div><div class="line">    dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务2</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 等前面的异步任务1、任务2都执行完毕后，回到主线程执行下边任务</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"3---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"group---end"</span>);</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">-------------------输出结果：-----------------</div><div class="line">currentThread---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">group---begin</div><div class="line"></div><div class="line"> <span class="number">1</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"> <span class="number">2</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"> <span class="number">2</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"> <span class="number">1</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"> <span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"> <span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"> </div><div class="line">group---end</div></pre></td></tr></table></figure>
+<p>从dispatch_group_notify相关代码运行输出结果可以看出：<br>当所有任务都执行完成之后，才执行 dispatch_group_notify block 中的任务。</p>
+<h4 id="dispatch-group-wait"><a href="#dispatch-group-wait" class="headerlink" title="dispatch_group_wait"></a>dispatch_group_wait</h4><p>暂停当前线程（阻塞当前线程），等待指定的 group 中的任务执行完成后，才会往下继续执行。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 队列组 dispatch_group_wait</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)groupWait &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"group---begin"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 1. 创建group</span></div><div class="line">    dispatch_group_t group =  dispatch_group_create();</div><div class="line"></div><div class="line">    <span class="comment">// 2. 异步执行组中全局队列任务</span></div><div class="line">    dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</div><div class="line">        <span class="comment">// 追加任务2</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="comment">// 等待上面的任务全部完成后，会往下继续执行（会阻塞当前线程）</span></div><div class="line">    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);</div><div class="line">    </div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"group---end"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">------------------输出结果：------------------</div><div class="line"></div><div class="line">currentThread---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">group---begin</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">group---end</div><div class="line">------------------输出结果：------------------</div></pre></td></tr></table></figure>
+<p>从dispatch_group_wait相关代码运行输出结果可以看出：</p>
+<p>当所有任务执行完成之后，才执行 dispatch_group_wait 之后的操作。但是，使用dispatch_group_wait 会阻塞当前线程。</p>
+<h4 id="dispatch-group-enter、dispatch-group-leave"><a href="#dispatch-group-enter、dispatch-group-leave" class="headerlink" title="dispatch_group_enter、dispatch_group_leave"></a>dispatch_group_enter、dispatch_group_leave</h4><p>dispatch_group_enter 标志着一个任务追加到 group，执行一次，相当于 group 中未执行完毕任务数+1</p>
+<p>dispatch_group_leave 标志着一个任务离开了 group，执行一次，相当于 group 中未执行完毕任务数-1。</p>
+<p>当 group 中未执行完毕任务数为0的时候，才会使dispatch_group_wait解除阻塞，以及执行追加到dispatch_group_notify中的任务。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 队列组 dispatch_group_enter、dispatch_group_leave</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)groupEnterAndLeave</div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"group---begin"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 1.创建 group</span></div><div class="line">    dispatch_group_t group = dispatch_group_create();</div><div class="line"></div><div class="line">    <span class="comment">// 2. 获取全局并发队列</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 3. 进入 group 中执行</span></div><div class="line">    dispatch_group_enter(group);</div><div class="line"></div><div class="line">    <span class="comment">// 3.1. 向队列中异步执行任务</span></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 3.2. 任务执行之后，离开组【leave 和 enter 必须成对使用】</span></div><div class="line">        dispatch_group_leave(group);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// 4. 再次进入组执行新的任务</span></div><div class="line">    dispatch_group_enter(group);</div><div class="line">    <span class="comment">// 4.1. 向队列中异步执行任务</span></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务2</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"2---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 4.2. 任务执行之后，离开组【leave 和 enter 必须成对使用】</span></div><div class="line">        dispatch_group_leave(group);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// group 内部的任务都执行完之后通知执行下面代码</span></div><div class="line">    dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 等前面的异步操作都执行完毕后，回到主线程.</span></div><div class="line">        <span class="keyword">for</span>(inti = <span class="number">0</span>; i &lt; <span class="number">2</span>; ++i) &#123;</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"3---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">        &#125;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"group---end"</span>);</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">-------------------输出结果------------------</div><div class="line">currentThread---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">group---begin</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line"><span class="number">2</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line"><span class="number">3</span>---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">group---end</div><div class="line">-------------------输出结果------------------</div></pre></td></tr></table></figure>
+<p>从dispatch_group_enter、dispatch_group_leave相关代码运行结果中可以看出：当所有任务执行完成之后，才执行 dispatch_group_notify 中的任务。<strong>这里的dispatch_group_enter、dispatch_group_leave组合，其实等同于dispatch_group_async。</strong></p>
+<h3 id="GCD-信号量：dispatch-semaphore"><a href="#GCD-信号量：dispatch-semaphore" class="headerlink" title="GCD 信号量：dispatch_semaphore"></a>GCD 信号量：dispatch_semaphore</h3><p>GCD 中的信号量是指 Dispatch Semaphore，是持有计数的信号。类似于过高速路收费站的栏杆。可以通过时，打开栏杆，不可以通过时，关闭栏杆。在 Dispatch Semaphore 中，使用计数来完成这个功能，计数为0时等待，不可通过。计数为1或大于1时，计数减1且不等待，可通过。Dispatch Semaphore 提供了三个函数。</p>
+<p>dispatch_semaphore_create：创建一个Semaphore并初始化信号的总量</p>
+<p>dispatch_semaphore_signal：发送一个信号，让信号总量加1</p>
+<p>dispatch_semaphore_wait：可以使总信号量减1，当信号总量为0时就会一直等待（阻塞所在线程），否则就可以正常执行。</p>
+<p>注意：信号量的使用前提是：想清楚你需要处理哪个线程等待（阻塞），又要哪个线程继续执行，然后使用信号量。</p>
+<p>Dispatch Semaphore 在实际开发中主要用于：</p>
+<p>保持线程同步，将异步执行任务转换为同步执行任务</p>
+<p>保证线程安全，为线程加锁</p>
+<h4 id="Dispatch-Semaphore-线程同步"><a href="#Dispatch-Semaphore-线程同步" class="headerlink" title="Dispatch Semaphore 线程同步"></a>Dispatch Semaphore 线程同步</h4><p>我们在开发中，会遇到这样的需求：异步执行耗时任务，并使用异步执行的结果进行一些额外的操作。换句话说，相当于，将将异步执行任务转换为同步执行任务。比如说：AFNetworking 中 AFURLSessionManager.m 里面的 tasksForKeyPath: 方法。通过引入信号量的方式，等待异步执行任务结果，获取到 tasks，然后再返回该 tasks。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line">- (<span class="built_in">NSArray</span> *)tasksForKeyPath:(<span class="built_in">NSString</span> *)keyPath &#123;</div><div class="line"></div><div class="line">    __block <span class="built_in">NSArray</span> *tasks = <span class="literal">nil</span>;</div><div class="line"></div><div class="line">    dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">0</span>);</div><div class="line"></div><div class="line">    [<span class="keyword">self</span>.session getTasksWithCompletionHandler:^(<span class="built_in">NSArray</span> *dataTasks, <span class="built_in">NSArray</span> *uploadTasks, <span class="built_in">NSArray</span> *downloadTasks) &#123;</div><div class="line"></div><div class="line">        <span class="keyword">if</span>([keyPath isEqualToString:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(dataTasks))]) &#123;</div><div class="line"></div><div class="line">            tasks = dataTasks;</div><div class="line"></div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>([keyPath isEqualToString:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(uploadTasks))]) &#123;</div><div class="line"></div><div class="line">            tasks = uploadTasks;</div><div class="line"></div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>([keyPath isEqualToString:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(downloadTasks))]) &#123;</div><div class="line"></div><div class="line">            tasks = downloadTasks;</div><div class="line"></div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>([keyPath isEqualToString:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(tasks))]) &#123;</div><div class="line"></div><div class="line">            tasks = [@[dataTasks, uploadTasks, downloadTasks] valueForKeyPath:<span class="string">@"@unionOfArrays.self"</span>];</div><div class="line"></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        dispatch_semaphore_signal(semaphore);</div><div class="line">    &#125;];</div><div class="line"></div><div class="line">    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> tasks;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下面，我们来利用 Dispatch Semaphore 实现线程同步，将异步执行任务转换为同步执行任务。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * semaphore 线程同步</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)semaphoreSync &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"semaphore---begin"</span>);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line"></div><div class="line">    dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">0</span>);</div><div class="line"></div><div class="line">    __block <span class="keyword">int</span> number = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue, ^&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 追加任务1</span></div><div class="line">        [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];              <span class="comment">// 模拟耗时操作</span></div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"1---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);      <span class="comment">// 打印当前线程</span></div><div class="line">         </div><div class="line">        number = <span class="number">100</span>;</div><div class="line"></div><div class="line">        dispatch_semaphore_signal(semaphore);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"semaphore---end,number = %zd"</span>,number);</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">----------------------输出结果-----------------</div><div class="line">currentThread---&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">semaphore---begin</div><div class="line"><span class="number">1</span>---&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">semaphore---end, number = <span class="number">100</span></div></pre></td></tr></table></figure>
+<p>从 Dispatch Semaphore 实现线程同步的代码可以看到：</p>
+<p>semaphore—end 是在执行完number = 100; 之后才打印的。而且输出结果 number 为 100。这是因为异步执行不会做任何等待，可以继续执行任务。异步执行将任务1追加到队列之后，不做等待，接着执行dispatch_semaphore_wait方法。此时 semaphore == 0，当前线程进入等待状态。然后，异步任务1开始执行。任务1执行到dispatch_semaphore_signal之后，总信号量加1，此时 semaphore == 1，dispatch_semaphore_wait方法检测到总信号量为1，正在被阻塞的线程（主线程）恢复继续执行。最后打印semaphore—end,number = 100。这样就实现了线程同步，将异步执行任务转换为同步执行任务。</p>
+<h4 id="Dispatch-Semaphore-线程安全和线程同步（为线程加锁）"><a href="#Dispatch-Semaphore-线程安全和线程同步（为线程加锁）" class="headerlink" title="Dispatch Semaphore 线程安全和线程同步（为线程加锁）"></a>Dispatch Semaphore 线程安全和线程同步（为线程加锁）</h4><p><strong>线程安全：</strong>如果你的代码所在的进程中有多个线程在同时运行，而这些线程可能会同时运行这段代码。如果每次运行结果和单线程运行的结果是一样的，而且其他的变量的值也和预期的是一样的，就是线程安全的。</p>
+<p>若每个线程中对全局变量、静态变量只有读操作，而无写操作，一般来说，这个全局变量是线程安全的；若有多个线程同时执行写操作（更改变量），一般都需要考虑线程同步，否则的话就可能影响线程安全。</p>
+<p><strong>线程同步：</strong>可理解为线程 A 和 线程 B 一块配合，A 执行到一定程度时要依靠线程 B 的某个结果，于是停下来，示意 B 运行；B 依言执行，再将结果给 A；A 再继续操作。</p>
+<p>举个简单例子就是：两个人在一起聊天。两个人不能同时说话，避免听不清(操作冲突)。等一个人说完(一个线程结束操作)，另一个再说(另一个线程再开始操作)。</p>
+<p>下面，我们模拟火车票售卖的方式，实现 NSThread 线程安全和解决线程同步问题。</p>
+<p>场景：总共有50张火车票，有两个售卖火车票的窗口，一个是北京火车票售卖窗口，另一个是上海火车票售卖窗口。两个窗口同时售卖火车票，卖完为止。</p>
+<h5 id="非线程安全（不使用-semaphore）"><a href="#非线程安全（不使用-semaphore）" class="headerlink" title="非线程安全（不使用 semaphore）"></a>非线程安全（不使用 semaphore）</h5><p>先来看看不考虑线程安全的代码：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 非线程安全：不使用 semaphore</div><div class="line"> * 初始化火车票数量、卖票窗口(非线程安全)、并开始卖票</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)initTicketStatusNotSave &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"semaphore---begin"</span>);</div><div class="line"></div><div class="line">    <span class="keyword">self</span>.ticketSurplusCount = <span class="number">50</span>; <span class="comment">// 初始化车票 50 张</span></div><div class="line"></div><div class="line">    <span class="comment">// queue1 代表北京火车票售卖窗口</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue1 = dispatch_queue_create(<span class="string">"com.xiaoyouPrince1"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line">    <span class="comment">// queue2 代表上海火车票售卖窗口</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue2 = dispatch_queue_create(<span class="string">"com.xiaoyouPrince2"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line">    <span class="comment">// 北京窗口异步执行卖票操作</span></div><div class="line">    __<span class="keyword">weak</span> <span class="keyword">typeof</span>(<span class="keyword">self</span>) weakSelf = <span class="keyword">self</span>;</div><div class="line">    <span class="built_in">dispatch_async</span>(queue1, ^&#123;</div><div class="line">        [weakSelf saleTicketNotSafe];</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="comment">// 上海窗口异步执行卖票操作</span></div><div class="line">    <span class="built_in">dispatch_async</span>(queue2, ^&#123;</div><div class="line">        [weakSelf saleTicketNotSafe];</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 售卖火车票(非线程安全)</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)saleTicketNotSafe &#123;</div><div class="line"></div><div class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</div><div class="line">    </div><div class="line">        <span class="keyword">if</span>(<span class="keyword">self</span>.ticketSurplusCount &gt; <span class="number">0</span>) &#123;  <span class="comment">//如果还有票，继续售卖</span></div><div class="line">            <span class="keyword">self</span>.ticketSurplusCount--;</div><div class="line"></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"剩余票数：%d 窗口：%@"</span>, <span class="keyword">self</span>.ticketSurplusCount, [<span class="built_in">NSThread</span> currentThread]]);</div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">0.2</span>];</div><div class="line">            </div><div class="line">        &#125; <span class="keyword">else</span>&#123; <span class="comment">//如果已卖完，关闭售票窗口</span></div><div class="line"></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"票已经售完"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">----------------- 输出结果（部分打印） -------------------</div><div class="line">currentThread &lt;<span class="built_in">NSThread</span>: <span class="number">0x608000079280</span>&gt;&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">non_semaphore_begin</div><div class="line">剩余票数 <span class="number">48</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">49</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">47</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">46</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">45</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">44</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">43</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">42</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">40</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">41</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">39</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">0</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">...\</div><div class="line">票已经售完</div><div class="line">票已经售完</div><div class="line">----------------- 输出结果（部分打印） -------------------</div></pre></td></tr></table></figure>
+<p>可以看到在不考虑线程安全，不使用 semaphore 的情况下，得到票数是错乱的，这样显然不符合我们的需求，所以我们需要考虑线程安全问题。</p>
+<h5 id="线程安全（使用-semaphore-加锁）"><a href="#线程安全（使用-semaphore-加锁）" class="headerlink" title="线程安全（使用 semaphore 加锁）"></a>线程安全（使用 semaphore 加锁）</h5><p>考虑线程安全的代码：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"></div><div class="line"> * 线程安全：使用 semaphore 加锁</div><div class="line"> * 初始化火车票数量、卖票窗口(线程安全)、并开始卖票</div><div class="line"> */</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)initTicketStatusSave &#123;</div><div class="line"></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"currentThread---%@"</span>,[<span class="built_in">NSThread</span> currentThread]);  <span class="comment">// 打印当前线程</span></div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"semaphore---begin"</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 有成员变量 dispatch_semaphore_t semaphreLock</span></div><div class="line">    semaphreLock = dispatch_semaphore_create(<span class="number">1</span>);</div><div class="line">    </div><div class="line">    <span class="keyword">self</span>.ticketSurplusCount = <span class="number">50</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// queue1 代表北京火车票售卖窗口</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue1 = dispatch_queue_create(<span class="string">"com.xiaoyouPrince1"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line"></div><div class="line">    <span class="comment">// queue2 代表上海火车票售卖窗口</span></div><div class="line">    <span class="built_in">dispatch_queue_t</span> queue2 = dispatch_queue_create(<span class="string">"com.xiaoyouPrince2"</span>, DISPATCH_QUEUE_SERIAL);</div><div class="line">    </div><div class="line">    __<span class="keyword">weak</span> <span class="keyword">typeof</span>(<span class="keyword">self</span>) weakSelf = <span class="keyword">self</span>;</div><div class="line">    <span class="built_in">dispatch_async</span>(queue1, ^&#123;</div><div class="line">        [weakSelf saleTicketSafe];</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="built_in">dispatch_async</span>(queue2, ^&#123;</div><div class="line">        [weakSelf saleTicketSafe];</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 售卖火车票(线程安全)</div><div class="line"> */</div><div class="line">- (<span class="keyword">void</span>)saleTicketSafe &#123;</div><div class="line"></div><div class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</div><div class="line"></div><div class="line">        <span class="comment">// 相当于加锁</span></div><div class="line">        dispatch_semaphore_wait(semaphoreLock, DISPATCH_TIME_FOREVER);</div><div class="line"></div><div class="line">        <span class="keyword">if</span>(<span class="keyword">self</span>.ticketSurplusCount &gt; <span class="number">0</span>) &#123;  <span class="comment">//如果还有票，继续售卖</span></div><div class="line"></div><div class="line">            <span class="keyword">self</span>.ticketSurplusCount--;</div><div class="line"></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"剩余票数：%d 窗口：%@"</span>, <span class="keyword">self</span>.ticketSurplusCount, [<span class="built_in">NSThread</span> currentThread]]);</div><div class="line"></div><div class="line">            [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">0.2</span>];</div><div class="line"></div><div class="line">        &#125; <span class="keyword">else</span>&#123; <span class="comment">//如果已卖完，关闭售票窗口</span></div><div class="line"></div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"车票已经售完"</span>);</div><div class="line">            </div><div class="line">            <span class="comment">// 相当于解锁</span></div><div class="line">            dispatch_semaphore_signal(semaphoreLock);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 相当于解锁</span></div><div class="line">        dispatch_semaphore_signal(semaphoreLock);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">----------------- 输出结果（部分打印） -------------------</div><div class="line">currentThread &lt;<span class="built_in">NSThread</span>: <span class="number">0x608000079280</span>&gt;&#123;number = <span class="number">1</span>, name = main&#125;</div><div class="line">non_semaphore_begin</div><div class="line">剩余票数 <span class="number">49</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">48</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">47</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">46</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">45</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">....\</div><div class="line">剩余票数 <span class="number">4</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">3</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">2</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">1</span>,窗口:&#123;number = <span class="number">4</span>, name = (null)&#125;</div><div class="line">剩余票数 <span class="number">0</span>,窗口:&#123;number = <span class="number">3</span>, name = (null)&#125;</div><div class="line">票已经售完</div><div class="line">----------------- 输出结果（部分打印） -------------------</div></pre></td></tr></table></figure>
+<p>可以看出，在考虑了线程安全的情况下，使用dispatch_semaphore 机制之后，得到的票数是正确的，没有出现混乱的情况。我们也就解决了多个线程同步的问题。</p>
+<p>创建一个 semaphoreLock 对象。后续可能有多个线程同时访问被车票余量，当有线程访问到票余量时进行 dispatch_semaphore_wait 操作。使得 semaphoreLock 总信号量 减 1 (等于0 ，相当于加锁) ，并继续操作票余量，进行一次 self.ticketSurplusCount– 操作。当票数量减少之后执行 dispatch_semaphore_signal 使得 semaphoreLock 总信号量 + 1 (等于1 ，相当于解锁)</p>
+<p>此过程中如果有其他并发线程要访问 票余量。同样会先来到 dispatch_semaphore_wait 操作。此时 semaphoreLock 的总信号量为 0 ，直接阻塞线程。当上一个访问余量的线程操作完成之后执行 dispatch_semaphore_signal 操作解锁之后，就会继续本线程的访问。从而确保了票余量的线程安全。</p>
+<p>资料：<br><a href="https://developer.apple.com/documentation/dispatch?changes=latest_major&amp;language=objc" target="_blank" rel="external">最新官方文档</a></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/08/29/2018:08:29: iOS 开发之 GCD 基础/" data-toggle="tooltip" data-placement="top"
+                           title="iOS 开发之 GCD 基础">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/09/14/runtime关联对象/" data-toggle="tooltip" data-placement="top"
+                           title="runtime 之关联对象">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS-开发之-GCD-不同场景使用"><span class="toc-text">iOS 开发之 GCD 不同场景使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GCD-栅栏方法：dispatch-barrier-async"><span class="toc-text">GCD 栅栏方法：dispatch_barrier_async</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GCD-延时执行方法：dispatch-after"><span class="toc-text">GCD 延时执行方法：dispatch_after</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GCD-一次性代码（只执行一次）：dispatch-once"><span class="toc-text">GCD 一次性代码（只执行一次）：dispatch_once</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GCD-快速迭代方法：dispatch-apply"><span class="toc-text">GCD 快速迭代方法：dispatch_apply</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GCD-的队列组：dispatch-group"><span class="toc-text">GCD 的队列组：dispatch_group</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#dispatch-group-notify"><span class="toc-text">dispatch_group_notify</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dispatch-group-wait"><span class="toc-text">dispatch_group_wait</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dispatch-group-enter、dispatch-group-leave"><span class="toc-text">dispatch_group_enter、dispatch_group_leave</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GCD-信号量：dispatch-semaphore"><span class="toc-text">GCD 信号量：dispatch_semaphore</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Dispatch-Semaphore-线程同步"><span class="toc-text">Dispatch Semaphore 线程同步</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Dispatch-Semaphore-线程安全和线程同步（为线程加锁）"><span class="toc-text">Dispatch Semaphore 线程安全和线程同步（为线程加锁）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#非线程安全（不使用-semaphore）"><span class="toc-text">非线程安全（不使用 semaphore）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#线程安全（使用-semaphore-加锁）"><span class="toc-text">线程安全（使用 semaphore 加锁）</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#GCD"
+                           title="GCD">GCD</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="http://www.cnblogs.com/xiaoyouPrince/">xiaoyouPrince</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xiaoyouPrince">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; xiaoyouPrince 2018
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://xiaoyouprince.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://upload-images.jianshu.io/upload_images/1256297-d2a8d67a141f0e7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+</body>
+
+</html>
