@@ -10,10 +10,16 @@
         a {
             text-decoration: none;
         }
+
+        label {
+            margin-top: 100px;
+            margin-left: 100px;
+        }
         
         table {
             width: 800px;
-            margin: 100px auto;
+            /*margin-top: 100px;*/
+            margin-left: 100px;
             border-collapse: collapse;
             text-align: center;
         }
@@ -32,9 +38,17 @@
  
 <body>
 
-    <button id="add" onclick="createData()">加一个</button>
 
-
+    <div>
+        <button id="add" onclick="createData()">加一个</button>
+        <button onclick="setName()">设置客户名</button>
+    </div>
+    
+    <div style="margin-top: 100px">
+        <label id="setName">客户: </label>
+        <!-- <label id="setTime" style="left: 900px">开票时间</label> -->
+    </div>
+    
     <table id="showtable">
         <thead>
             <tr>
@@ -64,36 +78,38 @@
                 total: '240',
                 note: '',
                 speciti: '1件*100块'
-            }, 
+            },  
             {
-                name: '何炅',
-                subject: '数学',
-                score: 98
-            }, 
-            {
-                name: '彭彭',
-                count: '2',
+                name: '笔记本',
+                count: '6',
                 unit: '件',
-                price: '120',
+                price: '29',
                 total: '240',
                 note: '',
                 speciti: '1件*100块'
-            }, 
-            {
-                name: '妹妹',
-                subject: '数学',
-                score: 0
             }
         ];
 
-        // function splitString(stringToSplit, separator) {
 
-        //     const arrayOfStrings = stringToSplit.split(separator)
+        setDate()
 
-        //     console.log('The original string is: ', stringToSplit)
-        //     console.log('The separator is: ', separator)
-        //     console.log('The array has ', arrayOfStrings.length, ' elements: ', arrayOfStrings.join(' / '))
-        // }
+
+        function setDate() {
+            
+            let currentTime = new Date(new Date().setHours(new Date().getHours() + 8)).toISOString().replace("T", " ").slice(0,-5)
+            let nameLabel = document.getElementById("setTime")
+            // nameLabel.innerHTML = "开票时间: " + currentTime
+
+
+        }
+
+        function setName(){
+
+            let name = prompt("输入客户名")
+
+            let nameLabel = document.getElementById("setName")
+            nameLabel.innerHTML = "客户: " + name
+        }
 
         function createData(){
             // alert("hhh")
