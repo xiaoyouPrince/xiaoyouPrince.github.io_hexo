@@ -1,343 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
-
+ 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Table</title>
-  <style>
-    a {
-      text-decoration: none;
-    }
-
-    table {
-      width: 800px;
-      margin: 100px auto;
-      border-collapse: collapse;
-      text-align: center;
-    }
-
-    th {
-      border: 1px solid black;
-      background-color: lightblue;
-    }
-
-    td {
-      border: 1px solid black;
-      background-color: azure;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table</title>
+    <style>
+        a {
+            text-decoration: none;
+        }
+        
+        table {
+            width: 800px;
+            margin: 100px auto;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        
+        th {
+            border: 1px solid black;
+            background-color: lightblue;
+        }
+        
+        td {
+            border: 1px solid black;
+            background-color: azure;
+        }
+    </style>
 </head>
-
+ 
 <body>
 
-  <button id="add" onclick="createData()">加一个</button>
+    <button id="add" onclick="createData()">加一个</button>
 
 
-  <table>
-    <thead>
-      <tr>
-        <th>序号</th>
-        <th>货名</th>
-        <th>数量</th>
-        <th>单位</th>
-        <th>单价</th>
-        <th>金额(元)</th>
-        <th>备注</th>
-        <th>装箱规格</th>
-        <th>操作</th>
-      </tr>
-    </thead>
-    <tbody id='tbody_container'>
-    </tbody>
-  </table>
-  <script>
+    <table id="showtable">
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>货名</th>
+                <th>数量</th>
+                <th>单位</th>
+                <th>单价</th>
+                <th>金额(元)</th>
+                <th>备注</th>
+                <th>装箱规格</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
 
-    /*创建学生信息数组*/
-    var objs = [
-      {
-        name: "百事可乐",
-        count: '2',
-        unit: '件',
-        price: '120',
-        total: '240',
-        note: '',
-        speciti: '1件*100块'
-      },
-      {
-        name: '何炅',
-        subject: '数学',
-        score: 98
-      },
-      {
-        name: '彭彭',
-        count: '2',
-        unit: '件',
-        price: '120',
-        total: '240',
-        note: '',
-        speciti: '1件*100块'
-      },
-      {
-        name: '妹妹',
-        subject: '数学',
-        score: 0
-      }
-    ];
+                /*创建学生信息数组*/
+        var objs = [
+            {
+                name: "百事可乐",
+                count: '2',
+                unit: '件',
+                price: '120',
+                total: '240',
+                note: '',
+                speciti: '1件*100块'
+            }, 
+            {
+                name: '何炅',
+                subject: '数学',
+                score: 98
+            }, 
+            {
+                name: '彭彭',
+                count: '2',
+                unit: '件',
+                price: '120',
+                total: '240',
+                note: '',
+                speciti: '1件*100块'
+            }, 
+            {
+                name: '妹妹',
+                subject: '数学',
+                score: 0
+            }
+        ];
 
-    function createData() {
-      // alert("hhh")
+        // function splitString(stringToSplit, separator) {
 
-      let length = objs.length
+        //     const arrayOfStrings = stringToSplit.split(separator)
 
-      objs.push(
-        {
-          name: "百事可乐" + length,
-          count: '2',
-          unit: '件',
-          price: '120',
-          total: '240',
-          note: '',
-          speciti: '1件*100块'
+        //     console.log('The original string is: ', stringToSplit)
+        //     console.log('The separator is: ', separator)
+        //     console.log('The array has ', arrayOfStrings.length, ' elements: ', arrayOfStrings.join(' / '))
+        // }
+
+        function createData(){
+            // alert("hhh")
+
+            let newObj = prompt("依次输入货品名称/数量/价格/规格 -- 注意用空格分割")
+            const arrayOfStrings = newObj.split(' ')
+            if (arrayOfStrings.length < 4) {
+                alert("输入有误，未添加成功")
+                return
+            }
+
+            objs.push(
+                {
+                    name: arrayOfStrings[0],
+                    count: arrayOfStrings[1],
+                    unit: '件',
+                    price: arrayOfStrings[2],
+                    total: '240',
+                    note: '',
+                    speciti: arrayOfStrings[3] //'1件*100块'
+                }
+            )
+
+            createTable()
         }
-      )
 
-      createTable()
-    }
-
-    function removeData(index) {
+        function removeData(index){
 
 
-      console.log("removeData - 入参" + index)
+            console.log("removeData - 入参" + index)
 
-      objs.splice(index, 1)
-      createTable()
-    }
-
-
-    createTable()
+            objs.splice(index,1)
+            createTable()
+        }
 
 
-    function Class(obj) {
-      this.name = obj.name
-      this.count = obj.count
-      this.unit = obj.unit
-      this.price = obj.price
-      this.total = obj.count * obj.price
-      this.note = obj.note
-      this.speciti = obj.speciti
-
-      if (isNaN(this.total)) {
-        this.total = 0
-      }
-    }
+        createTable()
 
 
-    function createTable() {
-      // 创建表格数组
-      // 获取当前html填充对象
+        function Class(obj){
 
-      let tbody = document.querySelector('#tbody_container')
+            let price = Number.parseFloat(obj.price).toFixed(2)
 
-      // 遍历循环当前所有objs 元素
-      var html_str = ''
-      var totalMoney = 0
+            console.log(price)
 
-      objs.forEach(function (item, index) {
-        // 有值就用total，没值就传0
-        totalMoney += (+item.total ? +item.total : 0)
+            this.name = obj.name
+            this.count = obj.count
+            this.unit = obj.unit
+            this.price = obj.price
+            this.total = obj.count * price
+            this.note = obj.note
+            this.speciti = obj.speciti
 
-        console.log(item, index)
-        html_str += `
-          <tr>
-            <td>${index}</td>
-            <td>${item.name || ''}</td>
-            <td>${item.count || ''}</td>
-            <td>${item.unit || ''}</td>
-            <td>${item.price || ''}</td>
-            <td>${item.total || 0}</td>
-            <td>${item.note || ''}</td>
-            <td>${item.speciti || ''}</td>
-            <td><a href="javascript:" data-index='${index}'>删除</a></td> <!--备注，这里可以给元素绑定一些需要的参数内容-->
-          </tr>
-    
-        
-        `
-      })
-      html_str += `
-      <tr>
-          <td>总计</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>${totalMoney}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-      </tr>
-      `
-      tbody.innerHTML = html_str
+            if (isNaN(this.total)) {
+                this.total = 0
+            }else{
+                this.total = Number.parseFloat(this.total).toFixed(2)
+            }
+        }
 
 
-      // 给所有的a元素删除元素绑定上事件
+        function createTable(){
 
-      document.querySelectorAll('a').forEach(function (ele) {
-        ele.addEventListener('click', function (e) {
-          console.log(e)
-          console.log(e.target.dataset.index)
-          // 获取index
-          var index = e.target.dataset.index
-          // 删除元素
-          objs.splice(index, 1)
-          createTable()
+            var datas = new Array()
+            for (var i = 0; i <= objs.length - 1; i++) {
+                let item = new Class(objs[i]) 
+                datas.push(item)
+            }
+            console.log(datas)
 
-        }, false)
-      })
+            var tbody_old = document.querySelector('tbody');
+            tbody_old.remove()
 
+            var table = document.getElementById('showtable');
+            var tbody = document.createElement('tbody');
+            table.appendChild(tbody)
 
-      // 打印的e值
-      /**
-       * isTrusted: true
-altKey: false
-altitudeAngle: 1.5707963267948966
-azimuthAngle: 0
-bubbles: true
-button: 0
-buttons: 0
-cancelBubble: false
-cancelable: true
-clientX: 882
-clientY: 170
-composed: true
-ctrlKey: false
-currentTarget: null
-defaultPrevented: false
-detail: 1
-eventPhase: 0
-fromElement: null
-height: 1
-isPrimary: false
-layerX: 882
-layerY: 170
-metaKey: false
-movementX: 0
-movementY: 0
-offsetX: 141
-offsetY: 15
-pageX: 882
-pageY: 170
-path: (9) [a, td, tr, tbody#tbody_container, table, body, html, document, Window]
-pointerId: 1
-pointerType: "mouse"
-pressure: 0
-relatedTarget: null
-returnValue: true
-screenX: 1031
-screenY: 509
-shiftKey: false
-sourceCapabilities: InputDeviceCapabilities {firesTouchEvents: false}
-srcElement: a
-tangentialPressure: 0
-target: a
-tiltX: 0
-tiltY: 0
-timeStamp: 2479.100000023842
-toElement: null
-twist: 0
-type: "click"
-view: Window {window: Window, self: Window, document: document, name: '', location: Location, …}
-which: 1
-width: 1
-x: 882
-y: 170
-       * 
-       * 
-       * 
-       * 
-      */
-      // var datas = new Array()
-      // for (var i = 0; i <= objs.length - 1; i++) {
-      //     let item = new Class(objs[i]) 
-      //     datas.push(item)
-      // }
-      // console.log(datas)
+            for (var i = 0; i < datas.length; i++) {
+                var tr = document.createElement('tr');
+                tbody.appendChild(tr); //创建行
 
-      // var tbody_old = document.querySelector('tbody');
-      // tbody_old.remove()
+                var td = document.createElement('td');
+                td.innerHTML = i;
+                tr.appendChild(td); //创建列
 
-      // var table = document.querySelector('table');
-      // var tbody = document.createElement('tbody');
-      // table.appendChild(tbody)
+                for (var k in datas[i]) {
+                    var td = document.createElement('td');
+                    if (typeof datas[i][k] == 'undefined') {
+                        td.innerHTML = '';
+                    }else{
+                        td.innerHTML = datas[i][k];
+                    }
+                    tr.appendChild(td); //创建列
+                }
+     
+                /*删除行*/
+                var td = document.createElement('td');
+                let index = String(i)
+                td.innerHTML = `<a href="javascript:" data-index='${index}'>删除</a>`;
+                // td.
+                tr.appendChild(td); //创建删除列
+            }
 
-      // for (var i = 0; i < datas.length; i++) {
-      //     var tr = document.createElement('tr');
-      //     tbody.appendChild(tr); //创建行
+            var tr = document.createElement('tr');
+            tbody.appendChild(tr); //创建行,总结
+            var td = document.createElement('td');
+            td.innerHTML = "总计";
+            tr.appendChild(td); //创建列
 
-      //     var td = document.createElement('td');
-      //     td.innerHTML = i;
-      //     tr.appendChild(td); //创建列
-
-      //     for (var k in datas[i]) {
-      //         var td = document.createElement('td');
-      //         if (typeof datas[i][k] == 'undefined') {
-      //             td.innerHTML = '';
-      //         }else{
-      //             td.innerHTML = datas[i][k];
-      //         }
-      //         tr.appendChild(td); //创建列
-      //     }
-
-      //     /*删除行*/
-      //     var td = document.createElement('td');
-      //     let index = String(i)
-      //     td.innerHTML = '<a href="javascript:">删除</a>';
-      //     // td.
-      //     tr.appendChild(td); //创建删除列
-      // }
-
-      // var tr = document.createElement('tr');
-      // tbody.appendChild(tr); //创建行,总结
-      // var td = document.createElement('td');
-      // td.innerHTML = "总计";
-      // tr.appendChild(td); //创建列
-
-      // let totalData = ["","","","", getTotal(datas), "", "", ""]
-      // for (var k in totalData) {
-      //     var td = document.createElement('td');
-      //     td.innerHTML = totalData[k];
-      //     tr.appendChild(td); //创建列
-      // }
+            let totalData = ["","","","", getTotal(datas), "", "", ""]
+            for (var k in totalData) {
+                var td = document.createElement('td');
+                td.innerHTML = totalData[k];
+                tr.appendChild(td); //创建列
+            }
 
 
-      // // 处理删除
-      // var as = document.querySelectorAll('a');
-      // for (let j = 0; j < as.length - 1; j++) {
-      //     as[j].onclick = function(para) {
+            // 处理删除
+            // var as = document.querySelectorAll('a');
+            // for (let j = 0; j < as.length - 1; j++) {
+            //     as[j].onclick = function(para) {
+
+            //         let index =  para.target.dataset.index
+
+            //         console.log(index)
 
 
-      //         console.log("要删除的是第几个" + para)
+            //         console.log("要删除的是第几个" + index)
 
-      //         // 删除数据
-      //         removeData(para)
-      //     }
-      // }
-    }
+            //         // 删除数据
+            //         removeData(index)
+            //     }
+            // }
 
 
-    function getTotal(datas) {
-      var result = 0
-      for (var i = datas.length - 1; i >= 0; i--) {
-        let total = datas[i].total
-        result += total
-      }
+            document.querySelectorAll('a').forEach(function (ele) {
+                ele.addEventListener('click', function (e) {
+                  console.log(e)
+                  console.log(e.target.dataset.index)
+                  // 获取index
+                  var index = e.target.dataset.index
+                  // 删除元素
+                  objs.splice(index, 1)
+                  createTable()
 
-      return result
-    }
+                }, false)
+              })
 
-  </script>
+        }
+
+
+        function getTotal(datas){
+            var result = 0
+            for (var i = datas.length - 1; i >= 0; i--) {
+
+                console.log("计算总数" + datas[i].total)
+
+                let total = Number.parseFloat(datas[i].total).toFixed(2)
+                result += parseFloat(total)
+            }
+
+            return result
+        }
+
+    </script>
 </body>
-
-
+ 
+ 
 </html>
+
